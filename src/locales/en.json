@@ -1,0 +1,790 @@
+{
+  "companyName": "Rabzan Trading Company",
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "products": "Products",
+    "howItWorks": "How It Works",
+    "portfolio": "Projects",
+    "contact": "Contact Us"
+  },
+  "home": {
+    "hero": {
+      "title": "Connecting You to Global Markets",
+      "subtitle": "Your strategic partner in import, export, and integrated logistics solutions.",
+      "cta": "Start Your Journey",
+      "stats": {
+        "clients": "Happy Clients",
+        "projects": "Successful Projects",
+        "years": "Years Experience"
+      }
+    },
+    "featuredProducts": {
+      "title": "Featured Products",
+      "subtitle": "Explore a curated selection of high-quality products we supply to our clients."
+    }
+  },
+  "services": {
+    "sourcing": {
+      "title": "Sourcing & Factory Verification",
+      "description": "Finding top manufacturers and verifying their backgrounds to ensure reliable supply chains."
+    },
+    "inspection": {
+      "title": "Quality Inspection",
+      "description": "Rigorous and comprehensive product inspection at various production stages to ensure compliance."
+    },
+    "logistics": {
+      "title": "Logistics & Shipping",
+      "description": "Integrated transport solutions (Air, Sea, Land) optimized for cost and speed to ensure safe delivery."
+    },
+    "customs": {
+      "title": "Customs Clearance Support",
+      "description": "Handling complex customs procedures and documentation to ensure smooth goods passage."
+    },
+    "consulting": {
+      "title": "Trade Consulting & Negotiation",
+      "description": "Expert guidance on market trends, cost optimization, and professional negotiation with suppliers."
+    },
+    "commercial": {
+      "shipping_clearance": {
+        "title": "Shipping & Clearance Services",
+        "description": "We offer integrated shipping solutions (Air, Sea, Land) with customs clearance management and shipment tracking until destination."
+      },
+      "factory_visit": {
+        "title": "Factory Visits & Assessment",
+        "description": "Our team visits factories to assess production capabilities, quality, and punctuality to ensure a reliable manufacturing partner."
+      },
+      "sourcing": {
+        "title": "Product & Supplier Sourcing",
+        "description": "We help you find the right products and verified suppliers while checking records, reputation, and compliance."
+      }
+    }
+  },
+  "process": {
+    "step1": {
+      "title": "Initial Consultation",
+      "description": "We discuss your specific needs and budget to create a tailored sourcing strategy."
+    },
+    "step2": {
+      "title": "Supplier Identification",
+      "description": "Our team selects and audits potential suppliers based on your quality standards."
+    },
+    "step3": {
+      "title": "Sampling & Negotiation",
+      "description": "We obtain samples for your approval and negotiate the best possible terms and prices."
+    },
+    "step4": {
+      "title": "Ordering & Inspection",
+      "description": "Once ordered, we monitor production and conduct rigorous quality inspections."
+    },
+    "step5": {
+      "title": "Logistics & Delivery",
+      "description": "We manage the entire shipping and customs clearance process until goods reach your door."
+    }
+  },
+  "portfolio": {
+    "project1": {
+      "title": "Textile Sourcing - Europe",
+      "category": "Sourcing",
+      "description": "Sourcing and delivery of luxury textiles for a European fashion brand."
+    },
+    "project2": {
+      "title": "Electronics Logistics - Dubai",
+      "category": "Logistics",
+      "description": "Integrated logistics solutions for high-value consumer electronics."
+    },
+    "project3": {
+      "title": "Industrial Machinery - China",
+      "category": "Verification",
+      "description": "Factory verification and quality control of heavy industrial equipment."
+    }
+  },
+  "portfolio_page": {
+    "hero": {
+      "label": "Track Record of Success",
+      "title": "Projects That",
+      "title_highlight": "Made a Difference.",
+      "description": "Showcasing our top achievements in product sourcing, supply chain optimization, and ensuring highest quality standards for global partners."
+    },
+    "metrics": {
+      "shipments": {
+        "value": "+500",
+        "label": "International Shipments Successful Annually"
+      },
+      "countries": {
+        "value": "20+",
+        "label": "Active Origin & Supply Countries"
+      },
+      "precision": {
+        "value": "99.8%",
+        "label": "Precision in Time & Quality"
+      }
+    },
+    "cta": {
+      "title": "Ready to be our next",
+      "title_highlight": "Success Story",
+      "title_suffix": "?",
+      "description": "Let's put our trade and logistics expertise at your service, and build a supply chain without borders.",
+      "button": "Start Partnership Now",
+      "view_case": "View Case Study"
+    }
+  },
+  "about_page": {
+    "hero": {
+      "label": "Founded to be the Best",
+      "title_prefix": "We are Architects of",
+      "title_highlight": "Trade",
+      "title_suffix": "Future.",
+      "description": "Rabzan combines traditional wisdom with logistics innovation to offer you trade solutions that know no impossible."
+    },
+    "story": {
+      "label": "Our Inspiring Story",
+      "title_prefix": "Experience You",
+      "title_highlight": "Live",
+      "title_suffix": "in Every Detail.",
+      "legacy_title": "Legacy of Trust",
+      "legacy_text": "Started from ports to conquer markets with engineering precision.",
+      "p1": "We realized from the start that trade is not just numbers and contracts, but a pulse of life and continuous movement requiring extreme precision and deep understanding of cultures and markets.",
+      "p2": "Since our inception, our goal has been to remove obstacles for ambitious companies by providing flexible, secure, and carefully studied supply chains, allowing our partners to focus on their growth while we ensure the quality and speed of their product arrival.",
+      "perks": {
+        "licenses": "Certified International Licenses",
+        "compliance": "Full Compliance with Standards"
+      },
+      "cta": "Meet Our Leaders"
+    },
+    "values_section": {
+      "label": "Our Vision & Values",
+      "title": "The Foundations We Build Your Success On"
+    },
+    "values": {
+      "mission": {
+        "title": "Our Mission",
+        "text": "Empowering global trade through innovative sourcing solutions and ethical logistics that put the client first."
+      },
+      "vision": {
+        "title": "Our Vision",
+        "text": "To be the most trusted link in international trade, setting new standards for logistics excellence."
+      },
+      "values": {
+        "title": "Our Values",
+        "text": "Integrity, absolute transparency, and commitment to building sustainable partnerships beyond just business transactions."
+      }
+    },
+    "highlights": {
+      "partner": {
+        "label": "Business Partner",
+        "value": "500+"
+      },
+      "certificate": {
+        "label": "Quality Certificate",
+        "value": "15"
+      },
+      "market": {
+        "label": "Global Market",
+        "value": "35"
+      }
+    }
+  },
+  "products": {
+    "buy_via_whatsapp": "Order via WhatsApp",
+    "price_start": "Starting from",
+    "currency": "$",
+    "items": {
+      "1": {
+        "name": "Automatic Packaging Machines",
+        "category": "Industrial Equipment",
+        "price": "Starting from $15,000",
+        "description": "Integrated production lines for food and liquid packaging with top global quality standards.",
+        "long_description": "We offer the latest automated packaging lines designed to increase production efficiency and reduce waste. These machines feature smart PLC control, touch screens for easy operation, and a durable stainless steel structure ensuring longevity and compliance with global health standards.",
+        "features": [
+          "Advanced PLC control system (Siemens/Mitsubishi)",
+          "Adjustable production speed up to 120 packs/min",
+          "High filling accuracy with error less than ±1%",
+          "Easy maintenance and cleaning due to modular design"
+        ],
+        "specs": {
+          "capacity": { "label": "Capacity", "value": "50 - 120 pcs/min" },
+          "voltage": { "label": "Voltage", "value": "380V / 50Hz / 3Phase" },
+          "material": {
+            "label": "Material",
+            "value": "Stainless Steel 304/316"
+          },
+          "weight": { "label": "Weight", "value": "1200 kg" },
+          "warranty": {
+            "label": "Warranty",
+            "value": "2 Years (Parts included)"
+          }
+        }
+      },
+      "2": {
+        "name": "High Efficiency Solar Panels",
+        "category": "Renewable Energy",
+        "price": "Competitive Wholesale Price",
+        "description": "Latest energy-saving solar technologies, ideal for factories and large projects.",
+        "long_description": "Solar panels designed to maximize solar radiation usage even in harsh weather conditions. Utilizing Mono PERC technology to increase efficiency and reduce thermal loss, making them the ideal choice for commercial and industrial projects seeking to cut energy costs.",
+        "features": [
+          "Energy conversion efficiency exceeding 22%",
+          "Excellent performance in high temperatures",
+          "Superior resistance to wind and snow loads",
+          "Tempered glass with anti-reflective and self-cleaning coating"
+        ],
+        "specs": {
+          "power": { "label": "Max Power", "value": "550 Watt" },
+          "cell_type": {
+            "label": "Cell Type",
+            "value": "Monocrystalline PERC"
+          },
+          "efficiency": { "label": "Efficiency", "value": "22.6%" },
+          "warranty": {
+            "label": "Warranty",
+            "value": "25 Years Linear Performance"
+          },
+          "dimensions": {
+            "label": "Dimensions",
+            "value": "2279 × 1134 × 35 mm"
+          }
+        }
+      },
+      "3": {
+        "name": "Luxury Sanitary Ware & Ceramic",
+        "category": "Building Materials",
+        "price": "Based on Quantity",
+        "description": "Modern designs and durable materials for heavy use, direct supply from top factories.",
+        "long_description": "A carefully selected collection of sanitary ware, ceramic, and porcelain combining luxury and practicality. We provide Italian and Spanish designs at competitive prices, suitable for residential and hotel projects, with guarantees against corrosion, stains, and for easy cleaning.",
+        "features": [
+          "Modern designs following latest decor trends",
+          "Antibacterial and scratch-resistant surface",
+          "Water-saving technologies in mixers and toilets",
+          "Available in Big Slabs for floors"
+        ],
+        "specs": {
+          "material": {
+            "label": "Material",
+            "value": "High Quality Porcelain / Ceramic"
+          },
+          "origin": {
+            "label": "Origin",
+            "value": "Options available (Italian - Spanish - Premium Chinese)"
+          },
+          "thickness": { "label": "Thickness", "value": "9mm - 12mm" },
+          "resistance": {
+            "label": "Resistance",
+            "value": "Acid and Chemical Resistant"
+          }
+        }
+      },
+      "4": {
+        "name": "Eco-friendly Plastic Packaging",
+        "category": "Plastics & Packaging",
+        "price": "Wholesale Orders Only",
+        "description": "Sustainable and biodegradable packaging solutions meeting global environmental standards.",
+        "long_description": "Responding to the growing global demand for sustainability, we provide packaging materials made from bio-plastics that are fully biodegradable. Our products include shopping bags, food containers, and industrial packaging films, maintaining durability and strength.",
+        "features": [
+          "100% biodegradable within 180 days",
+          "Certified by global environmental bodies (BPI, DIN)",
+          "Food Grade safe",
+          "Printable with eco-friendly water-based inks"
+        ],
+        "specs": {
+          "raw_material": {
+            "label": "Raw Material",
+            "value": "PLA + Corn Starch"
+          },
+          "thickness": {
+            "label": "Thickness",
+            "value": "Customizable (10 - 100 micron)"
+          },
+          "transparency": {
+            "label": "Transparency",
+            "value": "Transparent and Opaque options"
+          },
+          "durability": {
+            "label": "Heat Resistance",
+            "value": "Up to 40°C for liquids"
+          }
+        }
+      },
+      "5": {
+        "name": "LED Lighting for Projects",
+        "category": "Electrical & Lighting",
+        "price": "Ask for Price",
+        "description": "Smart, energy-saving lighting systems for administrative buildings and industrial facilities.",
+        "long_description": "Integrated LED lighting solutions for major projects, from street and stadium lights to office and warehouse lighting. Features up to 80% energy savings compared to traditional lighting, with a long lifespan reducing maintenance costs.",
+        "features": [
+          "Lifespan exceeding 50,000 hours",
+          "High Color Rendering Index (CRI) > 85",
+          "Smart Control Capable (Dimmable / Smart IoT)",
+          "Flicker-Free for eye protection"
+        ],
+        "specs": {
+          "efficiency": {
+            "label": "Luminous Efficiency",
+            "value": "140 lm/Watt"
+          },
+          "protection": {
+            "label": "Protection Rating",
+            "value": "IP65 / IP67 for Outdoor"
+          },
+          "color_temp": { "label": "Color Temp", "value": "3000K - 6500K" },
+          "beam_angle": {
+            "label": "Beam Angle",
+            "value": "Multiple (60° / 90° / 120°)"
+          }
+        }
+      },
+      "6": {
+        "name": "Heavy Equipment Spare Parts",
+        "category": "Industrial Equipment",
+        "price": "Competitive Prices",
+        "description": "Supplying original and equivalent spare parts for top global brands with high delivery accuracy.",
+        "long_description": "We are your trusted partner for supplying heavy equipment spare parts (excavators, loaders, trucks) from global brands like Caterpillar, Komatsu, and Mercedes. We offer OEM and high-quality Aftermarket options to ensure equipment continuity with minimal cost and downtime.",
+        "features": [
+          "100% compatibility guarantee with serial numbers",
+          "Fast air freight for urgent orders",
+          "Wide coverage (Engines, Hydraulics, Filters, Tires)",
+          "Competitive prices for annual contracts"
+        ],
+        "specs": {
+          "brands": {
+            "label": "Brands",
+            "value": "CAT, Komatsu, Volvo, Hitachi"
+          },
+          "parts_type": {
+            "label": "Parts Type",
+            "value": "Engine Parts, Undercarriage, Hydraulics"
+          },
+          "warranty": {
+            "label": "Warranty",
+            "value": "6 months (Aftermarket) / 1 year (OEM)"
+          },
+          "delivery": {
+            "label": "Lead Time",
+            "value": "7-14 days for Air Freight"
+          }
+        }
+      }
+    }
+  },
+  "articles": {
+    "1": {
+      "title": "Top Scams in Importing from China & How to Protect Yourself",
+      "snippet": "Learn about the most common fraud methods in importing from China and what you can do to avoid losses..."
+    },
+    "2": {
+      "title": "Secrets of Successful Negotiation with Chinese Factories",
+      "snippet": "Practical tips from our experts on negotiating prices and terms with Chinese factories and building long-term relationships..."
+    },
+    "3": {
+      "title": "Canton Fair Guide: What to Know Before You Go",
+      "snippet": "Everything you need to know before attending the Canton Fair: Timing, Registration, Best Lanes, and Negotiation Tips..."
+    }
+  },
+  "products_page": {
+    "hero": {
+      "label": "Product Catalog",
+      "title": "Import Solutions",
+      "title_suffix": "Without Borders.",
+      "description": "We select the best products for you directly from global factories, ensuring quality and safe delivery according to the highest commercial standards."
+    },
+    "whatsapp_btn": "Order via WhatsApp",
+    "whatsapp_inquiry": "I would like to inquire about product",
+    "perks": {
+      "global_shipping": {
+        "title": "Global Shipping",
+        "desc": "Integrated logistics solutions ensuring your products reach your warehouse directly from anywhere in the world."
+      },
+      "quality": {
+        "title": "Quality Guarantee",
+        "desc": "Our technical team inspects every piece before shipment to ensure compliance with agreed specifications."
+      },
+      "sourcing": {
+        "title": "Smart Sourcing",
+        "desc": "We help you find the best suppliers and negotiate on your behalf to get the best price and terms."
+      }
+    },
+    "cta": {
+      "title": "Didn't find what",
+      "title_highlight": "you are looking for?",
+      "description": "Contact us directly and we will source any product you need from any global factory with the best specifications.",
+      "button": "Free Sourcing Consultation"
+    }
+  },
+  "products": {
+    "not_found": "Product Not Found",
+    "back_to_products": "Back to Products",
+    "have_question": "Have a question about this product?",
+    "consultant_ready": "Our consultant is ready to answer all your import inquiries.",
+    "chat_whatsapp": "Chat with an Expert on WhatsApp",
+    "whatsapp_inquiry": "Hi, I have an inquiry regarding product",
+    "overview": "Product Overview",
+    "estimated_price": "Estimated Price",
+    "key_features": "Key Features",
+    "technical_specs": "Technical Specifications",
+    "related_products": "Related Products",
+    "specs_labels": {
+      "capacity": "Capacity",
+      "voltage": "Voltage",
+      "material": "Material",
+      "weight": "Weight",
+      "power": "Power",
+      "cell_type": "Cell Type",
+      "efficiency": "Efficiency",
+      "warranty": "Warranty",
+      "dimensions": "Dimensions",
+      "origin": "Origin",
+      "thickness": "Thickness",
+      "resistance": "Resistance",
+      "raw_material": "Raw Material",
+      "transparency": "Transparency",
+      "durability": "Durability",
+      "protection": "Protection",
+      "color_temp": "Color Temp",
+      "beam_angle": "Beam Angle",
+      "brands": "Brands",
+      "parts_type": "Parts Type",
+      "delivery": "Delivery"
+    },
+    "items": {
+      "1": {
+        "name": "Li-ion Batteries 18650",
+        "category": "Electronics",
+        "price": "From $1.20 / pc",
+        "description": "High-capacity battery cells suitable for various electronic devices and power banks, direct from top factories.",
+        "long_description": "These 18650 Lithium-ion batteries are manufactured to the highest safety and performance standards. Ideal for custom battery pack assembly, high-power flashlights, EVs, and energy storage systems.",
+        "features": [
+          "Long Cycle Life: > 500 cycles",
+          "Built-in Overcharge Protection",
+          "Low Internal Resistance",
+          "CE & RoHS Certified"
+        ],
+        "specs": {
+          "capacity": "2600mAh - 3500mAh",
+          "voltage": "3.7V Nominal",
+          "material": "Li-ion",
+          "weight": "45g",
+          "warranty": "12 Months"
+        }
+      },
+      "2": {
+        "name": "Monocrystalline Solar Panels 550W",
+        "category": "Renewable Energy",
+        "price": "From $0.18 / Watt",
+        "description": "High-efficiency solar modules for commercial and residential projects with 25-year performance warranty.",
+        "long_description": "Our Monocrystalline Solar Panels deliver maximum power output even in low-light conditions. Engineered with half-cell technology for reduced losses and increased durability.",
+        "features": [
+          "High Conversion Efficiency 21.5%",
+          "Half-Cell Technology",
+          "Excellent Low-Light Performance",
+          "Heavy Mechanical Load Tolerance"
+        ],
+        "specs": {
+          "power": "550 Watt",
+          "cell_type": "Monocrystalline (Mono PERC)",
+          "efficiency": "21.5%",
+          "warranty": "25 Years Performance",
+          "dimensions": "2279x1134x35 mm"
+        }
+      },
+      "3": {
+        "name": "Luxury SPC Flooring",
+        "category": "Building Materials",
+        "price": "From $4.50 / m2",
+        "description": "Waterproof and highly durable flooring in various wood and stone designs, perfect for commercial projects.",
+        "long_description": "SPC (Stone Polymer Composite) flooring combines the strength of stone with the beauty of wood. 100% waterproof, slip-resistant, and suitable for high-traffic areas.",
+        "features": [
+          "100% Waterproof",
+          "Easy Installation (Click System)",
+          "Scratch & Wear Resistant",
+          "Eco-friendly & Formaldehyde-free"
+        ],
+        "specs": {
+          "material": "Stone Plastic Composite (SPC)",
+          "origin": "China",
+          "thickness": "4mm + 1mm Underlay",
+          "resistance": "Commercial Wear Class"
+        }
+      },
+      "4": {
+        "name": "Clear Tempered Glass",
+        "category": "Building Materials",
+        "price": "From $8.00 / m2",
+        "description": "High-quality safety glass for windows, doors, and facades, available in custom thicknesses and sizes.",
+        "long_description": "Tempered glass is thermally treated to increase its strength and resistance to thermal shock. In case of breakage, it shatters into small blunt pieces to minimize injury risk.",
+        "features": [
+          "5x Stronger than Ordinary Glass",
+          "High Heat Resistance",
+          "Custom Edging & Drilling",
+          "International Standards Compliant"
+        ],
+        "specs": {
+          "raw_material": "High Quality Float Glass",
+          "thickness": "4mm - 19mm",
+          "transparency": "High Light Transmission",
+          "durability": "Impact Resistant"
+        }
+      },
+      "5": {
+        "name": "LED Warehouse Lighting (High Bay)",
+        "category": "Lighting",
+        "price": "From $25.00 / pc",
+        "description": "Energy-efficient industrial lighting solutions for warehouses and factories with high ceilings.",
+        "long_description": "UFO LED High Bay lights provide bright and uniform illumination for large spaces. Featuring die-cast aluminum housing for efficient heat dissipation and long lifespan.",
+        "features": [
+          "Energy Saving up to 80%",
+          "Lifespan > 50,000 Hours",
+          "IP65 Rated (Waterproof & Dustproof)",
+          "5 Years Warranty"
+        ],
+        "specs": {
+          "efficiency": "150 lm/W",
+          "protection": "IP65",
+          "color_temp": "3000K - 6500K",
+          "beam_angle": "60° / 90° / 120°"
+        }
+      },
+      "6": {
+        "name": "OEM Auto Parts",
+        "category": "Automotive",
+        "price": "On Request",
+        "description": "Supply of genuine and spec-compliant spare parts for major global car brands.",
+        "long_description": "We specialize in wholesale supply of automotive spare parts, including engine components, suspension, brakes, and electrical parts. Ensuring quality and perfect fit.",
+        "features": [
+          "OEM Quality Standard",
+          "Wide Model Coverage",
+          "Competitive Prices for Bulk Orders",
+          "Strict Quality Inspection"
+        ],
+        "specs": {
+          "brands": "Toyota, Honda, Nissan, and more",
+          "parts_type": "Mechanical, Body, Electrical",
+          "warranty": "Depends on part type",
+          "delivery": "Sea / Air Freight"
+        }
+      }
+    }
+  },
+  "services_page": {
+    "hero": {
+      "label": "Our Services",
+      "title_prefix": "Your Partner in",
+      "title_suffix": "Global Trade",
+      "description": "We offer a comprehensive range of services designed to streamline your import journey, from source to warehouse."
+    },
+    "common_perks": [
+      "Dedicated Support",
+      "Transparent Reporting",
+      "Competitive Pricing",
+      "Quality Assurance"
+    ],
+    "cta": "Request Service Now",
+    "trust": {
+      "security": {
+        "title": "Total Security",
+        "desc": "Full Protection"
+      },
+      "global": {
+        "title": "Global Reach",
+        "desc": "Wide Network"
+      },
+      "smart": {
+        "title": "Smart Solutions",
+        "desc": "High Efficiency"
+      }
+    }
+  },
+  "articles": {
+    "1": {
+      "title": "Canton Fair Guide",
+      "snippet": "Everything you need to know..."
+    },
+    "2": {
+      "title": "Air vs Sea Freight",
+      "snippet": "Comprehensive comparison..."
+    },
+    "3": { "title": "Future of Trade", "snippet": "2024 Trends..." }
+  },
+  "how_it_works": {
+    "hero": {
+      "label": "Smart Workflow Methodology",
+      "title": "We Work With",
+      "title_suffix": "Engineering Precision.",
+      "description": "Our systematic approach is divided into clear stages ensuring transparency and full control over every part of the supply journey."
+    },
+    "execution_phase_label": "Execution Phase",
+    "discover_details": "Discover Logistics Details",
+    "cta": "Speak with a Consultant Now",
+    "faq": {
+      "title": "Have Questions? We Have Answers.",
+      "description": "We have compiled the most common inquiries to clearer clarity on our vision.",
+      "items": [
+        {
+          "q": "How long does the executive process usually take?",
+          "a": "Timelines vary based on product type and geography, but most projects are completed within 4 to 8 weeks from initial consultation to final delivery."
+        },
+        {
+          "q": "What order sizes can you handle?",
+          "a": "We specialize in medium to large volume shipments, Full Container Loads (FCL), and have the capacity to scale for major factory needs."
+        },
+        {
+          "q": "How do you ensure product quality in remote factories?",
+          "a": "Our field inspection team conducts rigorous checks in three stages: Pre-production, During Production, and Pre-shipment to ensure specification compliance."
+        },
+        {
+          "q": "Do you provide periodic follow-up reports?",
+          "a": "Yes, we provide full transparency via detailed weekly reports including photos and live data on manufacturing and logistics status."
+        }
+      ]
+    }
+  },
+  "contact_page": {
+    "hero": {
+      "label": "Contact Without Barriers",
+      "title": "We Are Ready to",
+      "title_highlight": "Hear",
+      "title_suffix": "Your Vision.",
+      "description": "Whether you are looking for strategic consultation or wish to start a business collaboration, we are always happy to provide the necessary support."
+    },
+    "info": {
+      "title": "Administrative Info",
+      "hq": "Headquarters",
+      "support": "Strategic Support",
+      "official": "Official Correspondence"
+    },
+    "chat": {
+      "title": "Quick Chat",
+      "description": "Chat with our consultant via WhatsApp now."
+    },
+    "form": {
+      "tabs": {
+        "quote": "Request Proposal",
+        "support": "General Support"
+      },
+      "fields": {
+        "name_label": "Full Name",
+        "name_placeholder": "Ex: John Doe",
+        "email_label": "Work Email",
+        "service_label": "Service Type",
+        "details_label": "Additional Details",
+        "details_placeholder": "Tell us more about your business goals and current volume..."
+      },
+      "options": {
+        "strategic": "Strategic Sourcing Analysis",
+        "supply_chain": "Supply Chain Optimization",
+        "inspection": "Quality Assurance Partnership",
+        "consulting": "Trade Consulting & Negotiation"
+      },
+      "submit_btn": "Send Strategic Request"
+    },
+    "success": {
+      "title": "Sent Successfully!",
+      "description": "We will review your request and contact you soon.",
+      "retry": "Send Another Message"
+    }
+  },
+  "contact": {
+    "socials": {
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    }
+  },
+  "home_page": {
+    "hero": {
+      "badge": "Global Trade Logistics",
+      "title_primary": "Seamless Global",
+      "title_secondary": "Trade Solutions",
+      "description": "We bridge the gap between global markets and your business with precision, speed, and reliability.",
+      "cta_contact": "Contact Us",
+      "cta_methodology": "Our Methodology",
+      "badges": {
+        "quality": "Quality Assured",
+        "supply": "Supply Chain",
+        "digital": "Digital Tracking"
+      },
+      "scroll": "Scroll Down",
+      "images": {
+        "sea_shipping": "Sea Shipping Container"
+      }
+    },
+    "stats": {
+      "certified_factory": "Certified Factory",
+      "global_office": "Global Office",
+      "trading_volume": "Trading Volume",
+      "active_country": "Active Country"
+    },
+    "services_section": {
+      "label": "Strategic Capital",
+      "title_prefix": "Building Bridges of",
+      "title_suffix": "Competitiveness.",
+      "discover": "Discover Solutions"
+    },
+    "commercial_section": {
+      "label": "Execution Solutions",
+      "title_prefix": "Commercial",
+      "title_suffix": "Services.",
+      "description": "We offer practical solutions covering all stages of import and direct dealing with suppliers to ensure your business efficiency.",
+      "cta": "Request Service"
+    },
+    "about_section": {
+      "years_experience": "Years of Experience",
+      "label": "Strategic View",
+      "title_prefix": "More Than Just a",
+      "title_suffix": "Business Partner.",
+      "description": "At Rabzan, we believe success starts with understanding details. We don't just supply products; we build smart supply chains that enhance your price and quality competitiveness in global markets.",
+      "speed_title": "Execution Speed",
+      "speed_desc": "We shorten distances and time to ensure uninterrupted flow of your goods.",
+      "global_title": "Global Expansion",
+      "global_desc": "Direct connection with top factories in China and worldwide.",
+      "cta_more": "Discover More About Us",
+      "cta_story": "Watch Success Story"
+    },
+    "featured_products": {
+      "label": "Selected Products",
+      "title_prefix": "Import With",
+      "title_suffix": "Confidence.",
+      "description": "We showcase a selection of products guaranteed for quality and ease of import at the best prices.",
+      "whatsapp_cta": "Order via WhatsApp",
+      "whatsapp_msg_prefix": "I would like to inquire about product"
+    },
+    "portfolio_section": {
+      "label": "Portfolio",
+      "title": "Cross-Continent Success Stories.",
+      "cta": "Explore Our Work"
+    },
+    "articles_section": {
+      "label": "Knowledge Compass",
+      "title_prefix": "Insights",
+      "title_suffix": "& Expertise.",
+      "view_all": "View All Articles",
+      "exclusive": "Exclusive Article",
+      "read_more": "Read More",
+      "mobile_view_all": "All Articles"
+    },
+    "contact_section": {
+      "description": "Whether you are a business owner looking for a reliable partner, need business consultation, or want to start an import project from China with us – we are happy to connect with you and answer all your inquiries.",
+      "contact_methods": {
+        "phone": "Phone",
+        "whatsapp": "WhatsApp",
+        "email": "Email"
+      },
+      "form": {
+        "title": "Let's Start Success Together",
+        "subtitle": "Leave your details and our experts will contact you soon.",
+        "name_placeholder": "Full Name",
+        "phone_placeholder": "Mobile Number",
+        "email_placeholder": "Email Address",
+        "city_placeholder": "City",
+        "country_placeholder": "Country",
+        "method_placeholder": "- Preferred Contact Method -",
+        "method_options": {
+          "whatsapp": "WhatsApp",
+          "phone": "Phone Call",
+          "email": "Email"
+        },
+        "message_placeholder": "Your Request in Brief (Product Type, Quantity, etc.)",
+        "submit": "Send Request"
+      }
+    }
+  }
+}

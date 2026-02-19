@@ -1,0 +1,140 @@
+.about-hero-refined {
+  padding: 180px 0 100px;
+  text-align: center;
+}
+
+.about-hero-content h1 {
+  font-size: clamp(40px, 5vw, 72px);
+  color: #ffffff;
+  margin-bottom: 24px;
+}
+
+.about-hero-content h1 span {
+  color: var(--secondary-green-light);
+  font-weight: 300;
+  font-style: italic;
+}
+
+.about-hero-content p {
+  font-size: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0.7;
+}
+
+.story-split {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+
+.visual-stack {
+  position: relative;
+  padding: 40px;
+}
+
+.visual-main-img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-premium);
+}
+
+.visual-floating-card {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  padding: 32px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.visual-floating-card p {
+  color: #ffffff;
+  font-weight: 800;
+  margin-top: 15px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.story-text h2 {
+  font-size: 48px;
+  margin-bottom: 30px;
+  line-height: 1.1;
+}
+
+.story-text p {
+  color: var(--text-light);
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+
+.story-perks {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.perk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.perk svg {
+  color: var(--secondary-green);
+}
+
+.values-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.value-card-v2 {
+  background: #ffffff;
+  padding: 60px 40px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-cubic-1);
+}
+
+.value-card-v2:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-premium);
+}
+
+.val-icon-box {
+  width: 80px;
+  height: 80px;
+  background: var(--bg-light);
+  color: var(--secondary-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30px;
+  font-size: 32px;
+}
+
+.val-icon {
+  width: 32px;
+  height: 32px;
+}
+
+@media (max-width: 992px) {
+  .story-split {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  .values-grid-v2 {
+    grid-template-columns: 1fr;
+  }
+}

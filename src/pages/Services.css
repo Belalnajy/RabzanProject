@@ -1,0 +1,100 @@
+.page-header {
+  padding: 160px 0 80px;
+  background-color: var(--primary-blue);
+  color: #ffffff;
+  text-align: center;
+}
+
+.page-header h1 {
+  color: #ffffff;
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.page-header p {
+  font-size: 20px;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.service-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  margin-bottom: 120px;
+}
+
+.service-detail-item.reverse {
+  flex-direction: row-reverse;
+}
+
+.service-detail-image {
+  flex: 1;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 400px;
+  background-color: var(--bg-gray);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  border: 1px dashed var(--border-color);
+}
+
+.service-detail-content {
+  flex: 1;
+}
+
+.step-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--secondary-green);
+  display: block;
+  margin-bottom: 15px;
+}
+
+.service-detail-content h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+}
+
+.service-detail-content p {
+  font-size: 18px;
+  color: var(--text-light);
+  margin-bottom: 30px;
+}
+
+.service-features {
+  margin-bottom: 40px;
+}
+
+.service-features li {
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 25px;
+  font-weight: 500;
+}
+
+.service-features li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--secondary-green);
+}
+
+@media (max-width: 992px) {
+  .service-detail-item,
+  .service-detail-item.reverse {
+    flex-direction: column;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .service-features li {
+    text-align: left;
+  }
+}
