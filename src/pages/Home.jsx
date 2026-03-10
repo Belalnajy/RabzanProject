@@ -42,6 +42,7 @@ import {
   COMMERCIAL_SERVICES,
   ARTICLES,
   PRODUCTS,
+  CONTACT_INFO,
 } from '../constants/content';
 
 const Home = () => {
@@ -263,15 +264,19 @@ const Home = () => {
                         </p>
                       </div>
 
-                      <Link
-                        to="/contact"
+                      <a
+                        href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
+                          `${t('home_page.commercial_section.cta')}: ${t(item.title)}`,
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center justify-center gap-3 w-full py-5 px-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-lg hover:bg-accent-gold hover:text-primary-navy hover:border-accent-gold transition-all duration-300">
                         <span>{t('home_page.commercial_section.cta')}</span>
                         <ArrowUpLeft
                           size={20}
                           className={isRTL ? '' : 'rotate-90'}
                         />
-                      </Link>
+                      </a>
                     </div>
                   </motion.div>
                 </StaggerItem>
@@ -449,37 +454,50 @@ const Home = () => {
                     whileHover={{ y: -10 }}
                     className="group bg-slate-50 rounded-[3rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
                     {/* Product Image */}
-                    <div className="h-72 overflow-hidden relative">
+                    <Link
+                      to={`/products/${product.id}`}
+                      className="h-72 overflow-hidden relative block">
                       <motion.img
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.8 }}
                         src={product.image}
-                        alt={product.name}
+                        alt={t(product.name)}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute top-6 right-6">
                         <span className="bg-white/90 backdrop-blur-md text-primary-navy px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider shadow-sm">
-                          {product.category}
+                          {t(product.category)}
                         </span>
                       </div>
-                    </div>
+                    </Link>
 
                     {/* Content */}
                     <div className="p-10 flex flex-col flex-1">
                       <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-2xl font-black text-primary-navy leading-tight">
-                          {t(product.name)}
-                        </h3>
+                        <Link to={`/products/${product.id}`}>
+                          <h3 className="text-2xl font-black text-primary-navy leading-tight hover:text-accent-gold transition-colors">
+                            {t(product.name)}
+                          </h3>
+                        </Link>
                       </div>
                       <p className="text-slate-600 text-lg mb-8 line-clamp-2 font-medium">
                         {t(product.description)}
                       </p>
 
-                      <div className="mt-auto space-y-6">
-                        <div className="flex items-center justify-between">
+                      <div className="mt-auto space-y-4">
+                        <div className="flex items-center justify-between mb-2">
                           <span className="text-accent-gold font-black text-xl">
                             {t(product.price)}
                           </span>
+                          <Link
+                            to={`/products/${product.id}`}
+                            className="text-primary-navy font-black text-sm hover:text-accent-gold transition-all flex items-center gap-2">
+                            {t('products.view_details')}
+                            <ArrowUpLeft
+                              size={16}
+                              className={isRTL ? '' : 'rotate-90'}
+                            />
+                          </Link>
                         </div>
 
                         <a

@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/layout/Navbar';
-import { PROCESS_STEPS } from '../constants/content';
+import { PROCESS_STEPS, CONTACT_INFO } from '../constants/content';
 import {
   FadeIn,
   StaggerContainer,
@@ -189,12 +189,18 @@ const HowItWorks = () => {
           </div>
 
           <div className="mt-20 text-center">
-            <button className="btn-premium py-5 px-16 group">
+            <a
+              href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
+                t('how_it_works.cta'),
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-premium py-5 px-16 group inline-flex items-center">
               <span>{t('how_it_works.cta')}</span>
               <ArrowLeft
                 className={`transition-transform ${isRTL ? 'group-hover:-translate-x-2' : 'group-hover:translate-x-2 rotate-180'}`}
               />
-            </button>
+            </a>
           </div>
         </div>
       </section>

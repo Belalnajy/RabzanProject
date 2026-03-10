@@ -18,6 +18,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from '../components/ui/Animations';
+import { CONTACT_INFO } from '../constants/content';
 
 const About = () => {
   const { t, i18n } = useTranslation();
@@ -171,12 +172,18 @@ const About = () => {
                   </div>
                 </div>
 
-                <button className="btn-premium mt-12 group">
+                <a
+                  href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
+                    t('about_page.story.cta'),
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-premium mt-12 group">
                   <span>{t('about_page.story.cta')}</span>
                   <ArrowLeft
                     className={`transition-transform ${isRTL ? 'group-hover:translate-x-2 rotate-180' : 'group-hover:-translate-x-2'}`}
                   />
-                </button>
+                </a>
               </div>
             </FadeIn>
           </div>

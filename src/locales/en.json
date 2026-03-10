@@ -187,197 +187,292 @@
     }
   },
   "products": {
-    "buy_via_whatsapp": "Order via WhatsApp",
-    "price_start": "Starting from",
-    "currency": "$",
+    "not_found": "Product Not Found",
+    "back_to_products": "Back to Products",
+    "view_details": "View Details",
+    "have_question": "Have a question about this product?",
+    "consultant_ready": "Our consultant is ready to answer all your import inquiries.",
+    "chat_whatsapp": "Chat with an Expert on WhatsApp",
+    "whatsapp_inquiry": "Hi, I have an inquiry regarding product",
+    "overview": "Product Overview",
+    "estimated_price": "Estimated Price",
+    "key_features": "Key Features",
+    "technical_specs": "Technical Specifications",
+    "related_products": "Related Products",
+    "specs_labels": {
+      "washing_capacity": "Washing Capacity",
+      "drum_volume": "Drum Volume",
+      "drum_size": "Drum Size",
+      "washing_speed": "Washing Speed",
+      "high_extraction_speed": "High Extraction Speed",
+      "motor_power": "Motor Power",
+      "electric_heating": "Electric Heating",
+      "steam_consumption": "Steam Consumption",
+      "drying_capacity": "Drying Capacity",
+      "fan_motor_power": "Fan Motor Power",
+      "exhaust": "Exhaust",
+      "drying_time": "Drying Time",
+      "length_of_roller": "Length of Roller",
+      "number_of_roller": "Number of Roller",
+      "cylinder_diameter": "Cylinder Diameter",
+      "wall_thickness": "Wall Thickness of Roller",
+      "cylinder_material": "Cylinder Material",
+      "ironing_speed": "Ironing Speed",
+      "folding_width": "Folding Width",
+      "most_folding_levels": "Most Folding Levels",
+      "inlet_pipe_diameter": "Inlet Pipe Diameter",
+      "inlet_lowest_pressure": "Inlet Lowest Pressure",
+      "air_consumption": "Air Consumption",
+      "maximum_folding_speed": "Maximum Folding Speed",
+      "dimension": "Dimension",
+      "weight": "Weight",
+      "voltage": "Voltage",
+      "material": "Material"
+    },
     "items": {
       "1": {
-        "name": "Automatic Packaging Machines",
-        "category": "Industrial Equipment",
-        "price": "Starting from $15,000",
-        "description": "Integrated production lines for food and liquid packaging with top global quality standards.",
-        "long_description": "We offer the latest automated packaging lines designed to increase production efficiency and reduce waste. These machines feature smart PLC control, touch screens for easy operation, and a durable stainless steel structure ensuring longevity and compliance with global health standards.",
+        "name": "25KG Fully Auto Washer Extractor (High Spin)",
+        "category": "Laundry Equipment",
+        "model": "SWE25S",
+        "price": "US$4,830.00",
+        "description": "High spin 25KG automatic washer extractor.",
+        "long_description": "Fully automatic washer extractor with 25KG capacity, featuring 304 stainless steel drum and advanced frequency control for optimal laundry performance.",
         "features": [
-          "Advanced PLC control system (Siemens/Mitsubishi)",
-          "Adjustable production speed up to 120 packs/min",
-          "High filling accuracy with error less than ±1%",
-          "Easy maintenance and cleaning due to modular design"
+          "France Schneider electric parts",
+          "Germany Suspa dampers",
+          "Sweden SKF bearings",
+          "Japan Nedic inverter",
+          "China top brand Punp computer controller"
         ],
         "specs": {
-          "capacity": { "label": "Capacity", "value": "50 - 120 pcs/min" },
-          "voltage": { "label": "Voltage", "value": "380V / 50Hz / 3Phase" },
-          "material": {
-            "label": "Material",
-            "value": "Stainless Steel 304/316"
-          },
-          "weight": { "label": "Weight", "value": "1200 kg" },
-          "warranty": {
-            "label": "Warranty",
-            "value": "2 Years (Parts included)"
-          }
+          "washing_capacity": "25KG",
+          "drum_volume": "250L",
+          "drum_size": "780*525mm",
+          "material": "Stainless steel 304",
+          "washing_speed": "40RPM",
+          "high_extraction_speed": "860RPM",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "3.5KW",
+          "electric_heating": "18KW",
+          "dimension": "1000*1120*1526mm",
+          "weight": "610KG"
         }
       },
       "2": {
-        "name": "High Efficiency Solar Panels",
-        "category": "Renewable Energy",
-        "price": "Competitive Wholesale Price",
-        "description": "Latest energy-saving solar technologies, ideal for factories and large projects.",
-        "long_description": "Solar panels designed to maximize solar radiation usage even in harsh weather conditions. Utilizing Mono PERC technology to increase efficiency and reduce thermal loss, making them the ideal choice for commercial and industrial projects seeking to cut energy costs.",
+        "name": "50KG Fully Auto Washer Extractor (High Spin)",
+        "category": "Laundry Equipment",
+        "model": "XGQ-50",
+        "price": "US$8,740.00",
+        "description": "Heavy duty 50KG automatic washer extractor.",
+        "long_description": "Heavy duty completely automatic washer extractor with 50KG capacity, ideal for large commercial laundry applications.",
         "features": [
-          "Energy conversion efficiency exceeding 22%",
-          "Excellent performance in high temperatures",
-          "Superior resistance to wind and snow loads",
-          "Tempered glass with anti-reflective and self-cleaning coating"
+          "France Schneider electric parts",
+          "China top brand Punp computer controller"
         ],
         "specs": {
-          "power": { "label": "Max Power", "value": "550 Watt" },
-          "cell_type": {
-            "label": "Cell Type",
-            "value": "Monocrystalline PERC"
-          },
-          "efficiency": { "label": "Efficiency", "value": "22.6%" },
-          "warranty": {
-            "label": "Warranty",
-            "value": "25 Years Linear Performance"
-          },
-          "dimensions": {
-            "label": "Dimensions",
-            "value": "2279 × 1134 × 35 mm"
-          }
+          "washing_capacity": "50KG",
+          "drum_volume": "515L",
+          "drum_size": "1067*576mm",
+          "material": "Stainless steel 304",
+          "washing_speed": "38RPM",
+          "high_extraction_speed": "720RPM",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "7.5KW",
+          "electric_heating": "36KW",
+          "dimension": "1650*1670*1930mm",
+          "weight": "2670KG"
         }
       },
       "3": {
-        "name": "Luxury Sanitary Ware & Ceramic",
-        "category": "Building Materials",
-        "price": "Based on Quantity",
-        "description": "Modern designs and durable materials for heavy use, direct supply from top factories.",
-        "long_description": "A carefully selected collection of sanitary ware, ceramic, and porcelain combining luxury and practicality. We provide Italian and Spanish designs at competitive prices, suitable for residential and hotel projects, with guarantees against corrosion, stains, and for easy cleaning.",
+        "name": "100KG Fully Auto Washer Extractor (High Spin)",
+        "category": "Laundry Equipment",
+        "model": "XGQ-100",
+        "price": "US$11,040.00",
+        "description": "Industrial 100KG automatic washer extractor.",
+        "long_description": "Industrial grade fully automatic washer extractor with 100KG capacity, featuring heavy duty structural frame and high-quality bearings.",
         "features": [
-          "Modern designs following latest decor trends",
-          "Antibacterial and scratch-resistant surface",
-          "Water-saving technologies in mixers and toilets",
-          "Available in Big Slabs for floors"
+          "France Schneider electric parts",
+          "China top brand Punp computer controller"
         ],
         "specs": {
-          "material": {
-            "label": "Material",
-            "value": "High Quality Porcelain / Ceramic"
-          },
-          "origin": {
-            "label": "Origin",
-            "value": "Options available (Italian - Spanish - Premium Chinese)"
-          },
-          "thickness": { "label": "Thickness", "value": "9mm - 12mm" },
-          "resistance": {
-            "label": "Resistance",
-            "value": "Acid and Chemical Resistant"
-          }
+          "washing_capacity": "100 kg",
+          "drum_volume": "1002 liters",
+          "drum_size": "1240 x 830 mm",
+          "material": "Stainless steel 304",
+          "washing_speed": "40 RPM",
+          "high_extraction_speed": "680 RPM",
+          "voltage": "380V, 60 Hz, 3 phases",
+          "motor_power": "11 kW",
+          "steam_consumption": "60 kg",
+          "dimension": "1800 x 2000 x 2250 mm",
+          "weight": "3250 kg"
         }
       },
       "4": {
-        "name": "Eco-friendly Plastic Packaging",
-        "category": "Plastics & Packaging",
-        "price": "Wholesale Orders Only",
-        "description": "Sustainable and biodegradable packaging solutions meeting global environmental standards.",
-        "long_description": "Responding to the growing global demand for sustainability, we provide packaging materials made from bio-plastics that are fully biodegradable. Our products include shopping bags, food containers, and industrial packaging films, maintaining durability and strength.",
+        "name": "25KG Fully Auto Tumble Dryer",
+        "category": "Laundry Equipment",
+        "model": "STD-25",
+        "price": "US$2,760.00",
+        "description": "25KG professional laundry tumble dryer.",
+        "long_description": "Professional quality 25KG tumble dryer built with high efficiency heating elements and optimized airflow for fast drying.",
         "features": [
-          "100% biodegradable within 180 days",
-          "Certified by global environmental bodies (BPI, DIN)",
-          "Food Grade safe",
-          "Printable with eco-friendly water-based inks"
+          "France Schneider electric parts",
+          "China top brand Punp computer controller",
+          "China Top brand FZB bearings"
         ],
         "specs": {
-          "raw_material": {
-            "label": "Raw Material",
-            "value": "PLA + Corn Starch"
-          },
-          "thickness": {
-            "label": "Thickness",
-            "value": "Customizable (10 - 100 micron)"
-          },
-          "transparency": {
-            "label": "Transparency",
-            "value": "Transparent and Opaque options"
-          },
-          "durability": {
-            "label": "Heat Resistance",
-            "value": "Up to 40°C for liquids"
-          }
+          "drying_capacity": "25KG",
+          "drum_volume": "496L",
+          "drum_size": "900*780mm",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "0.37KW",
+          "fan_motor_power": "0.37KW",
+          "electric_heating": "24KW",
+          "exhaust": "200mm",
+          "dimension": "976*1170*1876mm",
+          "weight": "320KG"
         }
       },
       "5": {
-        "name": "LED Lighting for Projects",
-        "category": "Electrical & Lighting",
-        "price": "Ask for Price",
-        "description": "Smart, energy-saving lighting systems for administrative buildings and industrial facilities.",
-        "long_description": "Integrated LED lighting solutions for major projects, from street and stadium lights to office and warehouse lighting. Features up to 80% energy savings compared to traditional lighting, with a long lifespan reducing maintenance costs.",
+        "name": "50KG Fully Auto Tumble Dryer",
+        "category": "Laundry Equipment",
+        "model": "HG-50",
+        "price": "US$4,025.00",
+        "description": "50KG heavy duty laundry tumble dryer.",
+        "long_description": "Heavy duty 50KG tumble dryer with large drum and wide door for easy loading and unloading.",
         "features": [
-          "Lifespan exceeding 50,000 hours",
-          "High Color Rendering Index (CRI) > 85",
-          "Smart Control Capable (Dimmable / Smart IoT)",
-          "Flicker-Free for eye protection"
+          "France Schneider electric parts",
+          "China top brand Punp computer controller",
+          "China Top brand FZB bearings"
         ],
         "specs": {
-          "efficiency": {
-            "label": "Luminous Efficiency",
-            "value": "140 lm/Watt"
-          },
-          "protection": {
-            "label": "Protection Rating",
-            "value": "IP65 / IP67 for Outdoor"
-          },
-          "color_temp": { "label": "Color Temp", "value": "3000K - 6500K" },
-          "beam_angle": {
-            "label": "Beam Angle",
-            "value": "Multiple (60° / 90° / 120°)"
-          }
+          "drying_capacity": "50KG",
+          "drum_volume": "1000L",
+          "drum_size": "1200*880mm",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "1.5KW",
+          "fan_motor_power": "1.1KW",
+          "electric_heating": "36KW",
+          "drying_time": "35-40 minutes",
+          "dimension": "1220*1620*2200mm",
+          "weight": "600KG"
         }
       },
       "6": {
-        "name": "Heavy Equipment Spare Parts",
-        "category": "Industrial Equipment",
-        "price": "Competitive Prices",
-        "description": "Supplying original and equivalent spare parts for top global brands with high delivery accuracy.",
-        "long_description": "We are your trusted partner for supplying heavy equipment spare parts (excavators, loaders, trucks) from global brands like Caterpillar, Komatsu, and Mercedes. We offer OEM and high-quality Aftermarket options to ensure equipment continuity with minimal cost and downtime.",
+        "name": "100KG Fully Auto Tumble Dryer",
+        "category": "Laundry Equipment",
+        "model": "HG-100",
+        "price": "US$4,830.00",
+        "description": "100KG industrial laundry tumble dryer.",
+        "long_description": "Industrial scale 100KG tumble dryer, ideal for high-volume commercial laundries and hospitality sector.",
         "features": [
-          "100% compatibility guarantee with serial numbers",
-          "Fast air freight for urgent orders",
-          "Wide coverage (Engines, Hydraulics, Filters, Tires)",
-          "Competitive prices for annual contracts"
+          "France Schneider electric parts",
+          "China top brand Punp computer controller",
+          "China Top brand FZB bearings"
         ],
         "specs": {
-          "brands": {
-            "label": "Brands",
-            "value": "CAT, Komatsu, Volvo, Hitachi"
-          },
-          "parts_type": {
-            "label": "Parts Type",
-            "value": "Engine Parts, Undercarriage, Hydraulics"
-          },
-          "warranty": {
-            "label": "Warranty",
-            "value": "6 months (Aftermarket) / 1 year (OEM)"
-          },
-          "delivery": {
-            "label": "Lead Time",
-            "value": "7-14 days for Air Freight"
-          }
+          "drying_capacity": "100KG",
+          "drum_volume": "2041L",
+          "drum_size": "1460*1220mm",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "2.2KW",
+          "fan_motor_power": "1.5x2KW",
+          "steam_consumption": "120kg",
+          "drying_time": "35-40 minutes",
+          "dimension": "1620*1950*2550mm",
+          "weight": "1100KG"
+        }
+      },
+      "7": {
+        "name": "1 Roller 3300mm Flatwork Ironer (Electric heated)",
+        "category": "Laundry Equipment",
+        "model": "YPI-3300",
+        "price": "US$5,980.00",
+        "description": "3300mm flatwork ironer with single roller and electric heating.",
+        "long_description": "High-performance flatwork ironer with 3300mm working width and single roller, featuring SUS 304 material and electric heating.",
+        "features": [
+          "France Schneider electric parts",
+          "Korea LS brand inverter",
+          "Front in front out"
+        ],
+        "specs": {
+          "length_of_roller": "3300mm",
+          "number_of_roller": "1",
+          "cylinder_diameter": "800mm",
+          "wall_thickness": "4mm",
+          "cylinder_material": "SUS 304",
+          "ironing_speed": "0-10m/min",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "0.75KW",
+          "electric_heating": "36KW",
+          "dimension": "4540*1200*1300mm",
+          "weight": "1100KG"
+        }
+      },
+      "8": {
+        "name": "2 Rollers 3300mm Flatwork Ironer (Steam heating)",
+        "category": "Laundry Equipment",
+        "model": "YPII-3300",
+        "price": "US$11,270.00",
+        "description": "3300mm flatwork ironer with double rollers and steam heating.",
+        "long_description": "Heavy-duty double roller flatwork ironer, 3300mm width, equipped with advanced steam heating technology for superior crisp finish.",
+        "features": [
+          "France Schneider electric parts",
+          "Korea LS brand inverter"
+        ],
+        "specs": {
+          "length_of_roller": "3300mm",
+          "number_of_roller": "2",
+          "cylinder_diameter": "800mm",
+          "material": "SUS304 cylinder and shaft",
+          "ironing_speed": "≤15m/min",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "1.5KW",
+          "steam_consumption": "220kg/h",
+          "dimension": "4540*2600*1300mm",
+          "weight": "2300KG"
+        }
+      },
+      "9": {
+        "name": "4 Lanes 3300mm Fast Speed Bedsheets Folder",
+        "category": "Laundry Equipment",
+        "model": "ZD-3300-4",
+        "price": "US$15,180.00",
+        "description": "High speed bedsheets folder with 4 folding lanes.",
+        "long_description": "Automated high-speed bedsheet folding machine with 3300mm folding width and up to 4 lanes, significantly increasing output efficiency.",
+        "features": [
+          "Computer controller brand: Japan Mitsubishi",
+          "Inverter brand: France Schneider",
+          "Electric parts: France Schneider and Japan Mitsubishi",
+          "Pnuematic valves: Japan SMC"
+        ],
+        "specs": {
+          "folding_width": "3300mm",
+          "most_folding_levels": "5/32",
+          "inlet_pipe_diameter": "12mm",
+          "inlet_lowest_pressure": "0.7Mpa",
+          "air_consumption": "12m³/h",
+          "voltage": "380V, 60HZ, 3 Phases",
+          "motor_power": "2KW",
+          "maximum_folding_speed": "60m/min",
+          "dimension": "4350*3200*1780mm",
+          "weight": "1800KG"
         }
       }
     }
   },
   "articles": {
     "1": {
-      "title": "Top Scams in Importing from China & How to Protect Yourself",
-      "snippet": "Learn about the most common fraud methods in importing from China and what you can do to avoid losses..."
+      "title": "Canton Fair Guide",
+      "snippet": "Everything you need to know..."
     },
     "2": {
-      "title": "Secrets of Successful Negotiation with Chinese Factories",
-      "snippet": "Practical tips from our experts on negotiating prices and terms with Chinese factories and building long-term relationships..."
+      "title": "Air vs Sea Freight",
+      "snippet": "Comprehensive comparison..."
     },
     "3": {
-      "title": "Canton Fair Guide: What to Know Before You Go",
-      "snippet": "Everything you need to know before attending the Canton Fair: Timing, Registration, Best Lanes, and Negotiation Tips..."
+      "title": "Future of Trade",
+      "snippet": "2024 Trends..."
     }
   },
   "products_page": {
@@ -410,160 +505,6 @@
       "button": "Free Sourcing Consultation"
     }
   },
-  "products": {
-    "not_found": "Product Not Found",
-    "back_to_products": "Back to Products",
-    "have_question": "Have a question about this product?",
-    "consultant_ready": "Our consultant is ready to answer all your import inquiries.",
-    "chat_whatsapp": "Chat with an Expert on WhatsApp",
-    "whatsapp_inquiry": "Hi, I have an inquiry regarding product",
-    "overview": "Product Overview",
-    "estimated_price": "Estimated Price",
-    "key_features": "Key Features",
-    "technical_specs": "Technical Specifications",
-    "related_products": "Related Products",
-    "specs_labels": {
-      "capacity": "Capacity",
-      "voltage": "Voltage",
-      "material": "Material",
-      "weight": "Weight",
-      "power": "Power",
-      "cell_type": "Cell Type",
-      "efficiency": "Efficiency",
-      "warranty": "Warranty",
-      "dimensions": "Dimensions",
-      "origin": "Origin",
-      "thickness": "Thickness",
-      "resistance": "Resistance",
-      "raw_material": "Raw Material",
-      "transparency": "Transparency",
-      "durability": "Durability",
-      "protection": "Protection",
-      "color_temp": "Color Temp",
-      "beam_angle": "Beam Angle",
-      "brands": "Brands",
-      "parts_type": "Parts Type",
-      "delivery": "Delivery"
-    },
-    "items": {
-      "1": {
-        "name": "Li-ion Batteries 18650",
-        "category": "Electronics",
-        "price": "From $1.20 / pc",
-        "description": "High-capacity battery cells suitable for various electronic devices and power banks, direct from top factories.",
-        "long_description": "These 18650 Lithium-ion batteries are manufactured to the highest safety and performance standards. Ideal for custom battery pack assembly, high-power flashlights, EVs, and energy storage systems.",
-        "features": [
-          "Long Cycle Life: > 500 cycles",
-          "Built-in Overcharge Protection",
-          "Low Internal Resistance",
-          "CE & RoHS Certified"
-        ],
-        "specs": {
-          "capacity": "2600mAh - 3500mAh",
-          "voltage": "3.7V Nominal",
-          "material": "Li-ion",
-          "weight": "45g",
-          "warranty": "12 Months"
-        }
-      },
-      "2": {
-        "name": "Monocrystalline Solar Panels 550W",
-        "category": "Renewable Energy",
-        "price": "From $0.18 / Watt",
-        "description": "High-efficiency solar modules for commercial and residential projects with 25-year performance warranty.",
-        "long_description": "Our Monocrystalline Solar Panels deliver maximum power output even in low-light conditions. Engineered with half-cell technology for reduced losses and increased durability.",
-        "features": [
-          "High Conversion Efficiency 21.5%",
-          "Half-Cell Technology",
-          "Excellent Low-Light Performance",
-          "Heavy Mechanical Load Tolerance"
-        ],
-        "specs": {
-          "power": "550 Watt",
-          "cell_type": "Monocrystalline (Mono PERC)",
-          "efficiency": "21.5%",
-          "warranty": "25 Years Performance",
-          "dimensions": "2279x1134x35 mm"
-        }
-      },
-      "3": {
-        "name": "Luxury SPC Flooring",
-        "category": "Building Materials",
-        "price": "From $4.50 / m2",
-        "description": "Waterproof and highly durable flooring in various wood and stone designs, perfect for commercial projects.",
-        "long_description": "SPC (Stone Polymer Composite) flooring combines the strength of stone with the beauty of wood. 100% waterproof, slip-resistant, and suitable for high-traffic areas.",
-        "features": [
-          "100% Waterproof",
-          "Easy Installation (Click System)",
-          "Scratch & Wear Resistant",
-          "Eco-friendly & Formaldehyde-free"
-        ],
-        "specs": {
-          "material": "Stone Plastic Composite (SPC)",
-          "origin": "China",
-          "thickness": "4mm + 1mm Underlay",
-          "resistance": "Commercial Wear Class"
-        }
-      },
-      "4": {
-        "name": "Clear Tempered Glass",
-        "category": "Building Materials",
-        "price": "From $8.00 / m2",
-        "description": "High-quality safety glass for windows, doors, and facades, available in custom thicknesses and sizes.",
-        "long_description": "Tempered glass is thermally treated to increase its strength and resistance to thermal shock. In case of breakage, it shatters into small blunt pieces to minimize injury risk.",
-        "features": [
-          "5x Stronger than Ordinary Glass",
-          "High Heat Resistance",
-          "Custom Edging & Drilling",
-          "International Standards Compliant"
-        ],
-        "specs": {
-          "raw_material": "High Quality Float Glass",
-          "thickness": "4mm - 19mm",
-          "transparency": "High Light Transmission",
-          "durability": "Impact Resistant"
-        }
-      },
-      "5": {
-        "name": "LED Warehouse Lighting (High Bay)",
-        "category": "Lighting",
-        "price": "From $25.00 / pc",
-        "description": "Energy-efficient industrial lighting solutions for warehouses and factories with high ceilings.",
-        "long_description": "UFO LED High Bay lights provide bright and uniform illumination for large spaces. Featuring die-cast aluminum housing for efficient heat dissipation and long lifespan.",
-        "features": [
-          "Energy Saving up to 80%",
-          "Lifespan > 50,000 Hours",
-          "IP65 Rated (Waterproof & Dustproof)",
-          "5 Years Warranty"
-        ],
-        "specs": {
-          "efficiency": "150 lm/W",
-          "protection": "IP65",
-          "color_temp": "3000K - 6500K",
-          "beam_angle": "60° / 90° / 120°"
-        }
-      },
-      "6": {
-        "name": "OEM Auto Parts",
-        "category": "Automotive",
-        "price": "On Request",
-        "description": "Supply of genuine and spec-compliant spare parts for major global car brands.",
-        "long_description": "We specialize in wholesale supply of automotive spare parts, including engine components, suspension, brakes, and electrical parts. Ensuring quality and perfect fit.",
-        "features": [
-          "OEM Quality Standard",
-          "Wide Model Coverage",
-          "Competitive Prices for Bulk Orders",
-          "Strict Quality Inspection"
-        ],
-        "specs": {
-          "brands": "Toyota, Honda, Nissan, and more",
-          "parts_type": "Mechanical, Body, Electrical",
-          "warranty": "Depends on part type",
-          "delivery": "Sea / Air Freight"
-        }
-      }
-    }
-  },
   "services_page": {
     "hero": {
       "label": "Our Services",
@@ -592,17 +533,6 @@
         "desc": "High Efficiency"
       }
     }
-  },
-  "articles": {
-    "1": {
-      "title": "Canton Fair Guide",
-      "snippet": "Everything you need to know..."
-    },
-    "2": {
-      "title": "Air vs Sea Freight",
-      "snippet": "Comprehensive comparison..."
-    },
-    "3": { "title": "Future of Trade", "snippet": "2024 Trends..." }
   },
   "how_it_works": {
     "hero": {

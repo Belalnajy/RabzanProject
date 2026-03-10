@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/layout/Navbar';
-import { PORTFOLIO_PROJECTS } from '../constants/content';
+import { PORTFOLIO_PROJECTS, CONTACT_INFO } from '../constants/content';
 import {
   FadeIn,
   StaggerContainer,
@@ -164,13 +164,19 @@ const Portfolio = () => {
             <p className="text-xl text-slate-400 mb-16 max-w-2xl mx-auto leading-relaxed">
               {t('portfolio_page.cta.description')}
             </p>
-            <button className="bg-secondary-green hover:bg-secondary-green-light text-white px-20 py-6 rounded-2xl font-black text-2xl shadow-2xl shadow-secondary-green/20 transition-all hover:-translate-y-2 active:scale-95 flex items-center justify-center gap-6 mx-auto group">
+            <a
+              href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
+                t('portfolio_page.cta.title'),
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-secondary-green hover:bg-secondary-green-light text-white px-20 py-6 rounded-2xl font-black text-2xl shadow-2xl shadow-secondary-green/20 transition-all hover:-translate-y-2 active:scale-95 flex items-center justify-center gap-6 mx-auto group w-fit">
               <span>{t('portfolio_page.cta.button')}</span>
               <ArrowUpLeft
                 size={32}
                 className={`transition-transform ${isRTL ? 'group-hover:translate-x-2 group-hover:-translate-y-2 rotate-90' : 'group-hover:-translate-x-2 group-hover:-translate-y-2'}`}
               />
-            </button>
+            </a>
           </FadeIn>
         </div>
       </section>

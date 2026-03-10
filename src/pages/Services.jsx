@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../components/layout/Navbar';
-import { SERVICES } from '../constants/content';
+import { SERVICES, CONTACT_INFO } from '../constants/content';
 import {
   FadeIn,
   StaggerContainer,
@@ -194,12 +194,18 @@ const Services = () => {
                         ))}
                     </ul>
 
-                    <button className="btn-premium py-6 px-12 group shadow-[0_20px_50px_rgba(0,51,102,0.15)]">
+                    <a
+                      href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
+                        `${t('services_page.cta')}: ${t(service.title)}`,
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-premium py-6 px-12 group shadow-[0_20px_50px_rgba(0,51,102,0.15)]">
                       <span>{t('services_page.cta')}</span>
                       <ArrowUpLeft
                         className={`transition-transform ${isRTL ? 'group-hover:-translate-x-1 group-hover:-translate-y-1' : 'group-hover:translate-x-1 group-hover:-translate-y-1 rotate-90'}`}
                       />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </FadeIn>

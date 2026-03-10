@@ -106,9 +106,7 @@ const ProductDetails = () => {
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             {/* Right Column - Images/Visuals */}
-            <FadeIn
-              direction={isRTL ? 'right' : 'left'}
-              className={isRTL ? 'lg:order-1' : 'lg:order-2'}>
+            <FadeIn direction={isRTL ? 'left' : 'right'} className="lg:order-2">
               <div className="sticky top-24 space-y-8">
                 <div className="rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 group">
                   <motion.img
@@ -142,9 +140,8 @@ const ProductDetails = () => {
             </FadeIn>
 
             {/* Left Column - Details */}
-            <div
-              className={`space-y-12 ${isRTL ? 'lg:order-2' : 'lg:order-1'}`}>
-              <FadeIn direction={isRTL ? 'left' : 'right'}>
+            <div className="space-y-12 lg:order-1">
+              <FadeIn direction={isRTL ? 'right' : 'left'}>
                 {/* Description */}
                 <div>
                   <h2 className="text-3xl font-black text-primary-navy mb-6">
