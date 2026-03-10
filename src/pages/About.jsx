@@ -120,7 +120,7 @@ const About = () => {
                     ease: 'easeInOut',
                   }}
                   className={`absolute top-20 ${isRTL ? '-right-12' : '-left-12'} dark-glass p-8 rounded-3xl max-w-xs z-20`}>
-                  <Logo size={60} light />
+                  <Logo size={80} light />
                   <h3 className="text-white text-xl font-bold mt-6 mb-2">
                     {t('about_page.story.legacy_title')}
                   </h3>

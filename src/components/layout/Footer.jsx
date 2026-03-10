@@ -35,7 +35,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-6">
-              <Logo light={true} size={40} />
+              <Logo light={true} size={60} />
             </Link>
             <p className="text-slate-400 leading-relaxed mb-8">
               {t('home.hero.subtitle')}

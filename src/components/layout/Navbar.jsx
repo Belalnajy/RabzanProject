@@ -66,20 +66,20 @@ const Navbar = () => {
             isScrolled
               ? 'bg-white/85 backdrop-blur-2xl border border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.08)]'
               : 'bg-transparent border-transparent'
-          }`}>
+          } ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
           {/* Logo */}
           <Link to="/" className="relative z-50">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
-              <Logo light={!isScrolled} size={40} />
+              <Logo light={!isScrolled} size={70} />
             </motion.div>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
-            {NAV_LINKS.map((link, idx) => (
+            {(isRTL ? [...NAV_LINKS].reverse() : NAV_LINKS).map((link, idx) => (
               <motion.div
                 key={link.name}
                 initial={{ opacity: 0, y: -10 }}
@@ -98,7 +98,7 @@ const Navbar = () => {
 
                 {/* Animated Underline */}
                 <motion.span
-                  className={`absolute bottom-0 right-0 h-0.5 rounded-full ${
+                  className={`absolute bottom-0 ${isRTL ? 'right-0' : 'left-0'} h-0.5 rounded-full ${
                     isScrolled ? 'bg-secondary-green' : 'bg-accent-gold'
                   }`}
                   initial={{ width: 0 }}
@@ -117,7 +117,8 @@ const Navbar = () => {
           </div>
 
           {/* Actions */}
-          <div className="hidden lg:flex items-center gap-5">
+          <div
+            className={`hidden lg:flex items-center gap-5 ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
             <motion.div
               whileHover={{ scale: 1.05 }}
               onClick={toggleLanguage}
@@ -138,13 +139,13 @@ const Navbar = () => {
                   isScrolled
                     ? 'bg-primary-blue text-white shadow-lg shadow-primary-blue/20'
                     : 'bg-white text-primary-blue hover:bg-slate-50'
-                }`}>
+                } ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
                 {/* Shimmer Effect */}
                 <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 <span className="relative">{t('nav.contact')}</span>
                 <ArrowLeft
                   size={16}
-                  className="relative group-hover:-translate-x-1 transition-transform"
+                  className={`relative transition-transform ${isRTL ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1 rotate-180'}`}
                 />
               </motion.div>
             </Link>

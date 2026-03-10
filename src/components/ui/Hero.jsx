@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { Link } from 'react-router-dom';
+
 const Hero = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
@@ -161,68 +163,6 @@ const Hero = () => {
       </div>
 
       {/* Image Navigation Controls */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-30 flex justify-between px-4 md:px-8 pointer-events-none">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={goToPrev}
-          className="pointer-events-auto w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/20 hover:text-white transition-all duration-300 group">
-          <ChevronRight
-            size={24}
-            className={`transition-transform ${isRTL ? 'group-hover:translate-x-0.5' : 'group-hover:translate-x-0.5 rotate-180'}`} // In RTL right arrow goes next (physically left?), wait. Usually standard arrows: Right Arrow -> Next. Left Arrow -> Prev. In RTL, "Next" creates a movement to the LEFT. So Right Arrow might mean "Go Right" (Previous in RTL time? or Next?). Usually UI arrows are: < (Next/Prev depending on dir) >. Let's stick to standard icon flipping if needed.
-            // Actually, ChevronRight points Right. ChevronLeft points Left.
-            // In LTR: Next is Right (>). Prev is Left (<).
-            // In RTL: Next is usually Left (<). Prev is Right (>).
-            // So we should Swap icons or rotate them.
-            // Let's use dynamic rotation for consistency.
-            // goToPrev button usually on Left side of screen. goToNext on Right side.
-            // In LTR: Left Button (<), Right Button (>).
-            // In RTL: Right Button (>), Left Button (<).
-            // Wait, the physical position is "inset-x-0 flex justify-between".
-            // So one button is on start (left in LTR, right in RTL?), one on end (right in LTR, left in RTL?).
-            // justify-between: Start item, End item.
-            // LTR: Start=Left, End=Right.
-            // RTL: Start=Right, End=Left.
-            // So:
-            // Button 1 (goToPrev): Start.
-            // Button 2 (goToNext): End.
-
-            // In LTR: Button 1 (Left) is Prev (<). Button 2 (Right) is Next (>).
-            // In RTL: Button 1 (Right) is Prev (>). Button 2 (Left) is Next (<).
-
-            // So current code:
-            // Button 1: ChevronRight? No, usually Left (<).
-            // Code says Button 1 has ChevronRight... wait.
-            // Original Code:
-            /*
-               <motion.button onClick={goToPrev}> <ChevronRight /> </motion.button>
-               <motion.button onClick={goToNext}> <ChevronLeft /> </motion.button> 
-             */
-            // That seems backward for LTR? Usually Right > is Next.
-            // Let's check visually.
-            // Prev is usually left. Next is usually right.
-            // If Button 1 is Prev, it should have ChevronLeft.
-            // If Button 2 is Next, it should have ChevronRight.
-            // The original code had Button 1 = Prev = ChevronRight? That's weird unless styled to be on right?
-            // "flex justify-between". First child is Left/Start. Second child is Right/End.
-
-            // Let's assume standard behavior:
-            // Start (Left LTR): Prev (<)
-            // End (Right LTR): Next (>)
-            // In RTL:
-            // Start (Right): Prev (>)
-            // End (Left): Next (<)
-
-            // So: use proper icons + rotation.
-          />
-        </motion.button>
-        {/* Wait, I should just fix the icons to make sense. */}
-      </div>
-      {/* Actually, I will leave logic as is but just translate text. Layout direction handles 'start/end'. */}
-
-      {/* Let's restart the return block for clarity in replacement */}
-      {/* ... */}
-
       <div
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-30 flex justify-between px-4 md:px-8 pointer-events-none"
         dir="ltr">
@@ -325,31 +265,35 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
               className="flex flex-col sm:flex-row gap-8">
-              <motion.button
-                whileHover={{ scale: 1.02, y: -4 }}
-                whileTap={{ scale: 0.98 }}
-                className="btn-gold px-8 sm:px-12 py-4 sm:py-6 group shadow-[0_10px_40px_rgba(212,175,55,0.3)] w-full sm:w-auto justify-center">
-                <span className="text-lg sm:text-xl">
-                  {t('home_page.hero.cta_contact')}
-                </span>
-                <ArrowLeft
-                  size={20}
-                  className={`transition-transform ${isRTL ? 'group-hover:translate-x-2 rotate-180' : 'group-hover:-translate-x-2'}`}
-                />
-              </motion.button>
+              <Link to="/contact" className="w-full sm:w-auto">
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-gold px-8 sm:px-12 py-4 sm:py-6 group shadow-[0_10px_40px_rgba(212,175,55,0.3)] w-full justify-center">
+                  <span className="text-lg sm:text-xl">
+                    {t('home_page.hero.cta_contact')}
+                  </span>
+                  <ArrowLeft
+                    size={20}
+                    className={`transition-transform ${isRTL ? 'group-hover:-translate-x-2' : 'group-hover:translate-x-2 rotate-180'}`}
+                  />
+                </motion.button>
+              </Link>
 
-              <motion.button
-                whileHover={{ scale: 1.02, y: -4 }}
-                whileTap={{ scale: 0.98 }}
-                className="btn-premium bg-white/5 hover:bg-white/10 text-white border border-white/20 px-8 sm:px-12 py-4 sm:py-6 backdrop-blur-md group w-full sm:w-auto justify-center">
-                <span className="text-lg sm:text-xl">
-                  {t('home_page.hero.cta_methodology')}
-                </span>
-                <Zap
-                  size={20}
-                  className="text-accent-gold group-hover:scale-125 transition-transform"
-                />
-              </motion.button>
+              <Link to="/how-it-works" className="w-full sm:w-auto">
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-premium bg-white/5 hover:bg-white/10 text-white border border-white/20 px-8 sm:px-12 py-4 sm:py-6 backdrop-blur-md group w-full justify-center">
+                  <span className="text-lg sm:text-xl">
+                    {t('home_page.hero.cta_methodology')}
+                  </span>
+                  <Zap
+                    size={20}
+                    className="text-accent-gold group-hover:scale-125 transition-transform"
+                  />
+                </motion.button>
+              </Link>
             </motion.div>
 
             {/* Premium Trust Badges with Enhanced Animation */}

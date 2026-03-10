@@ -396,25 +396,29 @@ const Home = () => {
 
                 <div
                   className={`flex flex-col ${isRTL ? 'sm:flex-row-reverse' : 'sm:flex-row'} gap-6 items-center`}>
-                  <motion.button
-                    whileHover={{ scale: 1.02, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="btn-premium py-6 px-12 group shadow-xl w-full sm:w-auto">
-                    <span>{t('home_page.about_section.cta_more')}</span>
-                    <ArrowUpLeft
-                      size={20}
-                      className={isRTL ? '' : 'rotate-90'}
-                    />
-                  </motion.button>
+                  <Link to="/about" className="w-full sm:w-auto">
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="btn-premium py-6 px-12 group shadow-xl w-full">
+                      <span>{t('home_page.about_section.cta_more')}</span>
+                      <ArrowUpLeft
+                        size={20}
+                        className={isRTL ? '' : 'rotate-90'}
+                      />
+                    </motion.button>
+                  </Link>
 
-                  <div className="flex items-center gap-4 text-slate-400 group cursor-pointer hover:text-primary-navy transition-colors">
+                  <Link
+                    to="/about"
+                    className="flex items-center gap-4 text-slate-400 group cursor-pointer hover:text-primary-navy transition-colors">
                     <span className="text-sm font-black uppercase tracking-widest leading-none border-b border-transparent group-hover:border-primary-navy transition-all pb-1">
                       {t('home_page.about_section.cta_story')}
                     </span>
                     <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-slate-50 transition-colors">
                       <ArrowRight size={16} />
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </FadeIn>
             </div>
@@ -549,16 +553,18 @@ const Home = () => {
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 lg:px-10 py-4 rounded-full border-2 border-primary-navy text-primary-navy font-black hover:bg-primary-navy hover:text-white transition-all duration-300 text-sm tracking-widest uppercase flex items-center gap-3 group">
-                <span>{t('home_page.portfolio_section.cta')}</span>
-                <ArrowRight
-                  size={18}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </motion.button>
+              <Link to="/portfolio">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 lg:px-10 py-4 rounded-full border-2 border-primary-navy text-primary-navy font-black hover:bg-primary-navy hover:text-white transition-all duration-300 text-sm tracking-widest uppercase flex items-center gap-3 group">
+                  <span>{t('home_page.portfolio_section.cta')}</span>
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </motion.button>
+              </Link>
             </FadeIn>
           </div>
 
@@ -566,37 +572,43 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
               {PORTFOLIO_PROJECTS.map((project, idx) => (
                 <StaggerItem key={project.id}>
-                  <motion.div
-                    whileHover={{ y: -12 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className="group relative overflow-hidden rounded-[2.5rem] bg-white shadow-xl hover:shadow-[0_48px_80px_-16px_rgba(0,0,0,0.12)] transition-all duration-700">
-                    <div className="aspect-[4/5] overflow-hidden">
-                      <motion.img
-                        whileHover={{ scale: 1.08 }}
-                        transition={{ duration: 0.7 }}
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-linear-to-t from-primary-navy via-primary-navy/30 to-transparent opacity-80" />
+                  <Link to="/portfolio">
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      className="absolute top-8 lg:top-10 right-8 lg:right-10">
-                      <span className="bg-white/10 backdrop-blur-xl text-white px-5 lg:px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/20">
-                        {project.category}
-                      </span>
+                      whileHover={{ y: -12 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 20,
+                      }}
+                      className="group relative overflow-hidden rounded-[2.5rem] bg-white shadow-xl hover:shadow-[0_48px_80px_-16px_rgba(0,0,0,0.12)] transition-all duration-700">
+                      <div className="aspect-[4/5] overflow-hidden">
+                        <motion.img
+                          whileHover={{ scale: 1.08 }}
+                          transition={{ duration: 0.7 }}
+                          src={project.image}
+                          alt={t(project.title)}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-linear-to-t from-primary-navy via-primary-navy/30 to-transparent opacity-80" />
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="absolute top-8 lg:top-10 right-8 lg:right-10">
+                        <span className="bg-white/10 backdrop-blur-xl text-white px-5 lg:px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/20">
+                          {t(project.category)}
+                        </span>
+                      </motion.div>
+                      <div className="absolute bottom-0 right-0 left-0 p-8 lg:p-12 text-white">
+                        <h3 className="text-2xl lg:text-3xl font-black mb-4">
+                          {t(project.title)}
+                        </h3>
+                        <p className="text-sm lg:text-base text-slate-300 opacity-0 group-hover:opacity-100 transform translate-y-6 group-hover:translate-y-0 transition-all duration-500 font-medium">
+                          {t(project.description)}
+                        </p>
+                      </div>
                     </motion.div>
-                    <div className="absolute bottom-0 right-0 left-0 p-8 lg:p-12 text-white">
-                      <h3 className="text-2xl lg:text-3xl font-black mb-4">
-                        {project.title}
-                      </h3>
-                      <p className="text-sm lg:text-base text-slate-300 opacity-0 group-hover:opacity-100 transform translate-y-6 group-hover:translate-y-0 transition-all duration-500 font-medium">
-                        {project.description}
-                      </p>
-                    </div>
-                  </motion.div>
+                  </Link>
                 </StaggerItem>
               ))}
             </div>
@@ -626,12 +638,8 @@ const Home = () => {
               </h2>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <button
-                onClick={() =>
-                  document
-                    .getElementById('articles')
-                    .scrollIntoView({ behavior: 'smooth' })
-                }
+              <Link
+                to="/contact"
                 className="hidden md:flex items-center gap-3 text-primary-navy font-black hover:text-accent-gold transition-colors group">
                 <span className="border-b-2 border-primary-navy group-hover:border-accent-gold transition-colors pb-1">
                   {t('home_page.articles_section.view_all')}
@@ -640,7 +648,7 @@ const Home = () => {
                   size={20}
                   className="group-hover:translate-x-1 transition-transform"
                 />
-              </button>
+              </Link>
             </FadeIn>
           </div>
 
@@ -674,13 +682,15 @@ const Home = () => {
                       <p className="text-slate-600 text-lg leading-relaxed mb-8 line-clamp-3 font-medium">
                         {t(article.snippet)}
                       </p>
-                      <button className="flex items-center gap-2 text-primary-navy font-black text-sm group/btn group-hover:text-accent-gold transition-colors">
+                      <Link
+                        to="/contact"
+                        className="flex items-center gap-2 text-primary-navy font-black text-sm group/btn group-hover:text-accent-gold transition-colors">
                         <span>{t('home_page.articles_section.read_more')}</span>
                         <ArrowUpLeft
                           size={16}
                           className={`transition-transform ${isRTL ? 'group-hover/btn:-translate-x-1 group-hover/btn:-translate-y-1' : 'group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 rotate-90'}`}
                         />
-                      </button>
+                      </Link>
                     </div>
                   </motion.article>
                 </StaggerItem>
@@ -689,10 +699,12 @@ const Home = () => {
           </StaggerContainer>
 
           <FadeIn className="text-center md:hidden">
-            <button className="btn-premium w-full py-6">
-              <span>{t('home_page.articles_section.mobile_view_all')}</span>
-              <ArrowRight />
-            </button>
+            <Link to="/contact">
+              <button className="btn-premium w-full py-6">
+                <span>{t('home_page.articles_section.mobile_view_all')}</span>
+                <ArrowRight />
+              </button>
+            </Link>
           </FadeIn>
         </div>
       </section>
