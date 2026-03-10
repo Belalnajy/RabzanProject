@@ -85,7 +85,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative h-screen min-h-[850px] flex items-center overflow-hidden mesh-bg-dark">
+    <section className="relative h-screen min-h-[700px] sm:min-h-[850px] flex items-center overflow-hidden mesh-bg-dark">
       {/* Cinematic Background with Image Slider */}
       <motion.div style={{ y: y1, scale }} className="absolute inset-0 z-0">
         {/* Overlay Gradients - Made Lighter */}
@@ -271,7 +271,7 @@ const Hero = () => {
       </div>
 
       <div className="container relative z-20">
-        <div className="max-w-5xl mt-40">
+        <div className="max-w-5xl mt-20 sm:mt-40">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -286,12 +286,12 @@ const Hero = () => {
                 transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}>
                 <Globe className="text-secondary-green" size={16} />
               </motion.div>
-              <span className="tracking-[0.1em] uppercase ">
+              <span className="tracking-[0.1em] uppercase text-xs sm:text-sm">
                 {t('home_page.hero.badge')}
               </span>
             </motion.div>
 
-            <h1 className="text-7xl md:text-9xl font-black text-white leading-[1.2] mb-20">
+            <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white leading-[1.2] mb-10 sm:mb-20">
               <span className="block mb-4 overflow-hidden">
                 <motion.span
                   initial={{ y: '100%' }}
@@ -316,7 +316,7 @@ const Hero = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.8 }}
-              className="text-xl md:text-3xl text-slate-300/80 max-w-3xl leading-10 mb-16 font-medium">
+              className="text-lg sm:text-xl md:text-3xl text-slate-300/80 max-w-3xl leading-relaxed sm:leading-10 mb-10 sm:mb-16 font-medium">
               {t('home_page.hero.description')}
             </motion.p>
 
@@ -328,12 +328,12 @@ const Hero = () => {
               <motion.button
                 whileHover={{ scale: 1.02, y: -4 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-gold px-12 py-6 group shadow-[0_10px_40px_rgba(212,175,55,0.3)]">
-                <span className="text-xl">
+                className="btn-gold px-8 sm:px-12 py-4 sm:py-6 group shadow-[0_10px_40px_rgba(212,175,55,0.3)] w-full sm:w-auto justify-center">
+                <span className="text-lg sm:text-xl">
                   {t('home_page.hero.cta_contact')}
                 </span>
                 <ArrowLeft
-                  size={24}
+                  size={20}
                   className={`transition-transform ${isRTL ? 'group-hover:translate-x-2 rotate-180' : 'group-hover:-translate-x-2'}`}
                 />
               </motion.button>
@@ -341,19 +341,19 @@ const Hero = () => {
               <motion.button
                 whileHover={{ scale: 1.02, y: -4 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-premium bg-white/5 hover:bg-white/10 text-white border border-white/20 px-12 py-6 backdrop-blur-md group">
-                <span className="text-xl">
+                className="btn-premium bg-white/5 hover:bg-white/10 text-white border border-white/20 px-8 sm:px-12 py-4 sm:py-6 backdrop-blur-md group w-full sm:w-auto justify-center">
+                <span className="text-lg sm:text-xl">
                   {t('home_page.hero.cta_methodology')}
                 </span>
                 <Zap
-                  size={22}
+                  size={20}
                   className="text-accent-gold group-hover:scale-125 transition-transform"
                 />
               </motion.button>
             </motion.div>
 
             {/* Premium Trust Badges with Enhanced Animation */}
-            <div className="mt-28 flex flex-wrap gap-12 border-t border-white/5 pt-12">
+            <div className="mt-16 sm:mt-28 flex flex-wrap gap-6 sm:gap-12 border-t border-white/5 pt-8 sm:pt-12">
               {[
                 {
                   icon: ShieldCheck,

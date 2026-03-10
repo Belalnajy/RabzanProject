@@ -12,6 +12,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeHover, setActiveHover] = useState(null);
   const location = useLocation();
+  const isRTL = i18n.dir() === 'rtl';
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'ar' ? 'en' : 'ar';
@@ -167,7 +168,7 @@ const Navbar = () => {
                   animate={{ rotate: 0, opacity: 1 }}
                   exit={{ rotate: 90, opacity: 0 }}
                   transition={{ duration: 0.2 }}>
-                  <X size={24} />
+                  <X size={20} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -222,19 +223,30 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     onClick={() => setIsMenuOpen(false)}
-                    className={`text-4xl sm:text-5xl font-black transition-all duration-300 block ${
+                    className={`text-3xl sm:text-4xl font-black transition-all duration-300 block ${
                       location.pathname === link.path
                         ? 'text-accent-gold'
                         : 'text-white hover:text-secondary-green-light'
                     }`}>
                     <motion.span
-                      whileHover={{ x: -10 }}
+                      whileHover={{ x: isRTL ? 10 : -10 }}
                       className="inline-block">
                       {t(link.name)}
                     </motion.span>
                   </Link>
                 </motion.div>
               ))}
+
+              {/* Mobile Language Toggle */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 }}
+                onClick={toggleLanguage}
+                className="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/10 text-white font-bold cursor-pointer hover:bg-white/20 transition-all">
+                <Globe size={18} />
+                <span>{i18n.language === 'ar' ? 'English' : 'العربية'}</span>
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
