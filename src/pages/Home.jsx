@@ -501,7 +501,7 @@ const Home = () => {
                         </div>
 
                         <a
-                          href={`https://wa.me/966537888046?text=${encodeURIComponent(
+                          href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
                             `${t('home_page.featured_products.whatsapp_msg_prefix')}: ${t(product.name)}`,
                           )}`}
                           target="_blank"
@@ -726,7 +726,7 @@ const Home = () => {
                   {[
                     {
                       icon: Zap,
-                      value: '966-537888046',
+                      value: CONTACT_INFO.phone,
                       label: t(
                         'home_page.contact_section.contact_methods.phone',
                       ),
@@ -734,7 +734,7 @@ const Home = () => {
                     },
                     {
                       icon: MessageCircle,
-                      value: '966-537888046',
+                      value: CONTACT_INFO.phone,
                       label: t(
                         'home_page.contact_section.contact_methods.whatsapp',
                       ),
@@ -742,7 +742,7 @@ const Home = () => {
                     },
                     {
                       icon: Mail,
-                      value: 'Info@rabzan.com',
+                      value: CONTACT_INFO.email,
                       label: t(
                         'home_page.contact_section.contact_methods.email',
                       ),

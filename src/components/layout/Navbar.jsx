@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, ArrowLeft, Globe, Sparkles } from 'lucide-react';
 import Logo from '../ui/Logo';
-import { NAV_LINKS } from '../../constants/content';
+import { NAV_LINKS, CONTACT_INFO } from '../../constants/content';
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
@@ -97,7 +97,7 @@ const Navbar = () => {
 
                 {/* Animated Underline */}
                 <motion.span
-                  className={`absolute -bottom-0 right-0 h-0.5 rounded-full ${
+                  className={`absolute bottom-0 right-0 h-0.5 rounded-full ${
                     isScrolled ? 'bg-secondary-green' : 'bg-accent-gold'
                   }`}
                   initial={{ width: 0 }}
@@ -268,8 +268,8 @@ const Navbar = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
                 className="mt-12 text-center text-white/40 text-sm">
-                <p className="font-bold">info@rabzan.com</p>
-                <p className="mt-1">+966 537 888 046</p>
+                <p className="font-bold">{CONTACT_INFO.email}</p>
+                <p className="mt-1">{CONTACT_INFO.phone}</p>
               </motion.div>
             </div>
           </motion.div>

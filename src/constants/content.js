@@ -382,10 +382,11 @@ export const PRODUCTS = [
 ];
 
 export const CONTACT_INFO = {
-  email: 'info@rabzan.com',
-  phone: '966537888046',
-  address: 'المملكة العربية السعودية، الرياض',
-  whatsapp: '966537888046',
+  email: 'Sales@rabzan.com',
+  phone: '+8618427306347',
+  address:
+    'Office 601, Sanrong Building No 47.Luyuan Road Yuexiu District, Guangzhou, China',
+  whatsapp: '8618427306347',
   socials: [
     { name: 'contact.socials.linkedin', url: '#', icon: 'linkedin' },
     { name: 'contact.socials.twitter', url: '#', icon: 'twitter' },
