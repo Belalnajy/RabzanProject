@@ -39,7 +39,7 @@ if (!i18n.isInitialized) {
       ? {}
       : {
           detection: {
-            order: ['localStorage', 'navigator'],
+            order: ['localStorage', 'htmlTag'],
             caches: ['localStorage'],
           },
         }),

@@ -84,7 +84,7 @@ const Navbar = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
-              <Logo light={!isScrolled} size={70} />
+              <Logo light={!isScrolled} size={isScrolled ? 50 : 65} />
             </motion.div>
           </Link>
 

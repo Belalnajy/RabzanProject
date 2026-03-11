@@ -13,8 +13,6 @@ import {
   ShieldCheck,
   Zap,
   MousePointer2,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -77,19 +75,6 @@ const Hero = () => {
   }, [isAutoPlaying]);
 
   // أزرار التنقل
-  const goToNext = () => {
-    setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
-
-  const goToPrev = () => {
-    setCurrentImage(
-      (prev) => (prev - 1 + heroImages.length) % heroImages.length,
-    );
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
 
   const goToImage = (index) => {
     setCurrentImage(index);
@@ -167,56 +152,34 @@ const Hero = () => {
         />
       </div>
 
-      {/* Image Navigation Controls */}
-      <div
-        className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-30 flex justify-between px-4 md:px-8 pointer-events-none"
-        dir="ltr">
-        {/* Force LTR for controls so Left is always Left? Or adapt? 
-          If I leave it, in RTL, Prev button moves to Right side. Next button moves to Left side.
-          Prev (Right side) should point Right (>).
-          Next (Left side) should point Left (<).
-      */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={goToPrev}
-          className="pointer-events-auto w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/20 hover:text-white transition-all duration-300 group">
-          <ChevronLeft // Changed to Left for Prev
-            size={24}
-            className={`transition-transform ${isRTL ? 'rotate-180' : ''}`}
-          />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={goToNext}
-          className="pointer-events-auto w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/20 hover:text-white transition-all duration-300 group">
-          <ChevronRight // Changed to Right for Next
-            size={24}
-            className={`transition-transform ${isRTL ? 'rotate-180' : ''}`}
-          />
-        </motion.button>
-      </div>
-
-      {/* Image Indicators */}
-      <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+      {/* Modern Slider Indicators */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4">
         {heroImages.map((_, index) => (
-          <motion.button
+          <motion.div
             key={index}
             onClick={() => goToImage(index)}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            className={`transition-all duration-500 ${
-              index === currentImage
-                ? 'w-10 h-2 bg-accent-gold rounded-full'
-                : 'w-2 h-2 bg-white/30 hover:bg-white/60 rounded-full'
-            }`}
-          />
+            className="group cursor-pointer flex flex-col items-center gap-2">
+            <span
+              className={`text-xs font-bold transition-all duration-500 ${
+                index === currentImage
+                  ? 'text-accent-gold opacity-100'
+                  : 'text-white opacity-40 group-hover:opacity-100'
+              }`}>
+              0{index + 1}
+            </span>
+            <div
+              className={`transition-all duration-500 rounded-full ${
+                index === currentImage
+                  ? 'w-12 sm:w-16 h-1 bg-accent-gold'
+                  : 'w-6 sm:w-8 h-1 bg-white/30 group-hover:bg-white/60'
+              }`}
+            />
+          </motion.div>
         ))}
       </div>
 
       <div className="container relative z-20">
-        <div className="max-w-5xl mt-20 sm:mt-40">
+        <div className="max-w-5xl mt-32 sm:mt-56">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
