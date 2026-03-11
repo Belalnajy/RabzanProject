@@ -210,7 +210,7 @@ const Navbar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-40 flex items-center justify-center p-8">
+            className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-40 flex items-center justify-center p-8 pt-32">
             {/* Decorative Elements */}
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
@@ -225,7 +225,7 @@ const Navbar = () => {
               className="absolute bottom-1/4 -left-32 w-[300px] h-[300px] bg-accent-gold blur-[120px] rounded-full pointer-events-none"
             />
 
-            <div className="flex flex-col items-center gap-6 relative z-10">
+            <div className="flex flex-col items-center gap-6 relative z-10 w-full max-w-sm mt-12">
               {NAV_LINKS.map((link, idx) => (
                 <motion.div
                   key={link.name}
