@@ -68,7 +68,10 @@ const Navbar = () => {
               : 'bg-transparent border-transparent'
           }`}>
           {/* Logo */}
-          <Link to="/" className="relative z-50">
+          <Link
+            to="/"
+            className="relative z-50"
+            onClick={() => setIsMenuOpen(false)}>
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -255,6 +258,7 @@ const Navbar = () => {
                 className="mt-8">
                 <Link
                   to="/contact"
+                  onClick={() => setIsMenuOpen(false)}
                   className="relative bg-linear-to-r from-secondary-green to-secondary-green-light text-white px-10 py-5 rounded-2xl text-xl font-black shadow-[0_20px_40px_rgba(16,185,129,0.3)] flex items-center gap-3 overflow-hidden group">
                   <motion.span
                     className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
