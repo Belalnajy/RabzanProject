@@ -22,6 +22,15 @@ const Hero = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
   const { scrollY } = useScroll();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
   const scale = useTransform(scrollY, [0, 300], [1, 1.05]);
@@ -87,9 +96,15 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative h-screen min-h-[700px] sm:min-h-[850px] flex items-center overflow-hidden mesh-bg-dark">
+    <section className="relative min-h-screen sm:min-h-[850px] flex items-center overflow-hidden mesh-bg-dark">
       {/* Cinematic Background with Image Slider */}
-      <motion.div style={{ y: y1, scale }} className="absolute inset-0 z-0">
+      <motion.div
+        style={{
+          y: isMobile ? 0 : y1,
+          scale: isMobile ? 1 : scale,
+          willChange: isMobile ? 'auto' : 'transform',
+        }}
+        className="absolute inset-0 z-0">
         {/* Overlay Gradients - Made Lighter */}
         <div className="absolute inset-0 bg-linear-to-l from-bg-dark/90 via-transparent to-bg-dark/90 z-10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,_rgba(0,51,102,0.1),transparent_60%)] z-10" />
@@ -107,37 +122,23 @@ const Hero = () => {
             className="absolute inset-0 w-full h-full object-cover filter brightness-90 contrast-110"
           />
         </AnimatePresence>
-
-        {/* Animated Ken Burns Effect */}
-        <motion.div
-          className="absolute inset-0"
-          animate={{
-            scale: [1, 1.08],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            repeatType: 'reverse',
-            ease: 'linear',
-          }}
-        />
       </motion.div>
 
-      {/* Luxury Animated Blobs */}
-      <div className="absolute inset-0 pointer-events-none z-10">
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.08, 0.18, 0.08],
-            rotate: [0, 180],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/4 -right-20 w-[700px] h-[700px] bg-secondary-green/10 blur-[180px] rounded-full"
-        />
+      {/* Luxury Animated Blobs - Optimized for Mobile */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
-            opacity: [0.05, 0.1, 0.05],
+            opacity: [0.08, 0.15, 0.08],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ willChange: 'transform, opacity' }}
+          className="absolute top-1/4 -right-20 w-[300px] sm:w-[700px] h-[300px] sm:h-[700px] bg-secondary-green/10 blur-[80px] sm:blur-[180px] rounded-full"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.05, 0.08, 0.05],
           }}
           transition={{
             duration: 12,
@@ -145,12 +146,13 @@ const Hero = () => {
             ease: 'easeInOut',
             delay: 2,
           }}
-          className="absolute bottom-1/4 -left-40 w-[500px] h-[500px] bg-accent-gold/10 blur-[150px] rounded-full"
+          style={{ willChange: 'transform, opacity' }}
+          className="absolute bottom-1/4 -left-40 w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] bg-accent-gold/10 blur-[60px] sm:blur-[150px] rounded-full"
         />
         <motion.div
           animate={{
-            scale: [1, 1.4, 1],
-            opacity: [0.03, 0.08, 0.03],
+            scale: [1, 1.3, 1],
+            opacity: [0.03, 0.06, 0.03],
           }}
           transition={{
             duration: 18,
@@ -158,7 +160,8 @@ const Hero = () => {
             ease: 'easeInOut',
             delay: 4,
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-blue/5 blur-[200px] rounded-full"
+          style={{ willChange: 'transform, opacity' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[800px] h-[400px] sm:h-[800px] bg-primary-blue/5 blur-[100px] sm:blur-[200px] rounded-full"
         />
       </div>
 
