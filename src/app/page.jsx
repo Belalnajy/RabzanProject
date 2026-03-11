@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -396,7 +398,7 @@ const Home = () => {
 
                 <div
                   className={`flex flex-col ${isRTL ? 'sm:flex-row-reverse' : 'sm:flex-row'} gap-6 items-center`}>
-                  <Link to="/about" className="w-full sm:w-auto">
+                  <Link href="/about" className="w-full sm:w-auto">
                     <motion.button
                       whileHover={{ scale: 1.02, y: -4 }}
                       whileTap={{ scale: 0.98 }}
@@ -410,7 +412,7 @@ const Home = () => {
                   </Link>
 
                   <Link
-                    to="/about"
+                    href="/about"
                     className="flex items-center gap-4 text-slate-400 group cursor-pointer hover:text-primary-navy transition-colors">
                     <span className="text-sm font-black uppercase tracking-widest leading-none border-b border-transparent group-hover:border-primary-navy transition-all pb-1">
                       {t('home_page.about_section.cta_story')}
@@ -459,7 +461,7 @@ const Home = () => {
                     className="group bg-slate-50 rounded-[3rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
                     {/* Product Image */}
                     <Link
-                      to={`/products/${product.id}`}
+                      href={`/products/${product.id}`}
                       className="h-72 overflow-hidden relative block">
                       <motion.img
                         whileHover={{ scale: 1.1 }}
@@ -478,7 +480,7 @@ const Home = () => {
                     {/* Content */}
                     <div className="p-10 flex flex-col flex-1">
                       <div className="flex justify-between items-start mb-4">
-                        <Link to={`/products/${product.id}`}>
+                        <Link href={`/products/${product.id}`}>
                           <h3 className="text-2xl font-black text-primary-navy leading-tight hover:text-accent-gold transition-colors">
                             {t(product.name)}
                           </h3>
@@ -494,7 +496,7 @@ const Home = () => {
                             {t(product.price)}
                           </span>
                           <Link
-                            to={`/products/${product.id}`}
+                            href={`/products/${product.id}`}
                             className="text-primary-navy font-black text-sm hover:text-accent-gold transition-all flex items-center gap-2">
                             {t('products.view_details')}
                             <ArrowUpLeft
@@ -553,7 +555,7 @@ const Home = () => {
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <Link to="/portfolio">
+              <Link href="/portfolio">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -572,7 +574,7 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
               {PORTFOLIO_PROJECTS.map((project, idx) => (
                 <StaggerItem key={project.id}>
-                  <Link to="/portfolio">
+                  <Link href="/portfolio">
                     <motion.div
                       whileHover={{ y: -12 }}
                       transition={{
@@ -639,7 +641,7 @@ const Home = () => {
             </FadeIn>
             <FadeIn delay={0.2}>
               <Link
-                to="/contact"
+                href="/contact"
                 className="hidden md:flex items-center gap-3 text-primary-navy font-black hover:text-accent-gold transition-colors group">
                 <span className="border-b-2 border-primary-navy group-hover:border-accent-gold transition-colors pb-1">
                   {t('home_page.articles_section.view_all')}
@@ -683,7 +685,7 @@ const Home = () => {
                         {t(article.snippet)}
                       </p>
                       <Link
-                        to="/contact"
+                        href="/contact"
                         className="flex items-center gap-2 text-primary-navy font-black text-sm group/btn group-hover:text-accent-gold transition-colors">
                         <span>{t('home_page.articles_section.read_more')}</span>
                         <ArrowUpLeft
@@ -699,7 +701,7 @@ const Home = () => {
           </StaggerContainer>
 
           <FadeIn className="text-center md:hidden">
-            <Link to="/contact">
+            <Link href="/contact">
               <button className="btn-premium w-full py-6">
                 <span>{t('home_page.articles_section.mobile_view_all')}</span>
                 <ArrowRight />

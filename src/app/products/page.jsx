@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -9,14 +11,14 @@ import {
   Zap,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/layout/Navbar';
-import { PRODUCTS, CONTACT_INFO } from '../constants/content';
+import Link from 'next/link';
+import Navbar from '../../components/layout/Navbar';
+import { PRODUCTS, CONTACT_INFO } from '../../constants/content';
 import {
   FadeIn,
   StaggerContainer,
   StaggerItem,
-} from '../components/ui/Animations';
+} from '../../components/ui/Animations';
 import './Products.css';
 
 const Products = () => {
@@ -71,7 +73,7 @@ const Products = () => {
                     className="group bg-slate-50 rounded-[3rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-700 flex flex-col h-full">
                     {/* Product Image */}
                     <div className="h-80 overflow-hidden relative">
-                      <Link to={`/products/${product.id}`}>
+                      <Link href={`/products/${product.id}`}>
                         <motion.img
                           whileHover={{ scale: 1.1 }}
                           transition={{ duration: 1 }}
@@ -92,7 +94,7 @@ const Products = () => {
                       <div className="flex justify-between items-start mb-6">
                         <h3 className="text-3xl font-black text-primary-navy leading-tight">
                           <Link
-                            to={`/products/${product.id}`}
+                            href={`/products/${product.id}`}
                             className="hover:text-primary-blue transition-colors">
                             {t(product.name)}
                           </Link>

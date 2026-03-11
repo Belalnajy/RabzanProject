@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   motion,
@@ -16,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const Hero = () => {
   const { t, i18n } = useTranslation();
@@ -268,7 +270,7 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
               className="flex flex-col sm:flex-row gap-8">
-              <Link to="/contact" className="w-full sm:w-auto">
+              <Link href="/contact" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
@@ -283,7 +285,7 @@ const Hero = () => {
                 </motion.button>
               </Link>
 
-              <Link to="/how-it-works" className="w-full sm:w-auto">
+              <Link href="/how-it-works" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}

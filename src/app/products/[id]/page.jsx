@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -12,17 +15,17 @@ import {
   Zap,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import Navbar from '../components/layout/Navbar';
-import { PRODUCTS, CONTACT_INFO } from '../constants/content';
+import Navbar from '../../../components/layout/Navbar';
+import { PRODUCTS, CONTACT_INFO } from '../../../constants/content';
 import {
   FadeIn,
   StaggerContainer,
   StaggerItem,
-} from '../components/ui/Animations';
+} from '../../../components/ui/Animations';
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
 
@@ -44,7 +47,7 @@ const ProductDetails = () => {
             {t('products.not_found')}
           </h2>
           <button
-            onClick={() => navigate('/products')}
+            onClick={() => router.push('/products')}
             className="text-primary-blue underline font-bold">
             {t('products.back_to_products')}
           </button>
@@ -53,8 +56,6 @@ const ProductDetails = () => {
     );
   }
 
-  // Handle Features which might be an array of keys or strings
-  // In content.js it is mapped to keys: "products.items.1.features.0", etc.
   const features = product.features;
 
   return (
@@ -238,38 +239,39 @@ const ProductDetails = () => {
             <div className="grid md:grid-cols-3 gap-8">
               {relatedProducts.map((p) => (
                 <StaggerItem key={p.id}>
-                  <motion.div
-                    whileHover={{ y: -10 }}
-                    className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer"
-                    onClick={() => navigate(`/products/${p.id}`)}>
-                    <div className="h-48 rounded-2xl overflow-hidden mb-6 relative">
-                      <img
-                        src={p.image}
-                        alt={t(p.name)}
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-black text-primary-navy">
-                        {t(p.category)}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-black text-primary-navy mb-2 line-clamp-1">
-                      {t(p.name)}
-                    </h3>
-                    <p className="text-slate-500 text-sm line-clamp-2 mb-4">
-                      {t(p.description)}
-                    </p>
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                      <span className="text-accent-gold font-bold text-sm">
-                        {t(p.price)}
-                      </span>
-                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                        <ArrowLeft
-                          size={16}
-                          className={isRTL ? '' : 'rotate-180'}
+                  <Link href={`/products/${p.id}`}>
+                    <motion.div
+                      whileHover={{ y: -10 }}
+                      className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer">
+                      <div className="h-48 rounded-2xl overflow-hidden mb-6 relative">
+                        <img
+                          src={p.image}
+                          alt={t(p.name)}
+                          className="w-full h-full object-cover"
                         />
+                        <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-black text-primary-navy">
+                          {t(p.category)}
+                        </span>
                       </div>
-                    </div>
-                  </motion.div>
+                      <h3 className="text-xl font-black text-primary-navy mb-2 line-clamp-1">
+                        {t(p.name)}
+                      </h3>
+                      <p className="text-slate-500 text-sm line-clamp-2 mb-4">
+                        {t(p.description)}
+                      </p>
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <span className="text-accent-gold font-bold text-sm">
+                          {t(p.price)}
+                        </span>
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                          <ArrowLeft
+                            size={16}
+                            className={isRTL ? '' : 'rotate-180'}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
                 </StaggerItem>
               ))}
             </div>

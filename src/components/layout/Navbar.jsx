@@ -1,6 +1,9 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, ArrowLeft, Globe, Sparkles } from 'lucide-react';
 import Logo from '../ui/Logo';
@@ -11,7 +14,8 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeHover, setActiveHover] = useState(null);
-  const location = useLocation();
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
   const isRTL = i18n.dir() === 'rtl';
 
   const toggleLanguage = () => {
@@ -37,7 +41,11 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsMenuOpen(false);
-  }, [location]);
+  }, [pathname]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -69,7 +77,7 @@ const Navbar = () => {
           }`}>
           {/* Logo */}
           <Link
-            to="/"
+            href="/"
             className="relative z-50"
             onClick={() => setIsMenuOpen(false)}>
             <motion.div
@@ -92,11 +100,11 @@ const Navbar = () => {
                 onHoverEnd={() => setActiveHover(null)}
                 className="relative">
                 <Link
-                  to={link.path}
+                  href={link.path}
                   className={`text-sm font-black transition-all duration-300 block py-2 px-1 ${
                     isScrolled ? 'text-slate-900' : 'text-white'
                   }`}>
-                  {t(link.name)}
+                  {mounted ? t(link.name) : link.name.split('.').pop()}
                 </Link>
 
                 {/* Animated Underline */}
@@ -107,7 +115,7 @@ const Navbar = () => {
                   initial={{ width: 0 }}
                   animate={{
                     width:
-                      location.pathname === link.path
+                      pathname === link.path
                         ? '100%'
                         : activeHover === link.name
                           ? '50%'
@@ -130,10 +138,16 @@ const Navbar = () => {
                   : 'text-slate-300 hover:bg-white/10'
               }`}>
               <Globe size={16} />
-              <span>{i18n.language === 'ar' ? 'EN' : 'عربي'}</span>
+              <span>
+                {mounted
+                  ? i18n.language === 'ar'
+                    ? 'EN'
+                    : 'عربي'
+                  : 'EN / عربي'}
+              </span>
             </motion.div>
 
-            <Link to="/contact">
+            <Link href="/contact">
               <motion.div
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
@@ -202,16 +216,16 @@ const Navbar = () => {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute top-1/4 -right-32 w-[400px] h-[400px] bg-secondary-green blur-[150px] rounded-full"
+              className="absolute top-1/4 -right-32 w-[400px] h-[400px] bg-secondary-green blur-[150px] rounded-full pointer-events-none"
             />
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 0.08 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="absolute bottom-1/4 -left-32 w-[300px] h-[300px] bg-accent-gold blur-[120px] rounded-full"
+              className="absolute bottom-1/4 -left-32 w-[300px] h-[300px] bg-accent-gold blur-[120px] rounded-full pointer-events-none"
             />
 
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-6 relative z-10">
               {NAV_LINKS.map((link, idx) => (
                 <motion.div
                   key={link.name}
@@ -224,10 +238,10 @@ const Navbar = () => {
                     ease: [0.22, 1, 0.36, 1],
                   }}>
                   <Link
-                    to={link.path}
+                    href={link.path}
                     onClick={() => setIsMenuOpen(false)}
                     className={`text-3xl sm:text-4xl font-black transition-all duration-300 block ${
-                      location.pathname === link.path
+                      pathname === link.path
                         ? 'text-accent-gold'
                         : 'text-white hover:text-secondary-green-light'
                     }`}>
@@ -241,15 +255,24 @@ const Navbar = () => {
               ))}
 
               {/* Mobile Language Toggle */}
-              <motion.div
+              <motion.button
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 }}
-                onClick={toggleLanguage}
-                className="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/10 text-white font-bold cursor-pointer hover:bg-white/20 transition-all">
+                onClick={() => {
+                  toggleLanguage();
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/10 text-white font-bold cursor-pointer hover:bg-white/20 transition-all w-full text-start">
                 <Globe size={18} />
-                <span>{i18n.language === 'ar' ? 'English' : 'العربية'}</span>
-              </motion.div>
+                <span>
+                  {mounted
+                    ? i18n.language === 'ar'
+                      ? 'English'
+                      : 'العربية'
+                    : 'English / العربية'}
+                </span>
+              </motion.button>
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -257,7 +280,7 @@ const Navbar = () => {
                 transition={{ delay: 0.5, duration: 0.4 }}
                 className="mt-8">
                 <Link
-                  to="/contact"
+                  href="/contact"
                   onClick={() => setIsMenuOpen(false)}
                   className="relative bg-linear-to-r from-secondary-green to-secondary-green-light text-white px-10 py-5 rounded-2xl text-xl font-black shadow-[0_20px_40px_rgba(16,185,129,0.3)] flex items-center gap-3 overflow-hidden group">
                   <motion.span

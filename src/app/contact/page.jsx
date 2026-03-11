@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -13,9 +15,9 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import Navbar from '../components/layout/Navbar';
-import { CONTACT_INFO } from '../constants/content';
-import { FadeIn } from '../components/ui/Animations';
+import Navbar from '../../components/layout/Navbar';
+import { CONTACT_INFO } from '../../constants/content';
+import { FadeIn } from '../../components/ui/Animations';
 
 const Contact = () => {
   const { t, i18n } = useTranslation();

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -10,13 +12,13 @@ import {
   HelpCircle,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import Navbar from '../components/layout/Navbar';
-import { PROCESS_STEPS, CONTACT_INFO } from '../constants/content';
+import Navbar from '../../components/layout/Navbar';
+import { PROCESS_STEPS, CONTACT_INFO } from '../../constants/content';
 import {
   FadeIn,
   StaggerContainer,
   StaggerItem,
-} from '../components/ui/Animations';
+} from '../../components/ui/Animations';
 
 const HowItWorks = () => {
   const { t, i18n } = useTranslation();

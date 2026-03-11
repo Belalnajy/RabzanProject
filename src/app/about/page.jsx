@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -11,14 +13,14 @@ import {
   Globe,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import Navbar from '../components/layout/Navbar';
-import Logo from '../components/ui/Logo';
+import Navbar from '../../components/layout/Navbar';
+import Logo from '../../components/ui/Logo';
 import {
   FadeIn,
   StaggerContainer,
   StaggerItem,
-} from '../components/ui/Animations';
-import { CONTACT_INFO } from '../constants/content';
+} from '../../components/ui/Animations';
+import { CONTACT_INFO } from '../../constants/content';
 
 const About = () => {
   const { t, i18n } = useTranslation();

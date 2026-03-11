@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+'use client';
+
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -34,7 +36,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           {/* Brand Column */}
           <div className="lg:col-span-1">
-            <Link to="/" className="inline-block mb-6">
+            <Link href="/" className="inline-block mb-6">
               <Logo light={true} size={60} />
             </Link>
             <p className="text-slate-400 leading-relaxed mb-8">
@@ -67,7 +69,7 @@ const Footer = () => {
               {NAV_LINKS.map((link) => (
                 <li key={link.name}>
                   <Link
-                    to={link.path}
+                    href={link.path}
                     className="text-slate-400 hover:text-secondary-green transition-colors flex items-center gap-2 group">
                     <span
                       className={`w-1.5 h-1.5 rounded-full bg-secondary-green/50 group-hover:bg-secondary-green transition-colors ${
@@ -92,28 +94,28 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <Link
-                  to="/services"
+                  href="/services"
                   className="text-slate-400 hover:text-secondary-green transition-colors">
                   {t('services.sourcing.title')}
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/services"
+                  href="/services"
                   className="text-slate-400 hover:text-secondary-green transition-colors">
                   {t('services.inspection.title')}
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/services"
+                  href="/services"
                   className="text-slate-400 hover:text-secondary-green transition-colors">
                   {t('services.logistics.title')}
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/services"
+                  href="/services"
                   className="text-slate-400 hover:text-secondary-green transition-colors">
                   {t('services.customs.title')}
                 </Link>
