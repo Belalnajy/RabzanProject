@@ -108,17 +108,21 @@
       "description": "Showcasing our top achievements in product sourcing, supply chain optimization, and ensuring highest quality standards for global partners."
     },
     "metrics": {
-      "shipments": {
-        "value": "+500",
-        "label": "International Shipments Successful Annually"
+      "factories": {
+        "value": "+250",
+        "label": "Certified Factories & Suppliers"
+      },
+      "orders": {
+        "value": "+120",
+        "label": "Orders Executed"
+      },
+      "projects": {
+        "value": "+30",
+        "label": "Projects Prepared"
       },
       "countries": {
-        "value": "20+",
-        "label": "Active Origin & Supply Countries"
-      },
-      "precision": {
-        "value": "99.8%",
-        "label": "Precision in Time & Quality"
+        "value": "+11",
+        "label": "Countries Shipped To"
       }
     },
     "cta": {
@@ -638,10 +642,10 @@
       }
     },
     "stats": {
-      "certified_factory": "Certified Factory",
-      "global_office": "Global Office",
-      "trading_volume": "Trading Volume",
-      "active_country": "Active Country"
+      "certified_factory": "Certified Factories & Suppliers",
+      "orders_executed": "Orders Executed",
+      "projects_prepared": "Projects Prepared",
+      "shipped_countries": "Countries Shipped To"
     },
     "services_section": {
       "label": "Strategic Capital",

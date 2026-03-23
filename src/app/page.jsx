@@ -63,23 +63,23 @@ const Home = () => {
   const stats = [
     {
       label: 'home_page.stats.certified_factory',
-      value: '99.8%',
+      value: '250+',
       icon: <ShieldCheck className="text-accent-gold" />,
     },
     {
-      label: 'home_page.stats.global_office',
-      value: '+20',
-      icon: <Target className="text-secondary-green" />,
+      label: 'home_page.stats.orders_executed',
+      value: '+120',
+      icon: <Box className="text-secondary-green" />,
     },
     {
-      label: 'home_page.stats.trading_volume',
-      value: '500+',
-      icon: <Globe2 className="text-primary-blue-light" />,
+      label: 'home_page.stats.projects_prepared',
+      value: '+30',
+      icon: <Zap className="text-primary-blue-light" />,
     },
     {
-      label: 'home_page.stats.active_country',
-      value: '+15',
-      icon: <Award className="text-secondary-green" />,
+      label: 'home_page.stats.shipped_countries',
+      value: '+ 11',
+      icon: <Globe2 className="text-secondary-green" />,
     },
   ];
 

@@ -9,6 +9,7 @@ import {
   Target,
   ShieldCheck,
   Zap,
+  Box,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/layout/Navbar';
@@ -111,38 +112,49 @@ const Portfolio = () => {
           </StaggerContainer>
 
           {/* Impact Metrics Section */}
-          <div className="mt-32 grid md:grid-cols-3 gap-12 border-t border-slate-100 pt-32">
+          <div className="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-12 border-t border-slate-100 pt-32">
             <div className="text-center">
               <div className="text-primary-blue mb-6 flex justify-center">
-                <Globe size={48} />
+                <ShieldCheck size={48} />
               </div>
               <div className="text-6xl font-black text-primary-blue mb-4">
-                {t('portfolio_page.metrics.shipments.value')}
+                {t('portfolio_page.metrics.factories.value')}
               </div>
               <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                {t('portfolio_page.metrics.shipments.label')}
+                {t('portfolio_page.metrics.factories.label')}
               </p>
             </div>
             <div className="text-center">
               <div className="text-secondary-green mb-6 flex justify-center">
-                <Target size={48} />
+                <Box size={48} />
+              </div>
+              <div className="text-6xl font-black text-primary-blue mb-4">
+                {t('portfolio_page.metrics.orders.value')}
+              </div>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                {t('portfolio_page.metrics.orders.label')}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="text-accent-gold mb-6 flex justify-center">
+                <Zap size={48} />
+              </div>
+              <div className="text-6xl font-black text-primary-blue mb-4">
+                {t('portfolio_page.metrics.projects.value')}
+              </div>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                {t('portfolio_page.metrics.projects.label')}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="text-secondary-green mb-6 flex justify-center">
+                <Globe size={48} />
               </div>
               <div className="text-6xl font-black text-primary-blue mb-4">
                 {t('portfolio_page.metrics.countries.value')}
               </div>
               <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
                 {t('portfolio_page.metrics.countries.label')}
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="text-accent-gold mb-6 flex justify-center">
-                <ShieldCheck size={48} />
-              </div>
-              <div className="text-6xl font-black text-primary-blue mb-4">
-                {t('portfolio_page.metrics.precision.value')}
-              </div>
-              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                {t('portfolio_page.metrics.precision.label')}
               </p>
             </div>
           </div>
