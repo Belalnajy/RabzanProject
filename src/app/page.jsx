@@ -25,6 +25,12 @@ import {
   Phone,
   SendHorizontal,
   Building2,
+  Search,
+  ShieldCheck,
+  PackageCheck,
+  Truck,
+  HelpCircle,
+  Target,
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Hero from '../components/ui/Hero';
@@ -45,6 +51,7 @@ import {
   ARTICLES,
   PRODUCTS,
   CONTACT_INFO,
+  PROCESS_STEPS,
 } from '../constants/content';
 
 const Home = () => {
@@ -56,24 +63,31 @@ const Home = () => {
   const stats = [
     {
       label: 'home_page.stats.certified_factory',
-      value: '+250',
-      icon: <CheckCircle2 className="text-secondary-green" />,
+      value: '99.8%',
+      icon: <ShieldCheck className="text-accent-gold" />,
     },
     {
       label: 'home_page.stats.global_office',
-      value: '12',
-      icon: <MapPin className="text-secondary-green" />,
+      value: '+20',
+      icon: <Target className="text-secondary-green" />,
     },
     {
       label: 'home_page.stats.trading_volume',
-      value: '$45M+',
-      icon: <TrendingUp className="text-secondary-green" />,
+      value: '500+',
+      icon: <Globe2 className="text-primary-blue-light" />,
     },
     {
       label: 'home_page.stats.active_country',
-      value: '+35',
-      icon: <Users className="text-secondary-green" />,
+      value: '+15',
+      icon: <Award className="text-secondary-green" />,
     },
+  ];
+
+  const stepIcons = [
+    <Search size={32} />,
+    <ShieldCheck size={32} />,
+    <PackageCheck size={32} />,
+    <Truck size={32} />,
   ];
 
   return (
@@ -146,7 +160,7 @@ const Home = () => {
                 <Sparkles size={14} className="animate-pulse" />
                 {t('home_page.services_section.label')}
               </motion.span>
-              <h2 className="text-5xl md:text-7xl lg:text-8xl text-white leading-tight mb-10 font-black">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-10 font-black">
                 {t('home_page.services_section.title_prefix')} <br />
                 <span className="text-gold-gradient italic">
                   {t('home_page.services_section.title_suffix')}
@@ -285,146 +299,6 @@ const Home = () => {
               ))}
             </div>
           </StaggerContainer>
-        </div>
-      </section>
-
-      {/* About Section - Overlapping Cinematic Layout */}
-      <section className="py-32 lg:py-56 bg-white relative overflow-hidden">
-        {/* Subtle Decorative Elements */}
-        <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
-          <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-primary-blue/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute top-[20%] left-[-100px] w-64 h-64 border border-slate-100 rounded-full opacity-50" />
-        </div>
-
-        <div className="container relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
-            {/* Visual Column - Overlapping Elements */}
-            <div className="lg:col-span-6 relative">
-              <FadeIn direction="right">
-                <div className="relative">
-                  {/* Primary Large Image */}
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="aspect-4/5 w-[85%] rounded-[3rem] overflow-hidden shadow-2xl relative z-10">
-                    <img
-                      src="https://images.unsplash.com/photo-1634638024484-1b83581271bf?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt="Logistics Port"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-tr from-primary-navy/40 to-transparent" />
-                  </motion.div>
-
-                  {/* Secondary Overlapping Image */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                    whileHover={{ y: -10, scale: 1.05 }}
-                    className="absolute bottom-[-10%] right-0 w-[60%] aspect-square rounded-[2.5rem] overflow-hidden shadow-[-20px_20px_60px_rgba(0,0,0,0.15)] border-8 border-white z-20">
-                    <img
-                      src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
-                      alt="Factory Production"
-                      className="w-full h-full object-cover"
-                    />
-                  </motion.div>
-
-                  {/* Floating Experience Badge - Integrated */}
-                  <motion.div
-                    animate={{ y: [0, -15, 0] }}
-                    transition={{
-                      duration: 5,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
-                    className="absolute top-[15%] right-[-5%] z-30 bg-accent-gold p-6 lg:p-8 rounded-3xl shadow-xl border-4 border-white">
-                    <div className="text-primary-navy">
-                      <div className="text-4xl lg:text-5xl font-black leading-none">
-                        +15
-                      </div>
-                      <div className="text-[10px] font-black uppercase tracking-[0.2em] mt-1 opacity-80">
-                        {t('home_page.about_section.years_experience')}
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
-              </FadeIn>
-            </div>
-
-            {/* Content Column */}
-            <div
-              className={`lg:col-span-6 ${isRTL ? 'text-right' : 'text-left'}`}>
-              <FadeIn direction={isRTL ? 'left' : 'right'}>
-                <span className="section-label-gold mb-10">
-                  {t('home_page.about_section.label')}
-                </span>
-                <h2 className="text-5xl md:text-7xl font-black text-primary-navy mb-12 leading-[1.1]">
-                  {t('home_page.about_section.title_prefix')} <br />
-                  <span className="text-gold-gradient italic">
-                    {t('home_page.about_section.title_suffix')}
-                  </span>
-                </h2>
-                <p className="text-xl lg:text-2xl text-slate-600 mb-16 leading-relaxed font-medium">
-                  {t('home_page.about_section.description')}
-                </p>
-
-                {/* Integrated Features/Stats */}
-                <div className="grid grid-cols-2 gap-10 mb-16">
-                  <div className="space-y-4">
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-secondary-green/10 flex items-center justify-center text-secondary-green ${isRTL ? 'ml-auto' : 'mr-auto'}`}>
-                      <Zap size={28} />
-                    </div>
-                    <h3 className="text-xl font-black text-primary-navy">
-                      {t('home_page.about_section.speed_title')}
-                    </h3>
-                    <p className="text-slate-500 text-sm font-medium">
-                      {t('home_page.about_section.speed_desc')}
-                    </p>
-                  </div>
-                  <div className="space-y-4">
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-primary-blue/10 flex items-center justify-center text-primary-blue ${isRTL ? 'ml-auto' : 'mr-auto'}`}>
-                      <Globe2 size={28} />
-                    </div>
-                    <h3 className="text-xl font-black text-primary-navy">
-                      {t('home_page.about_section.global_title')}
-                    </h3>
-                    <p className="text-slate-500 text-sm font-medium">
-                      {t('home_page.about_section.global_desc')}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={`flex flex-col ${isRTL ? 'sm:flex-row-reverse' : 'sm:flex-row'} gap-6 items-center`}>
-                  <Link href="/about" className="w-full sm:w-auto">
-                    <motion.button
-                      whileHover={{ scale: 1.02, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="btn-premium py-6 px-12 group shadow-xl w-full">
-                      <span>{t('home_page.about_section.cta_more')}</span>
-                      <ArrowUpLeft
-                        size={20}
-                        className={isRTL ? '' : 'rotate-90'}
-                      />
-                    </motion.button>
-                  </Link>
-
-                  <Link
-                    href="/about"
-                    className="flex items-center gap-4 text-slate-400 group cursor-pointer hover:text-primary-navy transition-colors">
-                    <span className="text-sm font-black uppercase tracking-widest leading-none border-b border-transparent group-hover:border-primary-navy transition-all pb-1">
-                      {t('home_page.about_section.cta_story')}
-                    </span>
-                    <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-slate-50 transition-colors">
-                      <ArrowRight size={16} />
-                    </div>
-                  </Link>
-                </div>
-              </FadeIn>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -618,6 +492,66 @@ const Home = () => {
         </div>
       </section>
 
+      {/* How it works Section - Home Version */}
+      <section className="py-32 lg:py-40 bg-white relative overflow-hidden">
+        <div className="container relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-20 lg:mb-24">
+            <FadeIn>
+              <span className="section-label-gold mb-6 mx-auto">
+                <Clock size={14} className="animate-pulse" />
+                {t('home_page.how_it_works.label')}
+              </span>
+              <h2 className="text-5xl lg:text-7xl font-black text-primary-navy leading-tight">
+                {t('home_page.how_it_works.title_prefix')}{' '}
+                <span className="text-gold-gradient italic">
+                  {t('home_page.how_it_works.title_suffix')}
+                </span>
+              </h2>
+            </FadeIn>
+          </div>
+
+          <StaggerContainer staggerBy={0.2}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+              {PROCESS_STEPS.map((step, index) => (
+                <StaggerItem key={step.id}>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="relative group">
+                    {/* Connection Line */}
+                    {index < PROCESS_STEPS.length - 1 && (
+                      <div className="hidden lg:block absolute top-12 left-[calc(100%+2rem)] w-[calc(100%-8rem)] h-px bg-linear-to-r from-accent-gold/40 to-transparent z-0" />
+                    )}
+
+                    <div className="bg-slate-50 p-10 lg:p-12 rounded-[2.5rem] border border-slate-100 group-hover:bg-white group-hover:shadow-2xl group-hover:shadow-primary-navy/5 transition-all duration-500 relative z-10 h-full">
+                      <div className="w-20 h-20 rounded-2xl bg-white shadow-xl flex items-center justify-center text-accent-gold mb-8 group-hover:bg-primary-navy group-hover:text-white transition-all duration-500">
+                        {stepIcons[index] || <CheckCircle2 size={32} />}
+                      </div>
+                      <h3 className="text-2xl font-black text-primary-navy mb-4 group-hover:text-primary-blue transition-colors">
+                        {t(step.title)}
+                      </h3>
+                      <p className="text-slate-500 leading-relaxed font-medium line-clamp-3">
+                        {t(step.description)}
+                      </p>
+                    </div>
+                  </motion.div>
+                </StaggerItem>
+              ))}
+            </div>
+          </StaggerContainer>
+
+          <FadeIn delay={0.4} className="mt-20 text-center">
+            <Link href="/how-it-works">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-10 py-5 rounded-3xl bg-primary-navy text-white font-black shadow-xl shadow-primary-navy/20 hover:bg-primary-blue transition-all duration-300">
+                {t('home_page.how_it_works.cta')}
+              </motion.button>
+            </Link>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* أخبار ومقالات - تصميم عصري */}
       <section
         id="articles"
@@ -641,7 +575,7 @@ const Home = () => {
             </FadeIn>
             <FadeIn delay={0.2}>
               <Link
-                href="/contact"
+                href="/portfolio"
                 className="hidden md:flex items-center gap-3 text-primary-navy font-black hover:text-accent-gold transition-colors group">
                 <span className="border-b-2 border-primary-navy group-hover:border-accent-gold transition-colors pb-1">
                   {t('home_page.articles_section.view_all')}
@@ -708,6 +642,146 @@ const Home = () => {
               </button>
             </Link>
           </FadeIn>
+        </div>
+      </section>
+
+      {/* About Section - Overlapping Cinematic Layout */}
+      <section className="py-32 lg:py-56 bg-white relative overflow-hidden">
+        {/* Subtle Decorative Elements */}
+        <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-primary-blue/5 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute top-[20%] left-[-100px] w-64 h-64 border border-slate-100 rounded-full opacity-50" />
+        </div>
+
+        <div className="container relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+            {/* Visual Column - Overlapping Elements */}
+            <div className="lg:col-span-6 relative">
+              <FadeIn direction="right">
+                <div className="relative">
+                  {/* Primary Large Image */}
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="aspect-4/5 w-[85%] rounded-[3rem] overflow-hidden shadow-2xl relative z-10">
+                    <img
+                      src="https://images.unsplash.com/photo-1634638024484-1b83581271bf?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      alt="Logistics Port"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-tr from-primary-navy/40 to-transparent" />
+                  </motion.div>
+
+                  {/* Secondary Overlapping Image */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                    whileHover={{ y: -10, scale: 1.05 }}
+                    className="absolute bottom-[-10%] right-0 w-[60%] aspect-square rounded-[2.5rem] overflow-hidden shadow-[-20px_20px_60px_rgba(0,0,0,0.15)] border-8 border-white z-20">
+                    <img
+                      src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
+                      alt="Factory Production"
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
+
+                  {/* Floating Experience Badge - Integrated */}
+                  <motion.div
+                    animate={{ y: [0, -15, 0] }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                    className="absolute top-[15%] right-[-5%] z-30 bg-accent-gold p-6 lg:p-8 rounded-3xl shadow-xl border-4 border-white">
+                    <div className="text-primary-navy">
+                      <div className="text-4xl lg:text-5xl font-black leading-none">
+                        +15
+                      </div>
+                      <div className="text-[10px] font-black uppercase tracking-[0.2em] mt-1 opacity-80">
+                        {t('home_page.about_section.years_experience')}
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              </FadeIn>
+            </div>
+
+            {/* Content Column */}
+            <div
+              className={`lg:col-span-6 ${isRTL ? 'text-right' : 'text-left'}`}>
+              <FadeIn direction={isRTL ? 'left' : 'right'}>
+                <span className="section-label-gold mb-10">
+                  {t('home_page.about_section.label')}
+                </span>
+                <h2 className="text-5xl md:text-7xl font-black text-primary-navy mb-12 leading-[1.1]">
+                  {t('home_page.about_section.title_prefix')} <br />
+                  <span className="text-gold-gradient italic">
+                    {t('home_page.about_section.title_suffix')}
+                  </span>
+                </h2>
+                <p className="text-xl lg:text-2xl text-slate-600 mb-16 leading-relaxed font-medium">
+                  {t('home_page.about_section.description')}
+                </p>
+
+                {/* Integrated Features/Stats */}
+                <div className="grid grid-cols-2 gap-10 mb-16">
+                  <div className="space-y-4">
+                    <div
+                      className={`w-14 h-14 rounded-2xl bg-secondary-green/10 flex items-center justify-center text-secondary-green ${isRTL ? 'ml-auto' : 'mr-auto'}`}>
+                      <Zap size={28} />
+                    </div>
+                    <h3 className="text-xl font-black text-primary-navy">
+                      {t('home_page.about_section.speed_title')}
+                    </h3>
+                    <p className="text-slate-500 text-sm font-medium">
+                      {t('home_page.about_section.speed_desc')}
+                    </p>
+                  </div>
+                  <div className="space-y-4">
+                    <div
+                      className={`w-14 h-14 rounded-2xl bg-primary-blue/10 flex items-center justify-center text-primary-blue ${isRTL ? 'ml-auto' : 'mr-auto'}`}>
+                      <Globe2 size={28} />
+                    </div>
+                    <h3 className="text-xl font-black text-primary-navy">
+                      {t('home_page.about_section.global_title')}
+                    </h3>
+                    <p className="text-slate-500 text-sm font-medium">
+                      {t('home_page.about_section.global_desc')}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className={`flex flex-col ${isRTL ? 'sm:flex-row-reverse' : 'sm:flex-row'} gap-6 items-center`}>
+                  <Link href="/about" className="w-full sm:w-auto">
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="btn-premium py-6 px-12 group shadow-xl w-full">
+                      <span>{t('home_page.about_section.cta_more')}</span>
+                      <ArrowUpLeft
+                        size={20}
+                        className={isRTL ? '' : 'rotate-90'}
+                      />
+                    </motion.button>
+                  </Link>
+
+                  <Link
+                    href="/about"
+                    className="flex items-center gap-4 text-slate-400 group cursor-pointer hover:text-primary-navy transition-colors">
+                    <span className="text-sm font-black uppercase tracking-widest leading-none border-b border-transparent group-hover:border-primary-navy transition-all pb-1">
+                      {t('home_page.about_section.cta_story')}
+                    </span>
+                    <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-slate-50 transition-colors">
+                      <ArrowRight size={16} />
+                    </div>
+                  </Link>
+                </div>
+              </FadeIn>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -2,11 +2,11 @@ export const COMPANY_NAME = 'شركة ربزان التجارية';
 
 export const NAV_LINKS = [
   { name: 'nav.home', path: '/' },
-  { name: 'nav.about', path: '/about' },
   { name: 'nav.services', path: '/services' },
   { name: 'nav.products', path: '/products' },
-  { name: 'nav.howItWorks', path: '/how-it-works' },
   { name: 'nav.portfolio', path: '/portfolio' },
+  { name: 'nav.howItWorks', path: '/how-it-works' },
+  { name: 'nav.about', path: '/about' },
   { name: 'nav.contact', path: '/contact' },
 ];
 

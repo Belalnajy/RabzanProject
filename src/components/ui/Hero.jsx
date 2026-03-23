@@ -199,7 +199,7 @@ const Hero = () => {
               </span>
             </motion.div>
 
-            <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white leading-[1.2] mb-10 sm:mb-20">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-[1.2] mb-10 sm:mb-20">
               <span className="block mb-4 overflow-hidden">
                 <motion.span
                   initial={{ y: '100%' }}
@@ -224,7 +224,7 @@ const Hero = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.8 }}
-              className="text-lg sm:text-xl md:text-3xl text-slate-300/80 max-w-3xl leading-relaxed sm:leading-10 mb-10 sm:mb-16 font-medium">
+              className="text-lg sm:text-xl md:text-2xl text-slate-300/80 max-w-3xl leading-relaxed sm:leading-tight mb-10 sm:mb-16 font-medium">
               {t('home_page.hero.description')}
             </motion.p>
 

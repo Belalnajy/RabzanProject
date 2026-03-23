@@ -176,7 +176,7 @@ const Footer = () => {
               النشرة الاستراتيجية
             </h4>
             <p className="text-slate-400 text-sm mb-6 lg:mb-8 leading-relaxed relative">
-              اشترك للحصول على آخر تحليلات السوق وتقارير سلاسل الإمداد العالمية.
+              اشترك للحصول على آخر تحليلات السوق وتقارير سلاسل الإمداد.
             </p>
             <div className="relative">
               <input
