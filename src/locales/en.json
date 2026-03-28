@@ -200,6 +200,7 @@
     "whatsapp_inquiry": "Hi, I have an inquiry regarding product",
     "overview": "Product Overview",
     "estimated_price": "Estimated Price",
+    "price_includes_18": "Price shown includes 18% on the base list price.",
     "key_features": "Key Features",
     "technical_specs": "Technical Specifications",
     "related_products": "Related Products",
@@ -231,7 +232,41 @@
       "dimension": "Dimension",
       "weight": "Weight",
       "voltage": "Voltage",
-      "material": "Material"
+      "material": "Material",
+      "model": "Model",
+      "production_capacity": "Production Capacity",
+      "cutting_size": "Cutting Size",
+      "cutting_groove_size": "Cutting Groove Size",
+      "oil_pump_motor": "Oil Pump Motor Power",
+      "reducer_motor": "Reducer Motor Power",
+      "production_rate": "Production Rate",
+      "bucket_capacity": "Hopper / Bucket Capacity",
+      "conveyor_width": "Conveyor Width",
+      "conveyor_length": "Conveyor Length",
+      "product_diameter": "Product Diameter",
+      "packing_weight": "Packing Weight",
+      "cutting_thickness": "Cutting Thickness",
+      "belt_width": "Belt Width",
+      "cutting_height": "Cutting Height",
+      "inlet_height": "Inlet Height",
+      "max_width": "Max Working Width",
+      "max_thickness": "Max Thickness",
+      "laminating_speed": "Laminating Speed",
+      "machine_type": "Machine Type",
+      "factory_model": "Internal / OEM Model",
+      "marketing_model": "Marketing Model",
+      "print_width": "Print Width",
+      "print_heads": "Print Heads",
+      "software": "RIP / Software",
+      "package_weight": "Package Weight",
+      "max_laminating_width": "Max Laminating Width",
+      "max_laminating_thickness": "Max Laminating Thickness",
+      "max_temperature": "Max Temperature",
+      "max_speed": "Max Speed",
+      "heating_type": "Heating Type",
+      "packing_size": "Packing Size",
+      "max_material_width": "Max Material Width",
+      "max_cutting_width": "Max Cutting Width"
     },
     "items": {
       "1": {
@@ -461,6 +496,218 @@
           "maximum_folding_speed": "60m/min",
           "dimension": "4350*3200*1780mm",
           "weight": "1800KG"
+        }
+      },
+      "10": {
+        "name": "Disposable Meat Slicer (Model: RBZ-DR350)",
+        "category": "Food Processing Equipment",
+        "model": "RBZ-DR350",
+        "price": "US$7,754.00",
+        "description": "Industrial meat dicing / slicing machine in full 304 stainless steel, 500–600 kg/h.",
+        "long_description": "Heavy-duty disposable meat slicer (meat dicing machine) built from full 304 stainless steel. High throughput with German reducer, dual 1.5 kW motors for oil pump and reducer, and 380V three-phase power for stable commercial operation.",
+        "features": [
+          "Full 304 stainless steel construction for hygiene and durability",
+          "500–600 kg/h production capacity with 5 / 10 mm cutting size options",
+          "German reducer with 1.5 kW oil pump and 1.5 kW reducer motors"
+        ],
+        "specs": {
+          "model": "RBZ-DR350",
+          "material": "Full 304 stainless steel",
+          "production_capacity": "500–600 kg/h",
+          "cutting_size": "5 / 10 mm",
+          "cutting_groove_size": "84 × 84 × 350 mm",
+          "oil_pump_motor": "1.5 kW",
+          "reducer_motor": "1.5 kW (German reducer)",
+          "voltage": "380V / 60Hz / 3 Phase",
+          "dimension": "1480 × 800 × 980 mm",
+          "weight": "330 kg"
+        }
+      },
+      "11": {
+        "name": "Hair Stick Peeling Machine (Model: RBZ-MG1800)",
+        "category": "Food Processing Equipment",
+        "model": "RBZ-MG1800",
+        "price": "US$4,425.00",
+        "description": "High-capacity peeling line with 8 rollers, 2000–3000 kg/h, 304 stainless steel.",
+        "long_description": "Industrial hair stick peeling machine with eight 1800 mm rollers for continuous washing and peeling. Full 304 stainless steel body, mobile frame with casters, ideal for large-scale fruit and vegetable processing.",
+        "features": [
+          "8 peeling rollers, 1800 mm length, 140 mm diameter",
+          "Production capacity 2000–3000 kg/h",
+          "Full 304 stainless steel, 380V three-phase, 2.2 kW power"
+        ],
+        "specs": {
+          "model": "RBZ-MG1800",
+          "material": "Full 304 stainless steel",
+          "production_capacity": "2000–3000 kg/h",
+          "number_of_roller": "8",
+          "length_of_roller": "1800 mm",
+          "cylinder_diameter": "140 mm (roller)",
+          "motor_power": "2.2 kW",
+          "voltage": "380V / 60Hz / 3 Phase",
+          "dimension": "2030 × 920 × 1070 mm",
+          "weight": "350 kg"
+        }
+      },
+      "12": {
+        "name": "Meat Pie Machine (Model: RBZ-MB100)",
+        "category": "Food Processing Equipment",
+        "model": "RBZ-MB100",
+        "price": "US$4,440.00",
+        "description": "Automatic meat pie / patty former with 30L hopper, conveyor output, 35 pcs/min.",
+        "long_description": "Compact meat pie forming machine in full 304 stainless steel. 30L material hopper, mesh conveyor for discharge, adjustable product diameter 30–130 mm, suitable for patties and similar formed products.",
+        "features": [
+          "35 pieces per minute, 30L hopper capacity",
+          "130 mm conveyor width, 500 mm conveyor length",
+          "Full 304 stainless steel, 0.55 kW, 380V three-phase"
+        ],
+        "specs": {
+          "model": "RBZ-MB100",
+          "material": "Full 304 stainless steel",
+          "voltage": "380V / 60Hz / 3 Phase",
+          "motor_power": "0.55 kW",
+          "production_rate": "35 pcs/min",
+          "bucket_capacity": "30 L",
+          "conveyor_width": "130 mm",
+          "conveyor_length": "500 mm",
+          "product_diameter": "30–130 mm",
+          "weight": "100 kg (machine)",
+          "packing_weight": "153 kg"
+        }
+      },
+      "13": {
+        "name": "Bubble Ozone Cleaning Machine (Model: RBZ-QX2200)",
+        "category": "Food Processing Equipment",
+        "model": "RBZ-QX2200",
+        "price": "US$3,199.00",
+        "description": "Bubble ozone wash line for fruit and vegetables, 500–1000 kg/h, 304 stainless steel.",
+        "long_description": "Industrial bubble ozone cleaning machine with spray bars, perforated tank, and inclined discharge conveyor. Full 304 stainless steel construction for sanitary washing and sanitizing of bulk produce.",
+        "features": [
+          "Bubble ozone washing with overhead spray system",
+          "500–1000 kg/h capacity, compact 2200 mm length footprint",
+          "380V three-phase, 1.7 kW, easy to move on heavy-duty casters"
+        ],
+        "specs": {
+          "model": "RBZ-QX2200",
+          "material": "Full 304 stainless steel",
+          "voltage": "380V / 60Hz / 3 Phase",
+          "motor_power": "1.7 kW",
+          "dimension": "2200 × 850 × 1200 mm",
+          "weight": "180 kg",
+          "production_capacity": "500–1000 kg/h"
+        }
+      },
+      "14": {
+        "name": "Frozen Meat Cutting Machine (Model: RBZ-SR120S)",
+        "category": "Food Processing Equipment",
+        "model": "RBZ-SR120S",
+        "price": "US$4,033.00",
+        "description": "Stainless steel frozen meat cutter with adjustable slice thickness 1–32 mm and 120 mm belt.",
+        "long_description": "Heavy-duty frozen meat cutting machine in full 304 stainless steel. Adjustable cutting thickness from 1 to 32 mm, 120 mm wide feed belt, and 380V three-phase drive for reliable continuous operation in cold chains.",
+        "features": [
+          "Full 304 stainless steel construction",
+          "Cutting thickness 1–32 mm adjustable; 120 mm belt width",
+          "380V / 60Hz / 3-phase, 0.77 kW — mobile frame with casters"
+        ],
+        "specs": {
+          "model": "RBZ-SR120S",
+          "material": "Full 304 stainless steel",
+          "cutting_thickness": "1–32 mm (adjustable)",
+          "voltage": "380V / 60Hz / 3 Phase",
+          "motor_power": "0.77 kW",
+          "belt_width": "120 mm",
+          "cutting_height": "110 mm",
+          "inlet_height": "680 mm",
+          "weight": "148 kg"
+        }
+      },
+      "15": {
+        "name": "Cold Laminator (Model: RBZ 1700-B5)",
+        "category": "Print Finishing Equipment",
+        "model": "RBZ 1700-B5",
+        "price": "US$1,426.00",
+        "description": "Wide-format cold laminator up to 1630 mm width, 28 mm thickness, 6 m/min.",
+        "long_description": "Industrial cold laminator for wide graphics and signage. Pneumatic roller control, digital panel, and heavy-duty frame on casters for workshop mobility.",
+        "features": [
+          "Max width 1630 mm, max material thickness 28 mm",
+          "Speed up to 6 m/min, low power 120 W",
+          "Professional cold lamination for boards and flexible media"
+        ],
+        "specs": {
+          "model": "RBZ 1700-B5",
+          "machine_type": "Cold laminator",
+          "max_width": "1630 mm",
+          "max_thickness": "28 mm",
+          "laminating_speed": "6 m/min",
+          "motor_power": "120 W",
+          "weight": "115 kg"
+        }
+      },
+      "16": {
+        "name": "Eco Solvent Printer (Model: RBZ-1800)",
+        "category": "Large Format Printing",
+        "model": "RBZ-1800",
+        "price": "US$12,077.00",
+        "description": "1.8 m eco-solvent printer with four I3200-E1 heads and Maintop RIP software.",
+        "long_description": "Large-format eco solvent printer with 1800 mm print width, four Epson I3200-E1 print heads, and Maintop software for stable production of banners, decals, and outdoor graphics.",
+        "features": [
+          "Print width 1800 mm, four I3200-E1 heads",
+          "Maintop RIP included for production workflows",
+          "Industrial chassis with cooling and mobile stand"
+        ],
+        "specs": {
+          "factory_model": "H8194S",
+          "marketing_model": "RBZ-1800",
+          "print_width": "1800 mm",
+          "print_heads": "I3200-E1 × 4",
+          "software": "Maintop",
+          "package_weight": "470 kg"
+        }
+      },
+      "17": {
+        "name": "Roll Laminator (1.7 m) – Model: RBZ-1700S",
+        "category": "Print Finishing Equipment",
+        "model": "RBZ-1700S",
+        "price_card": "US$1,628 / US$1,764",
+        "price_no_cutter": "Without cutter: US$1,628.00",
+        "price_with_cutter": "With cutter: US$1,764.00",
+        "description": "Hot roll laminator 1.7 m, up to 1730 mm width, 50 mm thickness, 125°C, 58 m/min.",
+        "long_description": "Industrial hot roll laminator for wide-format graphics. High-speed operation up to 58 m/min, temperature up to 125°C, and heavy-duty construction. Available without cutter or with cutter — see pricing options.",
+        "features": [
+          "Max laminating width 1730 mm, thickness up to 50 mm",
+          "Hot laminator up to 125°C, speed up to 58 m/min",
+          "Heavy package ~1000 kg — confirm logistics with our team"
+        ],
+        "specs": {
+          "model": "RBZ-1700S",
+          "max_laminating_width": "1730 mm",
+          "max_laminating_thickness": "50 mm",
+          "max_temperature": "125°C",
+          "max_speed": "58 m/min",
+          "heating_type": "Hot laminator",
+          "packing_size": "2500 × 1030 × 1750 mm (4.51 CBM)",
+          "package_weight": "1000 kg"
+        }
+      },
+      "18": {
+        "name": "Cutting Plotter (1.6 m) – Model: RBZ-GH1660",
+        "category": "Large Format Printing",
+        "model": "RBZ-GH1660",
+        "price": "US$964.00",
+        "description": "1.66 m vinyl cutting plotter, 1540 mm cut width, SignMaster software.",
+        "long_description": "Large-format vinyl cutting plotter for signage and vehicle graphics. Wide material path, precise cutting width, and SignMaster software for production workflows.",
+        "features": [
+          "Max material width 1660 mm, max cutting width 1540 mm",
+          "SignMaster software",
+          "Compact shipping: 1950 × 350 × 430 mm (0.3 CBM), 42 kg"
+        ],
+        "specs": {
+          "model": "RBZ-GH1660",
+          "machine_type": "Vinyl cutting plotter",
+          "max_material_width": "1660 mm",
+          "max_cutting_width": "1540 mm",
+          "software": "SignMaster",
+          "packing_size": "1950 × 350 × 430 mm (0.3 CBM)",
+          "package_weight": "42 kg"
         }
       }
     }

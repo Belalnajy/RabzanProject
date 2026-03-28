@@ -118,6 +118,17 @@ const ProductDetails = () => {
                     className="w-full h-auto object-cover"
                   />
                 </div>
+                {product.gallery?.map((src, gi) => (
+                  <div
+                    key={gi}
+                    className="rounded-[2rem] overflow-hidden shadow-lg border border-slate-100">
+                    <img
+                      src={src}
+                      alt={`${t(product.name)} — ${gi + 2}`}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                ))}
 
                 <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 text-center">
                   <h3 className="text-xl font-black text-primary-navy mb-4">
@@ -159,9 +170,26 @@ const ProductDetails = () => {
                     <span className="block text-slate-300 text-sm font-bold mb-1">
                       {t('products.estimated_price')}
                     </span>
-                    <span className="text-3xl font-black text-accent-gold">
-                      {t(product.price)}
-                    </span>
+                    {product.priceDetailLines?.length ? (
+                      <div className="space-y-2">
+                        {product.priceDetailLines.map((lineKey) => (
+                          <span
+                            key={lineKey}
+                            className="block text-xl sm:text-2xl font-black text-accent-gold leading-snug">
+                            {t(lineKey)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-3xl font-black text-accent-gold">
+                        {t(product.price)}
+                      </span>
+                    )}
+                    {product.priceIncludesPercent18 && (
+                      <span className="block text-slate-300 text-xs font-medium mt-2 max-w-xs">
+                        {t('products.price_includes_18')}
+                      </span>
+                    )}
                   </div>
                   <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
                     <Tag size={24} />
