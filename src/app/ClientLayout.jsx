@@ -2,11 +2,21 @@
 
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePathname } from 'next/navigation';
 import Footer from '../components/layout/Footer';
 import '../i18n';
 
 export default function ClientLayout({ children }) {
   const { i18n } = useTranslation();
+  const pathname = usePathname() || '';
+
+  const hideFooterPaths = [
+    '/login', '/register', '/forgot-password', '/reset-password',
+    '/dashboard', '/orders', '/categories', '/customers', '/inventory', 
+    '/analytics', '/reports', '/roles', '/security', '/settings'
+  ];
+  
+  const hideFooter = hideFooterPaths.includes(pathname) || pathname.startsWith('/dashboard');
 
   useEffect(() => {
     document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
@@ -16,7 +26,7 @@ export default function ClientLayout({ children }) {
   return (
     <>
       <div className="App">{children}</div>
-      <Footer />
+      {!hideFooter && <Footer />}
     </>
   );
 }

@@ -967,5 +967,27 @@
         "submit": "Send Request"
       }
     }
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Create an Account",
+    "fullName": "Full Name",
+    "emailUsername": "Email or Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "or": "or",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "resetPassword": "Reset Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "sendResetLink": "Send Reset Link",
+    "changePassword": "Change Password",
+    "backToLogin": "Back to Login",
+    "resetLinkSent": "A reset link has been sent to your email",
+    "passwordChanged": "Password has been changed successfully",
+    "loginError": "Incorrect email or password"
   }
 }
