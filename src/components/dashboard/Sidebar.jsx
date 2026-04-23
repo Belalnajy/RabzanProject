@@ -6,12 +6,12 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Archive,
+  Boxes,
   LayoutGrid,
   Users,
-  Package,
   TrendingUp,
-  FileText,
-  UserCheck,
+  Files,
+  UserCog,
   ShieldCheck,
   Settings,
   LogOut,
@@ -34,50 +34,50 @@ const navItems = [
     permissionKey: 'view_orders',
   },
   {
-    icon: LayoutGrid,
-    path: '/categories',
+    icon: Boxes,
+    path: '/dashboard/categories',
     label: 'التصنيفات',
     permissionKey: 'view_categories',
   },
   {
+    icon: LayoutGrid,
+    path: '/dashboard/products',
+    label: 'المنتجات',
+    permissionKey: 'view_products',
+  },
+  {
     icon: Users,
-    path: '/customers',
+    path: '/dashboard/customers',
     label: 'العملاء',
     permissionKey: 'view_customers',
   },
   {
-    icon: Package,
-    path: '/inventory',
-    label: 'المخزون',
-    permissionKey: 'view_inventory',
-  },
-  {
     icon: TrendingUp,
-    path: '/analytics',
-    label: 'التحليلات',
-    permissionKey: 'view_analytics',
+    path: '/dashboard/finance',
+    label: 'النظرة المالية',
+    permissionKey: 'view_dashboard',
   },
   {
-    icon: FileText,
-    path: '/reports',
+    icon: Files,
+    path: '/dashboard/reports',
     label: 'التقارير',
     permissionKey: 'view_reports',
   },
   {
-    icon: UserCheck,
-    path: '/roles',
-    label: 'الصلاحيات',
-    permissionKey: 'manage_roles',
+    icon: UserCog,
+    path: '/dashboard/users',
+    label: 'المستخدمين',
+    permissionKey: 'manage_users',
   },
   {
     icon: ShieldCheck,
-    path: '/security',
-    label: 'الأمان',
-    permissionKey: 'manage_security',
+    path: '/dashboard/roles',
+    label: 'الأدوار',
+    permissionKey: 'manage_roles',
   },
   {
     icon: Settings,
-    path: '/settings',
+    path: '/dashboard/settings',
     label: 'الإعدادات',
     permissionKey: 'manage_settings',
   },
@@ -90,11 +90,13 @@ export default function Sidebar() {
   const userPermissions = [
     'view_dashboard',
     'view_orders',
+    'view_products',
     'view_categories',
     'view_customers',
     'view_inventory',
     'view_analytics',
     'view_reports',
+    'manage_users',
     'manage_roles',
     'manage_security',
     'manage_settings',
@@ -115,7 +117,7 @@ export default function Sidebar() {
         className={`
         group bg-[#040814]/95 backdrop-blur-xl h-screen fixed right-0 top-0 flex flex-col py-8 z-50 isolate
         transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
-        md:rounded-l-[40px]  overflow-x-hidden no-scrollbar
+        md:rounded-l-[40px]  overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
         ${
           isSidebarOpen
             ? 'w-[280px] md:w-[260px] translate-x-0 opacity-100 flex'
@@ -155,7 +157,7 @@ export default function Sidebar() {
         </div>
 
         {/* Nav Items */}
-        <nav className="flex-1 w-full flex flex-col gap-1.5 md:gap-2 relative overflow-y-auto overflow-x-hidden no-scrollbar px-3 md:px-0">
+        <nav className="flex-1 w-full flex flex-col gap-1.5 md:gap-2 relative overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-3 md:px-0">
           {authorizedNavItems.map((item) => {
             const isActive =
               pathname === item.path ||
@@ -171,12 +173,10 @@ export default function Sidebar() {
                   <>
                     <div className="absolute top-0 right-0 md:right-4 left-0 bottom-0 bg-linear-to-l from-white/10 to-white/5 md:bg-[#FAFBFC] rounded-r-2xl md:rounded-r-full z-0 transition-all duration-300" />
                     {/* Inverted Radius (Notches) - Always visible when active */}
-                    <div
-                      className="hidden md:block absolute -top-6 left-0 w-6 h-6 bg-[#FAFBFC] z-0 transition-opacity duration-300 opacity-100">
+                    <div className="hidden md:block absolute -top-6 left-0 w-6 h-6 bg-[#FAFBFC] z-0 transition-opacity duration-300 opacity-100">
                       <div className="w-full h-full bg-[#040814] rounded-bl-[24px]" />
                     </div>
-                    <div
-                      className="hidden md:block absolute -bottom-6 left-0 w-6 h-6 bg-[#FAFBFC] z-0 transition-opacity duration-300 opacity-100">
+                    <div className="hidden md:block absolute -bottom-6 left-0 w-6 h-6 bg-[#FAFBFC] z-0 transition-opacity duration-300 opacity-100">
                       <div className="w-full h-full bg-[#040814] rounded-tl-[24px]" />
                     </div>
                   </>
