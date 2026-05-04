@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePathname } from 'next/navigation';
 import Footer from '../components/layout/Footer';
+import { AuthProvider } from '@/contexts/AuthContext';
 import '../i18n';
 
 export default function ClientLayout({ children }) {
@@ -24,9 +25,9 @@ export default function ClientLayout({ children }) {
   }, [i18n.language]);
 
   return (
-    <>
+    <AuthProvider>
       <div className="App">{children}</div>
       {!hideFooter && <Footer />}
-    </>
+    </AuthProvider>
   );
 }

@@ -7,7 +7,9 @@
     "products": "Products",
     "howItWorks": "How It Works",
     "portfolio": "Projects",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "login": "Sign In",
+    "dashboard": "Dashboard"
   },
   "home": {
     "hero": {
@@ -754,7 +756,17 @@
       "title_highlight": "you are looking for?",
       "description": "Contact us directly and we will source any product you need from any global factory with the best specifications.",
       "button": "Free Sourcing Consultation"
-    }
+    },
+    "search_placeholder": "Search for a product...",
+    "all_categories": "All Categories",
+    "results": "results",
+    "clear_filters": "Clear Filters",
+    "no_results": "No matching products",
+    "no_results_desc": "Try changing the search term or selected category",
+    "show_all": "Show All Products",
+    "showing": "Showing",
+    "of": "of",
+    "product": "products"
   },
   "services_page": {
     "hero": {

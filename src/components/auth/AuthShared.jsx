@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 export const AuthHeader = ({ title }) => (
   <div className="flex flex-col items-center mb-8">
@@ -39,12 +39,14 @@ export const AuthInput = ({ icon: Icon, type, placeholder, name, value, onChange
   );
 };
 
-export const AuthButton = ({ children, onClick, type = "submit" }) => (
+export const AuthButton = ({ children, onClick, type = "submit", loading = false, disabled = false }) => (
   <button 
     type={type}
     onClick={onClick}
-    className="w-full bg-[#B08B3A] hover:bg-[#c29c45] text-white font-medium py-[14px] rounded-xl transition-colors mt-2"
+    disabled={loading || disabled}
+    className="w-full bg-[#B08B3A] hover:bg-[#c29c45] text-white font-medium py-[14px] rounded-xl transition-colors mt-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
   >
+    {loading && <Loader2 size={18} className="animate-spin" />}
     {children}
   </button>
 );

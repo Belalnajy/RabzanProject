@@ -1,248 +1,180 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import Header from '../../../../../../components/dashboard/Header';
-import { Save, ChevronDown } from 'lucide-react';
+import Header from '@/components/dashboard/Header';
+import { Save, ChevronDown, AlertCircle } from 'lucide-react';
+import { useApi, useMutation } from '@/hooks/useApi';
+import { LoadingState, ErrorState } from '@/components/dashboard/DataStates';
+import { usersService } from '@/lib/services/users.service';
+import { rolesService } from '@/lib/services/roles.service';
 
 export default function EditUserPage() {
   const router = useRouter();
   const params = useParams();
   const userId = params.id;
-  
-  // Form State
+
+  const { data: user, loading, error, refetch } = useApi(
+    () => usersService.getById(userId),
+    [userId],
+  );
+  const { data: rolesData } = useApi(() => rolesService.list(), []);
+  const roles = Array.isArray(rolesData) ? rolesData : [];
+
+  const { mutate: updateUser, loading: saving } = useMutation((data) =>
+    usersService.update(userId, data),
+  );
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    username: '',
     phone: '',
     password: '',
     confirmPassword: '',
-    role: '',
-    status: 'active'
+    roleId: '',
   });
+  const [formError, setFormError] = useState(null);
 
   useEffect(() => {
-    // TODO: Fetch existing user data using userId from /api/users/[id]
-    // Mocking API response:
-    setFormData({
-      fullName: 'أحمد محمد علي',
-      email: 'ahmed@company.com',
-      username: 'ahmed.ali',
-      phone: '100 123 4567',
-      password: 'mypassword', // Normally passwords are not fetched, but kept empty unless changing
-      confirmPassword: 'mypassword',
-      role: 'admin',
-      status: 'active'
-    });
-  }, [userId]);
+    if (user) {
+      setFormData({
+        fullName: user.fullName ?? '',
+        email: user.email ?? '',
+        phone: user.phone ?? '',
+        password: '',
+        confirmPassword: '',
+        roleId: user.roleId ?? user.role?.id ?? '',
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Connect to backend API: PUT/PATCH /api/users/[id]
-    console.log('Saving user changes...', formData);
-    router.push('/dashboard/users');
+    setFormError(null);
+
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      setFormError('كلمتا المرور غير متطابقتين');
+      return;
+    }
+
+    const payload = {
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      roleId: formData.roleId,
+    };
+    if (formData.password) payload.password = formData.password;
+
+    try {
+      await updateUser(payload);
+      router.push(`/dashboard/users/${userId}`);
+    } catch (err) {
+      setFormError(err?.message || 'تعذر حفظ التغييرات');
+    }
   };
+
+  if (loading) return <LoadingState message="جاري تحميل المستخدم..." />;
+  if (error) return <ErrorState error={error} onRetry={refetch} />;
 
   return (
     <>
       <Header title="" subtitle="" variant="transparent" />
 
       <form onSubmit={handleSubmit} className="flex flex-col mb-12">
-        {/* Page Header Area */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 mt-[-1rem]">
           <div>
             <h1 className="text-2xl font-black text-[#040814] mb-1">تعديل المستخدم</h1>
             <p className="text-sm font-bold text-gray-500">تعديل معلومات المستخدم</p>
           </div>
-          <button 
+          <button
             type="submit"
-            className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B08B3A] text-white px-8 py-3 rounded-xl font-bold transition-colors shadow-sm focus:outline-none"
+            disabled={saving}
+            className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B08B3A] text-white px-8 py-3 rounded-xl font-bold transition-colors shadow-sm focus:outline-none disabled:opacity-60"
           >
             <Save size={18} strokeWidth={2.5} />
-            حفظ التغييرات
+            {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
           </button>
         </div>
 
-        {/* Basic Info Section */}
+        {formError && (
+          <div className="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 font-bold text-sm">
+            <AlertCircle size={18} />
+            {formError}
+          </div>
+        )}
+
         <div className="bg-white rounded-[24px] border border-gray-100 shadow-sm p-8 mb-8">
           <h2 className="text-xl font-black text-[#040814] mb-8">المعلومات الأساسية</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Full Name */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-[#040814]">
-                الاسم الكامل <span className="text-rose-500">*</span>
-              </label>
-              <input 
-                type="text" 
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleInputChange}
+            <Field label="الاسم الكامل" required>
+              <input
+                type="text" name="fullName" value={formData.fullName}
+                onChange={handleInputChange} required
                 className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-right"
-                required
               />
-            </div>
-
-            {/* Email */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-[#040814]">
-                البريد الإلكتروني <span className="text-rose-500">*</span>
-              </label>
-              <input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
+            </Field>
+            <Field label="البريد الإلكتروني" required>
+              <input
+                type="email" name="email" value={formData.email}
+                onChange={handleInputChange} required dir="ltr"
                 className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                dir="ltr"
-                required
               />
-            </div>
-
-            {/* Username */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-[#040814]">
-                اسم المستخدم <span className="text-rose-500">*</span>
-              </label>
-              <input 
-                type="text" 
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
+            </Field>
+            <Field label="رقم الهاتف">
+              <input
+                type="tel" name="phone" value={formData.phone}
+                onChange={handleInputChange} dir="ltr"
                 className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                dir="ltr"
-                required
               />
-            </div>
-
-            {/* Phone Number */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-[#040814]">
-                رقم الهاتف <span className="text-rose-500">*</span>
-              </label>
-              <input 
-                type="tel" 
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                dir="ltr"
-                required
-              />
-            </div>
-
-            {/* Password */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-[#040814]">
-                كلمة المرور <span className="text-rose-500">*</span>
-              </label>
-              <input 
-                type="password" 
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                dir="ltr"
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-[#040814]">
-                تأكيد كلمة المرور <span className="text-rose-500">*</span>
-              </label>
-              <input 
-                type="password" 
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                dir="ltr"
-              />
-            </div>
-
-            {/* Role Allocation */}
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label className="text-sm font-bold text-[#040814]">تخصيص الدور</label>
+            </Field>
+            <Field label="الدور" required>
               <div className="relative">
-                <select 
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className="w-full appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-gray-500 outline-none cursor-pointer focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                <select
+                  name="roleId" value={formData.roleId} onChange={handleInputChange} required
+                  className="w-full appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none cursor-pointer focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                 >
                   <option value="">اختر الدور</option>
-                  <option value="admin">مسؤول</option>
-                  <option value="operations">عمليات</option>
-                  <option value="accounting">محاسبة</option>
+                  {roles.map((r) => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
                 </select>
-                <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
               </div>
-            </div>
-
+            </Field>
+            <Field label="كلمة المرور الجديدة (اختياري)">
+              <input
+                type="password" name="password" value={formData.password}
+                onChange={handleInputChange} placeholder="••••••••" dir="ltr" minLength={8}
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
+              />
+            </Field>
+            <Field label="تأكيد كلمة المرور">
+              <input
+                type="password" name="confirmPassword" value={formData.confirmPassword}
+                onChange={handleInputChange} placeholder="••••••••" dir="ltr" minLength={8}
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
+              />
+            </Field>
           </div>
         </div>
-
-        {/* Status Control Section */}
-        <div className="bg-white rounded-[24px] border border-gray-100 shadow-sm p-8">
-          <h2 className="text-xl font-black text-[#040814] mb-8">التحكم في الحالة</h2>
-          
-          <h3 className="text-base font-bold text-[#040814] mb-4">حالة المستخدم</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <label 
-              className={`flex flex-col items-center justify-center p-6 rounded-2xl cursor-pointer border-2 transition-all ${
-                formData.status === 'active' 
-                ? 'border-emerald-500 bg-emerald-50/30' 
-                : 'border-gray-100 hover:border-gray-200'
-              }`}
-            >
-              <input 
-                type="radio" 
-                name="status" 
-                value="active" 
-                checked={formData.status === 'active'}
-                onChange={handleInputChange}
-                className="hidden"
-              />
-              <span className={`text-base font-black mb-1 ${formData.status === 'active' ? 'text-emerald-600' : 'text-[#040814]'}`}>
-                نشط
-              </span>
-              <span className="text-xs font-bold text-gray-400">يمكنه الدخول للنظام واستخدام صلاحياته</span>
-            </label>
-
-            <label 
-              className={`flex flex-col items-center justify-center p-6 rounded-2xl cursor-pointer border-2 transition-all ${
-                formData.status === 'inactive' 
-                ? 'border-[#040814] bg-gray-50' 
-                : 'border-gray-100 hover:border-gray-200'
-              }`}
-            >
-              <input 
-                type="radio" 
-                name="status" 
-                value="inactive" 
-                checked={formData.status === 'inactive'}
-                onChange={handleInputChange}
-                className="hidden"
-              />
-              <span className={`text-base font-black mb-1 ${formData.status === 'inactive' ? 'text-[#040814]' : 'text-[#040814]'}`}>
-                غير نشط
-              </span>
-              <span className="text-xs font-bold text-gray-400">لا يمكنه الدخول للنظام</span>
-            </label>
-
-          </div>
-        </div>
-
       </form>
     </>
+  );
+}
+
+function Field({ label, required, children }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-bold text-[#040814]">
+        {label} {required && <span className="text-rose-500">*</span>}
+      </label>
+      {children}
+    </div>
   );
 }

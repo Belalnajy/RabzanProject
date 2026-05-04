@@ -8,24 +8,58 @@ import {
   User,
   Settings,
   LogOut,
-  CheckCircle2,
   Package,
+  CreditCard,
+  ArrowRightCircle,
+  FileText,
   Menu,
 } from 'lucide-react';
 import { useSidebar } from './SidebarContext';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { notificationsService } from '@/lib/services/notifications.service';
+
+function getInitials(name = '') {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '؟';
+  if (parts.length === 1) return parts[0].slice(0, 2);
+  return `${parts[0][0]}.${parts[1][0]}`;
+}
+
+const NOTIF_ICON_MAP = {
+  order_created: { icon: Package, color: 'bg-blue-100 text-blue-600' },
+  payment_added: { icon: CreditCard, color: 'bg-emerald-100 text-emerald-600' },
+  stage_updated: { icon: ArrowRightCircle, color: 'bg-amber-100 text-amber-600' },
+};
+const DEFAULT_ICON = { icon: FileText, color: 'bg-gray-100 text-gray-600' };
+
+function relativeTime(value) {
+  if (!value) return '';
+  const diff = (Date.now() - new Date(value).getTime()) / 1000;
+  if (diff < 60) return 'الآن';
+  if (diff < 3600) return `منذ ${Math.floor(diff / 60)} دقيقة`;
+  if (diff < 86400) return `منذ ${Math.floor(diff / 3600)} ساعة`;
+  return `منذ ${Math.floor(diff / 86400)} يوم`;
+}
 
 export default function Header({
   title = 'لوحة التحكم الرئيسية',
   subtitle = 'مرحباً بك! إليك نظرة عامة على عملياتك اللوجستية',
   variant = 'transparent',
 }) {
+  const router = useRouter();
   const { toggleSidebar } = useSidebar();
+  const { user, logout, isAuthenticated } = useAuth();
+  const displayName = user?.fullName || 'مستخدم';
+  const roleName = user?.role?.nameAr || user?.role?.name || '';
+  const initials = getInitials(displayName);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [recentNotifs, setRecentNotifs] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  // Refs for clicking outside
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
@@ -41,6 +75,54 @@ export default function Header({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const loadNotifs = async () => {
+    if (!isAuthenticated) return;
+    try {
+      const [list, unread] = await Promise.all([
+        notificationsService.list({ page: 1, limit: 5 }),
+        notificationsService.getUnreadCount(),
+      ]);
+      setRecentNotifs(list?.data ?? []);
+      setUnreadCount(unread?.count ?? 0);
+    } catch {
+      // ignore — header should fail silently
+    }
+  };
+
+  useEffect(() => {
+    loadNotifs();
+    if (!isAuthenticated) return;
+    const interval = setInterval(loadNotifs, 60000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  const handleMarkAll = async (e) => {
+    e.stopPropagation();
+    try {
+      await notificationsService.markAllAsRead();
+      await loadNotifs();
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleNotifClick = async (notif) => {
+    setIsNotificationsOpen(false);
+    if (!notif.isRead) {
+      try {
+        await notificationsService.markAsRead(notif.id);
+        loadNotifs();
+      } catch {
+        // ignore
+      }
+    }
+    if (notif.referenceId) {
+      if (notif.referenceType === 'order') router.push(`/orders/${notif.referenceId}`);
+      if (notif.referenceType === 'transaction') router.push(`/dashboard/transactions/${notif.referenceId}`);
+    }
+  };
 
   return (
     <header
@@ -113,7 +195,11 @@ export default function Header({
               size={18}
               className={isNotificationsOpen ? 'text-amber-500' : ''}
             />
-            <span className="absolute top-2 left-2 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -left-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-black border-2 border-white rounded-full flex items-center justify-center" dir="ltr">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
           </button>
 
           {/* Notifications Dropdown */}
@@ -124,28 +210,55 @@ export default function Header({
                 : 'opacity-0 scale-95 invisible'
             }`}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-              <h3 className="font-bold text-[#040814] text-sm">التنبيهات</h3>
-              <button className="text-[11px] text-[#B08B3A] font-bold hover:underline">
-                تحديد الكل كمقروء
-              </button>
+              <h3 className="font-bold text-[#040814] text-sm">
+                التنبيهات
+                {unreadCount > 0 && (
+                  <span className="ms-2 bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full" dir="ltr">
+                    {unreadCount}
+                  </span>
+                )}
+              </h3>
+              {unreadCount > 0 && (
+                <button onClick={handleMarkAll} className="text-[11px] text-[#B08B3A] font-bold hover:underline focus:outline-none">
+                  تحديد الكل كمقروء
+                </button>
+              )}
             </div>
             <div className="flex flex-col max-h-[320px] overflow-y-auto no-scrollbar">
-              <div className="flex gap-4 p-4 border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors relative">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                  <CheckCircle2 size={18} />
+              {recentNotifs.length === 0 ? (
+                <div className="px-5 py-10 text-center text-xs font-bold text-gray-400">
+                  لا توجد إشعارات حالياً
                 </div>
-                <div className="pt-0.5 min-w-0">
-                  <p className="text-sm font-bold text-[#040814] truncate">
-                    تم تسليم الشحنة #ORD-1284
-                  </p>
-                  <p className="text-xs font-medium text-gray-500 truncate">
-                    العميل استلم الشحنة بنجاح
-                  </p>
-                  <span className="text-[10px] font-bold text-gray-400">
-                    منذ 5 دقائق
-                  </span>
-                </div>
-              </div>
+              ) : (
+                recentNotifs.map((n) => {
+                  const meta = NOTIF_ICON_MAP[n.type] || DEFAULT_ICON;
+                  const Icon = meta.icon;
+                  return (
+                    <div
+                      key={n.id}
+                      onClick={() => handleNotifClick(n)}
+                      className={`flex gap-4 p-4 border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors relative ${
+                        !n.isRead ? 'bg-amber-50/30' : ''
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${meta.color}`}>
+                        <Icon size={18} />
+                      </div>
+                      <div className="pt-0.5 min-w-0 flex-1">
+                        <p className={`text-sm truncate ${n.isRead ? 'font-bold text-gray-700' : 'font-black text-[#040814]'}`}>
+                          {n.message}
+                        </p>
+                        <span className="text-[10px] font-bold text-gray-400">
+                          {relativeTime(n.createdAt)}
+                        </span>
+                      </div>
+                      {!n.isRead && (
+                        <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1" />
+                      )}
+                    </div>
+                  );
+                })
+              )}
             </div>
             <div className="p-3 border-t border-gray-100 bg-gray-50/50 text-center">
               <Link
@@ -170,10 +283,10 @@ export default function Header({
                 : 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50'
             }`}>
             <div className="w-8 md:w-9 h-8 md:h-9 rounded-full bg-linear-to-tr from-[#B08B3A] to-[#F1D792] flex items-center justify-center text-[#040814] font-black text-[10px] md:text-xs overflow-hidden border border-white shrink-0">
-              <span>أ.م</span>
+              <span>{initials}</span>
             </div>
             <span className="font-bold text-[13px] text-[#040814] whitespace-nowrap hidden sm:block">
-              أحمد محمد
+              {displayName}
             </span>
             <ChevronDown
               size={14}
@@ -189,10 +302,12 @@ export default function Header({
                 : 'opacity-0 scale-95 invisible'
             }`}>
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-              <p className="font-black text-[#040814]">أحمد محمد</p>
-              <p className="text-xs font-medium text-gray-500 mt-1">
-                مدير النظام
-              </p>
+              <p className="font-black text-[#040814]">{displayName}</p>
+              {roleName && (
+                <p className="text-xs font-medium text-gray-500 mt-1">
+                  {roleName}
+                </p>
+              )}
             </div>
             <div className="flex flex-col py-2">
               <Link
@@ -209,7 +324,9 @@ export default function Header({
               </Link>
             </div>
             <div className="border-t border-gray-100 py-2 bg-rose-50/30">
-              <button className="w-full flex items-center gap-3 px-5 py-3 hover:bg-rose-50 text-[13px] font-bold text-rose-600 transition-colors text-right">
+              <button
+                onClick={logout}
+                className="w-full flex items-center gap-3 px-5 py-3 hover:bg-rose-50 text-[13px] font-bold text-rose-600 transition-colors text-right cursor-pointer">
                 <LogOut size={18} />
                 تسجيل الخروج
               </button>

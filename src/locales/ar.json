@@ -7,7 +7,9 @@
     "products": "منتجاتنا",
     "howItWorks": "كيف نعمل",
     "portfolio": "مشاريعنا",
-    "contact": "اتصل بنا"
+    "contact": "اتصل بنا",
+    "login": "تسجيل الدخول",
+    "dashboard": "لوحة التحكم"
   },
   "home": {
     "hero": {
@@ -754,7 +756,17 @@
       "title_highlight": "تبحث عنه؟",
       "description": "تواصل معنا مباشرة وسنقوم بتوفير أي منتج تحتاجه من أي مصنع بأفضل المواصفات.",
       "button": "استشارة توريد مجانية"
-    }
+    },
+    "search_placeholder": "ابحث عن منتج...",
+    "all_categories": "جميع الفئات",
+    "results": "نتيجة",
+    "clear_filters": "مسح الفلاتر",
+    "no_results": "لا توجد منتجات مطابقة",
+    "no_results_desc": "جرب تغيير كلمة البحث أو الفئة المحددة",
+    "show_all": "عرض جميع المنتجات",
+    "showing": "عرض",
+    "of": "من",
+    "product": "منتج"
   },
   "services_page": {
     "hero": {

@@ -1,16 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
-import Header from '../../../../components/dashboard/Header';
+import React, { useMemo, useState } from 'react';
+import Header from '@/components/dashboard/Header';
+import { LoadingState, ErrorState, EmptyState } from '@/components/dashboard/DataStates';
 import {
-  FileText, TrendingUp, ShoppingCart, DollarSign, Percent, 
-  CheckCircle, Download, AlertTriangle, Calendar, BarChart2,
-  ChevronDown, ChevronLeft, ChevronRight, ArrowLeft
+  FileText, TrendingUp, ShoppingCart, DollarSign, Percent,
+  CheckCircle, Download, ChevronDown, BarChart2, AlertTriangle,
+  Calendar,
 } from 'lucide-react';
+import { useApi } from '@/hooks/useApi';
+import { reportsService } from '@/lib/services/reports.service';
+import { customersService } from '@/lib/services/customers.service';
+import { productsService } from '@/lib/services/products.service';
 
-// ==========================================
-// MOCK DATA & CONSTANTS (API Ready)
-// ==========================================
 const TABS = [
   { id: 'overview', label: 'نظرة عامة' },
   { id: 'sales', label: 'تقارير المبيعات' },
@@ -18,500 +20,579 @@ const TABS = [
   { id: 'commissions', label: 'تقارير العمولات' },
 ];
 
-const MOCK_OVERVIEW_KPIS = [
-  { id: 1, label: 'إجمالي المبيعات', value: '3,500,000 EGP', icon: DollarSign, color: 'text-[#003366]', bg: 'bg-blue-50', valColor: 'text-[#003366]' },
-  { id: 2, label: 'إجمالي الطلبات', value: '270', icon: ShoppingCart, color: 'text-amber-500', bg: 'bg-amber-50', valColor: 'text-amber-500' },
-  { id: 3, label: 'متوسط قيمة الطلب', value: '12,963 EGP', icon: BarChart2, color: 'text-amber-500', bg: 'bg-amber-50', valColor: 'text-amber-500' },
-  { id: 4, label: 'إجمالي الأرباح', value: '1,050,000 EGP', icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-50', valColor: 'text-emerald-500' },
-  { id: 5, label: 'إجمالي العمولات', value: '3,500,000 EGP', icon: Percent, color: 'text-purple-500', bg: 'bg-purple-50', valColor: 'text-purple-500' },
-  { id: 6, label: 'نسبة الطلبات المكتملة', value: '53.7%', icon: CheckCircle, color: 'text-gray-500', bg: 'bg-gray-100', valColor: 'text-[#040814]' },
+const PERIODS = [
+  { value: '', label: 'كل الفترات' },
+  { value: '7d', label: 'آخر 7 أيام' },
+  { value: '30d', label: 'آخر 30 يوم' },
+  { value: '90d', label: 'آخر 90 يوم' },
+  { value: '6m', label: 'آخر 6 شهور' },
+  { value: '1y', label: 'آخر سنة' },
 ];
 
-const MOCK_COMMISSION_KPIS = [
-  { id: 1, label: 'إجمالي العمولات المتولدة', value: '458,750 ريال', icon: TrendingUp, color: 'text-[#003366]', bg: 'bg-blue-50', valColor: 'text-[#003366]' },
-  { id: 2, label: 'العمولات المستلمة', value: '382,500 ريال', icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-50', valColor: 'text-emerald-500' },
-  { id: 3, label: 'العمولات المتبقية', value: '76,250 ريال', icon: AlertTriangle, color: 'text-rose-500', bg: 'bg-rose-50', valColor: 'text-rose-500' },
-  { id: 4, label: 'عمولات حسب الفترة', value: '152,187 ريال', icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-50', valColor: 'text-amber-500' },
+const STATUSES = [
+  { value: '', label: 'كل الحالات' },
+  { value: 'active', label: 'نشط' },
+  { value: 'closed', label: 'مغلق' },
+  { value: 'on_hold', label: 'معلق' },
+  { value: 'cancelled', label: 'ملغى' },
 ];
 
-const MOCK_SALES_TABLE = [
-  { id: 'ORD-12456', client: 'سارة عبدالرحمن', product: 'صمامات صناعية', qty: 350, total: '125,000 EGP', comm: '6,250 EGP', status: 'مكتملة', statusColor: 'bg-emerald-100/60 text-emerald-600', date: '2026-03-01' },
-  { id: 'ORD-12457', client: 'سارة عبدالرحمن', product: 'صمامات صناعية', qty: 350, total: '125,000 EGP', comm: '6,250 EGP', status: 'معلقة', statusColor: 'bg-amber-100/60 text-amber-600', date: '2026-03-01' },
-  { id: 'ORD-12458', client: 'سارة عبدالرحمن', product: 'صمامات صناعية', qty: 350, total: '125,000 EGP', comm: '6,250 EGP', status: 'ملغية', statusColor: 'bg-rose-100/60 text-rose-600', date: '2026-03-01' },
-];
-
-const MOCK_FINANCIAL_TABLE = [
-  { client: 'سارة عبدالرحمن', rev: '450,000 EGP', paid: '405,000 EGP', due: '45,000 EGP', over: '---', status: 'مدفوع جزئياً', statusColor: 'bg-amber-100/60 text-amber-600' },
-  { client: 'سارة عبدالرحمن', rev: '450,000 EGP', paid: '450,000 EGP', due: '0 EGP', over: '---', status: 'مدفوع بالكامل', statusColor: 'bg-emerald-100/60 text-emerald-600' },
-  { client: 'سارة عبدالرحمن', rev: '450,000 EGP', paid: '405,000 EGP', due: '45,000 EGP', over: '35,000 EGP', status: 'متأخر', statusColor: 'bg-rose-100/60 text-rose-600' },
-];
-
-const MOCK_COMMISSION_TABLE = [
-  { id: 'ORD-003', client: 'العميل ج', amount: '18,500 ريال', received: '10,000 ريال', rem: '8,500 ريال', remColor: 'text-rose-500', date: '2024-01-22' },
-  { id: 'ORD-004', client: 'العميل ج', amount: '18,500 ريال', received: '10,000 ريال', rem: '8,500 ريال', remColor: 'text-rose-500', date: '2024-01-22' },
-  { id: 'ORD-005', client: 'العميل ج', amount: '18,500 ريال', received: '10,000 ريال', rem: '8,500 ريال', remColor: 'text-rose-500', date: '2024-01-22' },
-];
-
-// ==========================================
-// VISUAL COMPONENTS
-// ==========================================
-
-const BarChart = ({ labels, data, colors, dual = false, dualLegend }) => (
-  <div className="w-full h-48 flex flex-col relative mt-8">
-    {dual && (
-      <div className="absolute -top-8 left-0 right-0 flex justify-center gap-4">
-        {dualLegend.map((lg, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <div className={`w-4 h-1.5 rounded-sm ${colors[i]}`} />
-            <span className="text-[10px] font-bold text-gray-500">{lg}</span>
-          </div>
-        ))}
-      </div>
-    )}
-    <div className="absolute inset-0 flex flex-col justify-between z-0 pointer-events-none">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="w-full border-b border-dashed border-gray-200 h-0 flex items-end">
-          <span className="absolute -left-4 text-[9px] text-gray-400 font-bold -translate-y-1.5">
-            {i === 4 ? '0' : (4 - i) * 50}
-          </span>
-        </div>
-      ))}
-    </div>
-    <div className="flex-1 flex items-end justify-around z-10 px-4 ml-6 pb-2">
-      {data.map((val, i) => (
-        <div key={i} className="flex flex-col items-center gap-2">
-          {!dual ? (
-            <div className={`w-8 md:w-10 rounded-t-md ${colors[0]} transition-all duration-500 hover:opacity-80`} style={{ height: `${val}%` }} />
-          ) : (
-            <div className="flex items-end gap-1.5">
-              <div className={`w-4 md:w-5 rounded-t-md ${colors[0]} transition-all duration-500 hover:opacity-80`} style={{ height: `${val[0]}%` }} />
-              <div className={`w-4 md:w-5 rounded-t-md ${colors[1]} transition-all duration-500 hover:opacity-80`} style={{ height: `${val[1]}%` }} />
-            </div>
-          )}
-          <span className="text-[10px] md:text-xs text-gray-500 font-bold -mb-6">{labels[i]}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-const PieChart = ({ gradient, legend }) => (
-  <div className="flex flex-col items-center justify-center gap-6 py-4">
-    <div className="w-40 h-40 rounded-full shadow-inner transition-transform hover:scale-105 duration-300" style={{ background: gradient }} />
-    <div className="flex flex-wrap justify-center gap-4">
-      {legend.map((item, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <div className={`w-4 h-1.5 rounded-sm ${item.color}`} />
-          <span className="text-xs font-bold text-gray-600">{item.label}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-const AreaChart = ({ strokeColor, fillColor, isSmooth = true }) => {
-  const pathData = isSmooth 
-    ? "M0,70 Q15,40 30,80 T60,30 T80,80 T100,20 L100,100 L0,100 Z" 
-    : "M0,70 L15,40 L30,80 L60,30 L80,80 L100,20 L100,100 L0,100 Z";
-  const linePathData = isSmooth 
-    ? "M0,70 Q15,40 30,80 T60,30 T80,80 T100,20" 
-    : "M0,70 L15,40 L30,80 L60,30 L80,80 L100,20";
-    
-  return (
-    <div className="relative w-full h-48 mt-4 ml-6 pr-6">
-      <div className="absolute inset-0 flex flex-col justify-between z-0 pointer-events-none pb-6">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="w-full border-b border-dashed border-gray-200 h-0 flex items-end">
-            <span className="absolute -left-6 text-[9px] text-gray-400 font-bold -translate-y-1.5">
-              {i === 4 ? '0' : (4 - i) * 2}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className="absolute inset-0 pb-6">
-        <svg className="w-full h-full z-10" preserveAspectRatio="none" viewBox="0 0 100 100">
-          <path d={pathData} fill={fillColor} />
-          <path d={linePathData} fill="none" stroke={strokeColor} strokeWidth="2" vectorEffect="non-scaling-stroke" />
-          <circle cx="0" cy="70" r="1.5" fill={strokeColor} />
-          <circle cx="15" cy="40" r="1.5" fill={strokeColor} />
-          <circle cx="30" cy="80" r="1.5" fill={strokeColor} />
-          <circle cx="60" cy="30" r="1.5" fill={strokeColor} />
-          <circle cx="80" cy="80" r="1.5" fill={strokeColor} />
-          <circle cx="100" cy="20" r="1.5" fill={strokeColor} />
-        </svg>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 text-[10px] text-gray-400 font-bold" dir="ltr">
-        <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
-      </div>
-    </div>
-  );
+const STATUS_LABEL = { active: 'نشط', closed: 'مغلق', on_hold: 'معلق', cancelled: 'ملغى' };
+const STATUS_COLOR = {
+  active: 'bg-amber-100/60 text-amber-600',
+  closed: 'bg-emerald-100/60 text-emerald-600',
+  on_hold: 'bg-gray-100 text-gray-600',
+  cancelled: 'bg-rose-100/60 text-rose-600',
 };
+const STATUS_HEX = { active: '#f59e0b', closed: '#10b981', on_hold: '#6b7280', cancelled: '#ef4444' };
 
-// ==========================================
-// MAIN PAGE COMPONENT
-// ==========================================
+const formatMoney = (n) =>
+  new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(n) || 0);
+const formatPercent = (n) => `${(Number(n) || 0).toFixed(1)}%`;
+const formatDate = (d) => (d ? new Date(d).toLocaleDateString('en-CA') : '—');
+
 export default function ReportsPage() {
-  // TODO: Add API fetching hooks here based on activeTab
   const [activeTab, setActiveTab] = useState('overview');
+  const [filters, setFilters] = useState({ period: '', client: '', product: '', status: '' });
 
-  // Common Header Actions
-  const renderActions = (isPdfOnly = true) => (
-    <div className="flex gap-4 mt-6">
-      {!isPdfOnly && (
-        <button 
-          onClick={() => {/* TODO: Handle Excel Export */}}
-          className="flex-1 bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#B08B3A] transition-colors focus:outline-none"
-        >
-          <FileText size={18} />
-          تصدير تقرير تفصيلي (Excel)
-        </button>
-      )}
-      <button 
-        onClick={() => {/* TODO: Handle PDF Export */}}
-        className={`bg-[#003366] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#002244] transition-colors focus:outline-none ${isPdfOnly ? 'w-auto px-6 bg-[#D4AF37] hover:bg-[#B08B3A]' : 'flex-1'}`}
-      >
-        <Download size={18} />
-        {isPdfOnly ? 'تصدير (PDF)' : 'تصدير ملخص التقرير (PDF)'}
-      </button>
-    </div>
+  const overviewQuery = useApi(
+    () => reportsService.getOverview(filters),
+    [filters.period, filters.client, filters.product, filters.status],
+    { enabled: activeTab === 'overview' },
   );
+
+  const salesQuery = useApi(() => reportsService.getSales(filters), [filters.period, filters.client, filters.product, filters.status], { enabled: activeTab === 'sales' });
+  const financialQuery = useApi(() => reportsService.getFinancial(filters), [filters.period, filters.client, filters.product, filters.status], { enabled: activeTab === 'financial' });
+  const commissionsQuery = useApi(() => reportsService.getCommissions(filters), [filters.period, filters.client, filters.product, filters.status], { enabled: activeTab === 'commissions' });
+
+  const customersQuery = useApi(() => customersService.list({ limit: 100 }), []);
+  const productsQuery = useApi(() => productsService.list({ limit: 100 }), []);
 
   return (
     <>
       <Header title="" subtitle="" variant="transparent" />
 
-      {/* Page Header Area */}
-      <div className="flex flex-col mb-8 mt-[-1rem]">
+      <div className="flex flex-col mb-8 -mt-4">
         <h1 className="text-3xl font-black text-[#040814] mb-2">لوحة التقارير</h1>
         <p className="text-sm font-bold text-gray-500">نظرة شاملة على مؤشرات الأداء الرئيسية والتحليلات</p>
       </div>
 
-      {/* Main Tabs Wrapper */}
-      <div className="bg-white rounded-[24px] border border-gray-100 shadow-sm flex flex-col mb-12 overflow-hidden p-6">
-        
-        {/* Tabs Row */}
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col mb-12 overflow-hidden p-6">
         <div className="flex border-b border-gray-100 mb-6 bg-gray-50/50 rounded-xl overflow-hidden p-1">
-          {TABS.map(tab => (
-            <button 
-              key={tab.id}
-              className={`flex-1 py-3 text-center font-bold text-[14px] transition-all rounded-lg ${activeTab === tab.id ? 'bg-[#fefce8] text-[#040814] shadow-sm' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
+          {TABS.map((tab) => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 py-3 text-center font-bold text-[14px] transition-all rounded-lg ${
+                activeTab === tab.id ? 'bg-[#fefce8] text-[#040814] shadow-sm' : 'text-gray-500 hover:bg-white/50'
+              }`}>
               {tab.label}
             </button>
           ))}
         </div>
 
-        {/* ============================================================== */}
-        {/* OVERVIEW TAB */}
-        {/* ============================================================== */}
-        {activeTab === 'overview' && (
-          <div className="flex flex-col gap-6">
-            {/* Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
-              {['الفترة الزمنية', 'العميل', 'المنتج', 'الحالة'].map((label, idx) => (
-                <div key={idx} className="flex flex-col gap-2">
-                  <label className="text-[12px] font-black text-[#D4AF37] px-1">{label}</label>
-                  <div className="relative">
-                    <select className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10 text-xs font-bold text-[#040814] outline-none cursor-pointer focus:ring-2 focus:ring-amber-500/20">
-                      <option>الكل</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100 mb-6">
+          <FilterField label="الفترة الزمنية">
+            <Select value={filters.period} onChange={(v) => setFilters({ ...filters, period: v })}>
+              {PERIODS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+            </Select>
+          </FilterField>
+          <FilterField label="العميل">
+            <Select value={filters.client} onChange={(v) => setFilters({ ...filters, client: v })}>
+              <option value="">كل العملاء</option>
+              {(customersQuery.data?.data || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </Select>
+          </FilterField>
+          <FilterField label="المنتج">
+            <Select value={filters.product} onChange={(v) => setFilters({ ...filters, product: v })}>
+              <option value="">كل المنتجات</option>
+              {(productsQuery.data?.data || []).map((p) => <option key={p.id} value={p.id}>{p.nameAr || p.name}</option>)}
+            </Select>
+          </FilterField>
+          <FilterField label="الحالة">
+            <Select value={filters.status} onChange={(v) => setFilters({ ...filters, status: v })}>
+              {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </Select>
+          </FilterField>
+        </div>
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {MOCK_OVERVIEW_KPIS.map(kpi => (
-                <div key={kpi.id} className="border border-gray-100 shadow-sm rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center transition-all hover:shadow-md hover:border-gray-200">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${kpi.bg} ${kpi.color}`}>
-                    <kpi.icon size={22} strokeWidth={2.5} />
-                  </div>
-                  <span className="text-[11px] font-bold text-gray-500">{kpi.label}</span>
-                  <span className={`text-xl font-black ${kpi.valColor}`} dir="ltr">{kpi.value}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts Row 1 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">الطلبات حسب الحالة</h3>
-                <BarChart 
-                  labels={['مكتملة', 'قيد المعالجة', 'معلقة', 'ملغية']} 
-                  data={[80, 40, 30, 20]} 
-                  colors={['bg-[#f59e0b]']} 
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4 text-center md:text-right">توزيع الإيرادات</h3>
-                <PieChart 
-                  gradient="conic-gradient(#1e3a8a 0% 25%, #3b82f6 25% 55%, #60a5fa 55% 85%, #93c5fd 85% 100%)"
-                  legend={[
-                    { label: 'أخرى', color: 'bg-[#93c5fd]' },
-                    { label: 'أثاث', color: 'bg-[#60a5fa]' },
-                    { label: 'مواد بناء', color: 'bg-[#3b82f6]' },
-                    { label: 'معدات كهربائية', color: 'bg-[#1e3a8a]' }
-                  ]}
-                />
-              </div>
-            </div>
-
-            {/* Charts Row 2 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">توزيع الإيرادات (شهري)</h3>
-                <AreaChart strokeColor="#003366" fillColor="transparent" />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">اتجاه الأرباح</h3>
-                <AreaChart strokeColor="#10b981" fillColor="rgba(16, 185, 129, 0.1)" />
-              </div>
-            </div>
-
-            {renderActions(false)}
-          </div>
-        )}
-
-        {/* ============================================================== */}
-        {/* SALES TAB */}
-        {/* ============================================================== */}
-        {activeTab === 'sales' && (
-          <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">المبيعات عبر الزمن</h3>
-                <AreaChart strokeColor="#003366" fillColor="transparent" />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">توزيع الطلبات حسب الحالة</h3>
-                <PieChart 
-                  gradient="conic-gradient(#1e3a8a 0% 30%, #3b82f6 30% 60%, #60a5fa 60% 85%, #93c5fd 85% 100%)"
-                  legend={[
-                    { label: 'مكتملة', color: 'bg-[#1e3a8a]' },
-                    { label: 'قيد المعالجة', color: 'bg-[#3b82f6]' },
-                    { label: 'معلقة', color: 'bg-[#60a5fa]' },
-                    { label: 'ملغية', color: 'bg-[#93c5fd]' }
-                  ]}
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">المبيعات حسب العميل</h3>
-                <BarChart 
-                  labels={['فاطمة أحمد', 'أحمد محمد', 'خالد سعيد', 'سارة عبدالرحمن']} 
-                  data={[90, 50, 40, 35]} 
-                  colors={['bg-[#3b82f6]']} 
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">المبيعات حسب المنتج</h3>
-                <BarChart 
-                  labels={['صمامات صناعية', 'معدات كهربائية', 'مواد بناء', 'أنابيب فولاذية']} 
-                  data={[85, 45, 35, 30]} 
-                  colors={['bg-[#f59e0b]']} 
-                />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="flex justify-between items-end mb-4">
-                <h3 className="text-lg font-black text-[#040814]">تفاصيل الطلبات</h3>
-                {renderActions(true)}
-              </div>
-              <div className="overflow-x-auto border border-gray-100 rounded-2xl">
-                <table className="w-full text-right text-sm">
-                  <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">رقم الطلب</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">العميل</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">المنتج</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">الكمية</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">الإجمالي</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">العمولة</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">الحالة</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">التاريخ</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {MOCK_SALES_TABLE.map((row, idx) => (
-                      <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                        <td className="py-4 px-4 font-bold text-gray-600" dir="ltr">{row.id}</td>
-                        <td className="py-4 px-4 font-bold text-[#040814]">{row.client}</td>
-                        <td className="py-4 px-4 font-bold text-gray-600">{row.product}</td>
-                        <td className="py-4 px-4 font-bold text-amber-500">{row.qty}</td>
-                        <td className="py-4 px-4 font-black text-[#040814]" dir="ltr">{row.total}</td>
-                        <td className="py-4 px-4 font-bold text-gray-600" dir="ltr">{row.comm}</td>
-                        <td className="py-4 px-4">
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${row.statusColor}`}>
-                            {row.status}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4 font-bold text-gray-500" dir="ltr">{row.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ============================================================== */}
-        {/* FINANCIAL TAB */}
-        {/* ============================================================== */}
-        {activeTab === 'financial' && (
-          <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">توزيع أنواع الدفعات</h3>
-                <PieChart 
-                  gradient="conic-gradient(#1e3a8a 0% 45%, #3b82f6 45% 75%, #60a5fa 75% 90%, #93c5fd 90% 100%)"
-                  legend={[
-                    { label: 'دفعة أولى', color: 'bg-[#1e3a8a]' },
-                    { label: 'دفعة نهائية', color: 'bg-[#3b82f6]' },
-                    { label: 'عمولة', color: 'bg-[#60a5fa]' },
-                    { label: 'دفعات جزئية', color: 'bg-[#93c5fd]' }
-                  ]}
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">المدفوع مقابل المستحق</h3>
-                <BarChart 
-                  labels={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']} 
-                  data={[[30, 40], [60, 20], [50, 40], [45, 60], [70, 30], [80, 20], [40, 50]]} 
-                  colors={['bg-emerald-500', 'bg-amber-500']} 
-                  dual={true}
-                  dualLegend={['مدفوع', 'مستحق']}
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">التدفق النقدي الشهري</h3>
-                <AreaChart strokeColor="#003366" fillColor="transparent" isSmooth={true} />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="flex justify-between items-end mb-4">
-                <h3 className="text-lg font-black text-[#040814]">البيانات المالية للعملاء</h3>
-                {renderActions(true)}
-              </div>
-              <div className="overflow-x-auto border border-gray-100 rounded-2xl">
-                <table className="w-full text-right text-sm">
-                  <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">العميل</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">إجمالي الإيرادات</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">إجمالي المدفوع</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">المستحق</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">المتأخرات</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">حالة الدفع</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {MOCK_FINANCIAL_TABLE.map((row, idx) => (
-                      <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                        <td className="py-4 px-4 font-bold text-[#040814]">{row.client}</td>
-                        <td className="py-4 px-4 font-black text-[#040814]" dir="ltr">{row.rev}</td>
-                        <td className="py-4 px-4 font-bold text-emerald-500" dir="ltr">{row.paid}</td>
-                        <td className="py-4 px-4 font-bold text-amber-500" dir="ltr">{row.due}</td>
-                        <td className={`py-4 px-4 font-bold ${row.over !== '---' ? 'text-rose-500' : 'text-gray-400'}`} dir="ltr">{row.over}</td>
-                        <td className="py-4 px-4">
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${row.statusColor}`}>
-                            {row.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ============================================================== */}
-        {/* COMMISSIONS TAB */}
-        {/* ============================================================== */}
-        {activeTab === 'commissions' && (
-          <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {MOCK_COMMISSION_KPIS.map(kpi => (
-                <div key={kpi.id} className="border border-gray-100 shadow-sm rounded-2xl p-5 flex flex-col items-center justify-center gap-3 text-center transition-all hover:shadow-md">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${kpi.bg} ${kpi.color}`}>
-                    <kpi.icon size={20} strokeWidth={2.5} />
-                  </div>
-                  <span className="text-[11px] font-bold text-gray-500">{kpi.label}</span>
-                  <span className={`text-lg font-black ${kpi.valColor}`} dir="ltr">{kpi.value}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">توزيع حالة العمولات</h3>
-                <PieChart 
-                  gradient="conic-gradient(#1e3a8a 0% 40%, #3b82f6 40% 80%, #60a5fa 80% 100%)"
-                  legend={[
-                    { label: 'مستلمة', color: 'bg-[#1e3a8a]' },
-                    { label: 'غير مستلمة', color: 'bg-[#3b82f6]' },
-                    { label: 'جزئي', color: 'bg-[#60a5fa]' }
-                  ]}
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">العمولات حسب العميل</h3>
-                <BarChart 
-                  labels={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']} 
-                  data={[[40, 20], [70, 30], [60, 40], [50, 60], [80, 20], [90, 10], [50, 40]]} 
-                  colors={['bg-emerald-500', 'bg-amber-500']} 
-                  dual={true}
-                  dualLegend={['مدفوع', 'مستحق']}
-                />
-              </div>
-              <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-base font-black text-[#040814] mb-4">اتجاه العمولات عبر الزمن</h3>
-                <AreaChart strokeColor="#003366" fillColor="transparent" isSmooth={true} />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="flex justify-between items-end mb-4">
-                <h3 className="text-lg font-black text-[#040814]">تفاصيل العمولات</h3>
-                {renderActions(true)}
-              </div>
-              <div className="overflow-x-auto border border-gray-100 rounded-2xl">
-                <table className="w-full text-right text-sm">
-                  <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">رقم الطلب</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">العميل</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">مبلغ العمولة</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">المستلم</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">المتبقي</th>
-                      <th className="py-4 px-4 text-[#D4AF37] font-black">التاريخ</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {MOCK_COMMISSION_TABLE.map((row, idx) => (
-                      <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                        <td className="py-4 px-4 font-bold text-gray-600" dir="ltr">{row.id}</td>
-                        <td className="py-4 px-4 font-bold text-[#040814]">{row.client}</td>
-                        <td className="py-4 px-4 font-black text-[#040814]" dir="ltr">{row.amount}</td>
-                        <td className="py-4 px-4 font-bold text-gray-600" dir="ltr">{row.received}</td>
-                        <td className={`py-4 px-4 font-bold ${row.remColor}`} dir="ltr">{row.rem}</td>
-                        <td className="py-4 px-4 font-bold text-gray-500" dir="ltr">{row.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
+        {activeTab === 'overview' && <OverviewTab query={overviewQuery} />}
+        {activeTab === 'sales' && <SalesTab query={salesQuery} />}
+        {activeTab === 'financial' && <FinancialTab query={financialQuery} />}
+        {activeTab === 'commissions' && <CommissionsTab query={commissionsQuery} />}
       </div>
     </>
   );
 }
+
+// ================= OVERVIEW =================
+
+function OverviewTab({ query }) {
+  if (query.loading) return <LoadingState />;
+  if (query.error) return <ErrorState error={query.error} onRetry={query.refetch} />;
+  const data = query.data;
+  if (!data) return null;
+
+  const { kpis, charts } = data;
+  const completedCount = charts.statusBreakdown.find((s) => s.status === 'closed')?.count || 0;
+  const completionRate = kpis.totalOrders > 0 ? (completedCount / kpis.totalOrders) * 100 : 0;
+
+  const kpiCards = [
+    { id: 1, label: 'إجمالي الإيرادات', value: `EGP ${formatMoney(kpis.totalRevenue)}`, icon: DollarSign, color: 'text-[#003366]', bg: 'bg-blue-50', valColor: 'text-[#003366]' },
+    { id: 2, label: 'إجمالي الطلبات', value: kpis.totalOrders, icon: ShoppingCart, color: 'text-amber-500', bg: 'bg-amber-50', valColor: 'text-amber-500' },
+    { id: 3, label: 'متوسط قيمة الطلب', value: `EGP ${formatMoney(kpis.avgOrderValue)}`, icon: BarChart2, color: 'text-amber-500', bg: 'bg-amber-50', valColor: 'text-amber-500' },
+    { id: 4, label: 'إجمالي العمولات', value: `EGP ${formatMoney(kpis.totalCommission)}`, icon: Percent, color: 'text-purple-500', bg: 'bg-purple-50', valColor: 'text-purple-500' },
+    { id: 5, label: 'الطلبات المكتملة', value: completedCount, icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-50', valColor: 'text-emerald-500' },
+    { id: 6, label: 'نسبة الإكمال', value: formatPercent(completionRate), icon: TrendingUp, color: 'text-gray-500', bg: 'bg-gray-100', valColor: 'text-[#040814]' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {kpiCards.map((kpi) => (
+          <div key={kpi.id} className="border border-gray-100 shadow-sm rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center hover:shadow-md transition-all">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${kpi.bg} ${kpi.color}`}>
+              <kpi.icon size={22} strokeWidth={2.5} />
+            </div>
+            <span className="text-[11px] font-bold text-gray-500">{kpi.label}</span>
+            <span className={`text-xl font-black ${kpi.valColor}`} dir="ltr">{kpi.value}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartBox title="الطلبات حسب الحالة">
+          <StatusBars data={charts.statusBreakdown} />
+        </ChartBox>
+        <ChartBox title="الإيرادات الشهرية">
+          <RevenueLine data={charts.monthlyTrend} />
+        </ChartBox>
+      </div>
+
+      <ExportActions disableExcel={true} />
+    </div>
+  );
+}
+
+// ================= SALES =================
+
+function SalesTab({ query }) {
+  if (query.loading) return <LoadingState />;
+  if (query.error) return <ErrorState error={query.error} onRetry={query.refetch} />;
+  const data = query.data;
+  if (!data) return null;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartBox title="المبيعات الشهرية">
+          <SalesMonthlyChart data={data.charts.monthlySales} />
+        </ChartBox>
+        <ChartBox title="أعلى المنتجات (طلبات)">
+          <TopProductsBars data={data.charts.topProducts} />
+        </ChartBox>
+      </div>
+
+      <div className="mt-4">
+        <div className="flex justify-between items-end mb-4">
+          <h3 className="text-lg font-black text-[#040814]">آخر الطلبات</h3>
+          <ExportActions pdfOnly={false} data={data} tabName="sales" />
+        </div>
+        {data.orders?.length === 0 ? (
+          <EmptyState title="لا توجد طلبات" description="" icon={ShoppingCart} />
+        ) : (
+          <div className="overflow-x-auto border border-gray-100 rounded-2xl">
+            <table className="w-full text-right text-sm">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  {['رقم الطلب', 'العميل', 'المنتج', 'الإجمالي', 'الحالة', 'التاريخ'].map((h) => (
+                    <th key={h} className="py-4 px-4 text-[#D4AF37] font-black">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(data.orders || []).map((order) => (
+                  <tr key={order.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <td className="py-4 px-4 font-bold text-gray-600" dir="ltr">{order.displayId}</td>
+                    <td className="py-4 px-4 font-bold text-[#040814]">{order.customer?.name || '—'}</td>
+                    <td className="py-4 px-4 font-bold text-gray-600">{order.product?.name || '—'}</td>
+                    <td className="py-4 px-4 font-black text-[#040814]" dir="ltr">EGP {formatMoney(order.totalPrice)}</td>
+                    <td className="py-4 px-4">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${STATUS_COLOR[order.status] || 'bg-gray-100 text-gray-600'}`}>
+                        {STATUS_LABEL[order.status] || order.status}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 font-bold text-gray-500" dir="ltr">{formatDate(order.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ================= FINANCIAL =================
+
+function FinancialTab({ query }) {
+  if (query.loading) return <LoadingState />;
+  if (query.error) return <ErrorState error={query.error} onRetry={query.refetch} />;
+  const data = query.data;
+  if (!data) return null;
+
+  const totalValue = data.clientFinancials?.reduce((s, c) => s + (c.totalValue || 0), 0) || 0;
+  const totalPaid = data.clientFinancials?.reduce((s, c) => s + (c.totalPaid || 0), 0) || 0;
+  const totalRemaining = data.clientFinancials?.reduce((s, c) => s + (c.remainingBalance || 0), 0) || 0;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <KpiCard label="إجمالي القيمة" value={`EGP ${formatMoney(totalValue)}`} icon={DollarSign} color="text-[#003366]" bg="bg-blue-50" />
+        <KpiCard label="إجمالي المدفوع" value={`EGP ${formatMoney(totalPaid)}`} icon={CheckCircle} color="text-emerald-500" bg="bg-emerald-50" />
+        <KpiCard label="إجمالي المستحق" value={`EGP ${formatMoney(totalRemaining)}`} icon={AlertTriangle} color="text-rose-500" bg="bg-rose-50" />
+      </div>
+
+      <ChartBox title="التدفق النقدي الشهري (Confirmed)">
+        <CashFlowChart data={data.charts.monthlyFinancials} />
+      </ChartBox>
+
+      <div className="mt-4">
+        <div className="flex justify-between items-end mb-4">
+          <h3 className="text-lg font-black text-[#040814]">البيانات المالية للعملاء</h3>
+          <ExportActions pdfOnly={false} data={data} tabName="financial" />
+        </div>
+        {data.clientFinancials?.length === 0 ? (
+          <EmptyState title="لا توجد بيانات" description="" icon={DollarSign} />
+        ) : (
+          <div className="overflow-x-auto border border-gray-100 rounded-2xl">
+            <table className="w-full text-right text-sm">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  {['العميل', 'عدد الطلبات', 'إجمالي القيمة', 'المدفوع', 'المستحق', 'حالة الدفع'].map((h) => (
+                    <th key={h} className="py-4 px-4 text-[#D4AF37] font-black">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(data.clientFinancials || []).map((row, i) => {
+                  let label = 'مدفوع جزئياً', cls = 'bg-amber-100/60 text-amber-600';
+                  if (row.remainingBalance <= 0 && row.totalPaid > 0) { label = 'مدفوع بالكامل'; cls = 'bg-emerald-100/60 text-emerald-600'; }
+                  else if (row.totalPaid === 0) { label = 'لم يدفع'; cls = 'bg-rose-100/60 text-rose-600'; }
+                  return (
+                    <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50">
+                      <td className="py-4 px-4 font-bold text-[#040814]">{row.clientName}</td>
+                      <td className="py-4 px-4 font-bold text-gray-600">{row.orderCount}</td>
+                      <td className="py-4 px-4 font-black text-[#040814]" dir="ltr">EGP {formatMoney(row.totalValue)}</td>
+                      <td className="py-4 px-4 font-bold text-emerald-500" dir="ltr">EGP {formatMoney(row.totalPaid)}</td>
+                      <td className="py-4 px-4 font-bold text-amber-500" dir="ltr">EGP {formatMoney(row.remainingBalance)}</td>
+                      <td className="py-4 px-4">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${cls}`}>{label}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ================= COMMISSIONS =================
+
+function CommissionsTab({ query }) {
+  if (query.loading) return <LoadingState />;
+  if (query.error) return <ErrorState error={query.error} onRetry={query.refetch} />;
+  const data = query.data;
+  if (!data) return null;
+
+  const { kpis, charts, commissions } = data;
+
+  const kpiCards = [
+    { label: 'إجمالي العمولات', value: `EGP ${formatMoney(kpis.totalCommission)}`, icon: TrendingUp, color: 'text-[#003366]', bg: 'bg-blue-50' },
+    { label: 'متوسط نسبة العمولة', value: formatPercent(kpis.avgCommissionRate), icon: Percent, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+    { label: 'إجمالي الطلبات', value: kpis.totalOrders, icon: ShoppingCart, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { label: 'متوسط لكل طلب', value: kpis.totalOrders > 0 ? `EGP ${formatMoney(kpis.totalCommission / kpis.totalOrders)}` : 'EGP 0', icon: Calendar, color: 'text-purple-500', bg: 'bg-purple-50' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpiCards.map((kpi, i) => (
+          <KpiCard key={i} label={kpi.label} value={kpi.value} icon={kpi.icon} color={kpi.color} bg={kpi.bg} />
+        ))}
+      </div>
+
+      <ChartBox title="العمولات الشهرية">
+        <CommissionsLine data={charts.monthlyCommissions} />
+      </ChartBox>
+
+      <div className="mt-4">
+        <div className="flex justify-between items-end mb-4">
+          <h3 className="text-lg font-black text-[#040814]">أعلى الطلبات بالعمولة</h3>
+          <ExportActions pdfOnly={false} data={data} tabName="commissions" />
+        </div>
+        {commissions?.length === 0 ? (
+          <EmptyState title="لا توجد عمولات" description="" icon={Percent} />
+        ) : (
+          <div className="overflow-x-auto border border-gray-100 rounded-2xl">
+            <table className="w-full text-right text-sm">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  {['رقم الطلب', 'العميل', 'المنتج', 'إجمالي الطلب', 'النسبة', 'مبلغ العمولة', 'التاريخ'].map((h) => (
+                    <th key={h} className="py-4 px-4 text-[#D4AF37] font-black">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(commissions || []).map((row) => (
+                  <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <td className="py-4 px-4 font-bold text-gray-600" dir="ltr">{row.displayId}</td>
+                    <td className="py-4 px-4 font-bold text-[#040814]">{row.customer?.name || '—'}</td>
+                    <td className="py-4 px-4 font-bold text-gray-600">{row.product?.name || '—'}</td>
+                    <td className="py-4 px-4 font-bold text-[#040814]" dir="ltr">EGP {formatMoney(row.totalPrice)}</td>
+                    <td className="py-4 px-4 font-bold text-amber-500" dir="ltr">{formatPercent(row.commissionRate)}</td>
+                    <td className="py-4 px-4 font-black text-emerald-500" dir="ltr">EGP {formatMoney(row.commissionAmount)}</td>
+                    <td className="py-4 px-4 font-bold text-gray-500" dir="ltr">{formatDate(row.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ================= Reusables =================
+
+const FilterField = ({ label, children }) => (
+  <div className="flex flex-col gap-2">
+    <label className="text-[12px] font-black text-[#D4AF37] px-1">{label}</label>
+    {children}
+  </div>
+);
+
+const Select = ({ value, onChange, children }) => (
+  <div className="relative">
+    <select value={value} onChange={(e) => onChange(e.target.value)}
+      className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10 text-xs font-bold text-[#040814] outline-none cursor-pointer focus:ring-2 focus:ring-amber-500/20">
+      {children}
+    </select>
+    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+  </div>
+);
+
+const KpiCard = ({ label, value, icon: Icon, color, bg }) => (
+  <div className="border border-gray-100 shadow-sm rounded-2xl p-5 flex flex-col items-center justify-center gap-3 text-center hover:shadow-md transition-all">
+    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${bg} ${color}`}>
+      <Icon size={20} strokeWidth={2.5} />
+    </div>
+    <span className="text-[11px] font-bold text-gray-500">{label}</span>
+    <span className={`text-lg font-black ${color}`} dir="ltr">{value}</span>
+  </div>
+);
+
+const ChartBox = ({ title, children }) => (
+  <div className="border border-gray-100 rounded-2xl p-6 shadow-sm">
+    <h3 className="text-base font-black text-[#040814] mb-4">{title}</h3>
+    {children}
+  </div>
+);
+
+const ExportActions = ({ pdfOnly = false, disableExcel = false, data = null, tabName = 'report' }) => {
+  const handleExport = (kind) => {
+    if (kind === 'pdf') {
+      window.print();
+      return;
+    }
+    
+    if (kind === 'excel' && data) {
+      try {
+        let csvContent = '\uFEFF'; // BOM for Arabic support in Excel
+        if (tabName === 'sales' && data.orders) {
+          csvContent += 'رقم الطلب,العميل,المنتج,الإجمالي,الحالة,التاريخ\n';
+          data.orders.forEach(o => {
+            csvContent += `${o.displayId},${o.customer?.name || ''},${o.product?.name || ''},${o.totalPrice},${STATUS_LABEL[o.status] || o.status},${formatDate(o.createdAt)}\n`;
+          });
+        } else if (tabName === 'financial' && data.clientFinancials) {
+          csvContent += 'العميل,عدد الطلبات,إجمالي القيمة,المدفوع,المستحق\n';
+          data.clientFinancials.forEach(c => {
+            csvContent += `${c.clientName},${c.orderCount},${c.totalValue},${c.totalPaid},${c.remainingBalance}\n`;
+          });
+        } else if (tabName === 'commissions' && data.commissions) {
+          csvContent += 'رقم الطلب,العميل,المنتج,إجمالي الطلب,النسبة,مبلغ العمولة,التاريخ\n';
+          data.commissions.forEach(c => {
+            csvContent += `${c.displayId},${c.customer?.name || ''},${c.product?.name || ''},${c.totalPrice},${c.commissionRate}%,${c.commissionAmount},${formatDate(c.createdAt)}\n`;
+          });
+        } else {
+          alert('تصدير هذه الصفحة غير مدعوم حالياً');
+          return;
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rabzan_${tabName}_export_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('فشل التصدير');
+      }
+    }
+  };
+
+  return (
+    <div className={`flex gap-3 ${pdfOnly ? '' : 'mt-6'}`}>
+      {!pdfOnly && !disableExcel && (
+        <button onClick={() => handleExport('excel')}
+          className="flex-1 bg-[#D4AF37] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#B08B3A]">
+          <FileText size={18} /> تصدير Excel
+        </button>
+      )}
+      <button onClick={() => handleExport('pdf')}
+        className={`bg-[#003366] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#002244] ${pdfOnly ? 'px-6' : 'flex-1'}`}>
+        <Download size={18} /> {pdfOnly ? 'تصدير PDF' : 'تصدير ملخص PDF'}
+      </button>
+    </div>
+  );
+};
+
+// ================= Charts =================
+
+function StatusBars({ data }) {
+  if (!data || data.length === 0) return <EmptyChart />;
+  const max = Math.max(1, ...data.map((d) => d.count));
+  return (
+    <div className="h-48 flex items-end justify-around px-4 gap-3">
+      {data.map((d, i) => (
+        <div key={i} className="flex flex-col items-center gap-2 flex-1">
+          <span className="text-xs font-black text-[#040814]">{d.count}</span>
+          <div className="w-full max-w-12 rounded-t-md transition-all hover:opacity-80"
+            style={{ height: `${(d.count / max) * 80}%`, backgroundColor: STATUS_HEX[d.status] || '#6b7280', minHeight: '4px' }} />
+          <span className="text-[10px] text-gray-500 font-bold">{STATUS_LABEL[d.status] || d.status}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RevenueLine({ data }) {
+  if (!data || data.length === 0) return <EmptyChart />;
+  const max = Math.max(1, ...data.map((d) => d.revenue));
+  const points = data.map((d, i) => {
+    const x = (i / Math.max(1, data.length - 1)) * 380 + 10;
+    const y = 180 - (d.revenue / max) * 150;
+    return `${x},${y}`;
+  });
+  return (
+    <div className="h-48" dir="ltr">
+      <svg viewBox="0 0 400 200" className="w-full h-full overflow-visible">
+        <defs>
+          <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <polyline points={`10,180 ${points.join(' ')} 390,180`} fill="url(#revGradient)" />
+        <polyline points={points.join(' ')} fill="none" stroke="#3b82f6" strokeWidth="2.5" />
+        {data.map((d, i) => {
+          const [x, y] = points[i].split(',').map(Number);
+          return <circle key={i} cx={x} cy={y} r="3" fill="#3b82f6" />;
+        })}
+      </svg>
+      <div className="flex justify-between mt-2 text-[10px] text-gray-400 px-2">
+        {data.map((d) => <span key={d.month}>{d.month.slice(5)}</span>)}
+      </div>
+    </div>
+  );
+}
+
+function SalesMonthlyChart({ data }) {
+  if (!data || data.length === 0) return <EmptyChart />;
+  const sorted = [...data].sort((a, b) => a.month.localeCompare(b.month));
+  const max = Math.max(1, ...sorted.map((d) => d.revenue));
+  return (
+    <div className="h-48 flex items-end justify-between px-2 gap-2" dir="ltr">
+      {sorted.map((d, i) => (
+        <div key={i} className="flex flex-col items-center flex-1 gap-2">
+          <span className="text-[10px] font-black text-[#040814]">{formatMoney(d.revenue)}</span>
+          <div className="w-full bg-[#003366] rounded-t-md transition-all hover:opacity-80"
+            style={{ height: `${(d.revenue / max) * 70}%`, minHeight: '4px' }} />
+          <span className="text-[10px] text-gray-500 font-bold">{d.month.slice(5)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TopProductsBars({ data }) {
+  if (!data || data.length === 0) return <EmptyChart />;
+  const max = Math.max(1, ...data.map((d) => d.orderCount));
+  return (
+    <div className="h-48 flex flex-col gap-2 overflow-y-auto pr-2">
+      {data.map((d, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <span className="text-xs font-bold text-gray-600 w-32 truncate" title={d.productName}>{d.productName}</span>
+          <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+            <div className="bg-amber-500 h-full rounded-full" style={{ width: `${(d.orderCount / max) * 100}%` }} />
+          </div>
+          <span className="text-xs font-black text-[#040814] w-8 text-left" dir="ltr">{d.orderCount}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CashFlowChart({ data }) {
+  if (!data || data.length === 0) return <EmptyChart />;
+  const sorted = [...data].sort((a, b) => a.month.localeCompare(b.month));
+  const max = Math.max(1, ...sorted.map((d) => d.totalPaid));
+  const points = sorted.map((d, i) => {
+    const x = (i / Math.max(1, sorted.length - 1)) * 380 + 10;
+    const y = 180 - (d.totalPaid / max) * 150;
+    return `${x},${y}`;
+  });
+  return (
+    <div className="h-48" dir="ltr">
+      <svg viewBox="0 0 400 200" className="w-full h-full overflow-visible">
+        <polyline points={points.join(' ')} fill="none" stroke="#10b981" strokeWidth="2.5" />
+        {sorted.map((d, i) => {
+          const [x, y] = points[i].split(',').map(Number);
+          return <g key={i}><circle cx={x} cy={y} r="4" fill="#10b981" /></g>;
+        })}
+      </svg>
+      <div className="flex justify-between mt-2 text-[10px] text-gray-400 px-2">
+        {sorted.map((d) => <span key={d.month}>{d.month.slice(5)}</span>)}
+      </div>
+    </div>
+  );
+}
+
+function CommissionsLine({ data }) {
+  if (!data || data.length === 0) return <EmptyChart />;
+  const sorted = [...data].sort((a, b) => a.month.localeCompare(b.month));
+  const max = Math.max(1, ...sorted.map((d) => d.commission));
+  return (
+    <div className="h-48 flex items-end justify-between px-2 gap-2" dir="ltr">
+      {sorted.map((d, i) => (
+        <div key={i} className="flex flex-col items-center flex-1 gap-2">
+          <span className="text-[10px] font-black text-purple-600">{formatMoney(d.commission)}</span>
+          <div className="w-full bg-purple-500 rounded-t-md transition-all hover:opacity-80"
+            style={{ height: `${(d.commission / max) * 70}%`, minHeight: '4px' }} />
+          <span className="text-[10px] text-gray-500 font-bold">{d.month.slice(5)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const EmptyChart = () => (
+  <div className="h-48 flex items-center justify-center text-gray-400 font-bold text-sm">لا توجد بيانات</div>
+);

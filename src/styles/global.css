@@ -514,6 +514,11 @@
   }
 }
 
+/* Dashboard Form Inputs */
+.field-input {
+  @apply w-full px-4 py-3 rounded-[12px] bg-white border border-gray-200 focus:border-[#B08B3A] focus:ring-1 focus:ring-[#B08B3A] outline-none text-[13px] font-bold text-gray-800 transition-all placeholder:text-gray-400;
+}
+
 /* Print Styles */
 @media print {
   body::after {

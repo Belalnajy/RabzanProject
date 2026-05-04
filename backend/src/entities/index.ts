@@ -1,0 +1,17 @@
+// Barrel export for all entities
+export { User } from './user.entity';
+export { Role } from './role.entity';
+export { Permission } from './permission.entity';
+export { Customer } from './customer.entity';
+export { Category } from './category.entity';
+export { Product } from './product.entity';
+export { Order } from './order.entity';
+export { Transaction } from './transaction.entity';
+export { Attachment } from './attachment.entity';
+export { OrderStageHistory } from './order-stage-history.entity';
+export { Notification } from './notification.entity';
+export { ActivityLog } from './activity-log.entity';
+export { Setting } from './setting.entity';
+export { Currency } from './currency.entity';
+export { WorkflowStage } from './workflow-stage.entity';
+export { ContactMessage } from './contact-message.entity';

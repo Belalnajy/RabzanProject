@@ -1,245 +1,291 @@
 'use client';
 
-import React, { useState } from 'react';
-import Header from '../../../../components/dashboard/Header';
-import { Save, User, Mail, Phone, Lock, Camera } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import Header from '@/components/dashboard/Header';
+import { Save, User, Mail, Phone, Lock, Camera, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useApi, useMutation } from '@/hooks/useApi';
+import { LoadingState, ErrorState } from '@/components/dashboard/DataStates';
+import { profileService } from '@/lib/services/profile.service';
+import { useAuth } from '@/contexts/AuthContext';
 
-// ==========================================
-// MOCK DATA (API Ready)
-// ==========================================
-// TODO: Fetch user profile data from API (e.g. GET /api/profile)
-const MOCK_PROFILE_DATA = {
-  fullName: 'أحمد محمد',
-  email: 'ahmed.mohamed@example.com',
-  phone: '0501234567',
-  username: 'ahmed_m',
-  role: 'مدير النظام',
-  initials: 'أ.م'
-};
+const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api').replace(/\/api$/, '');
+
+function buildAvatarUrl(path) {
+  if (!path) return null;
+  if (/^https?:\/\//i.test(path)) return path;
+  const cleaned = path.replace(/^\.?\//, '');
+  return `${API_ORIGIN}/${cleaned}`;
+}
+
+function getInitials(fullName = '') {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 1);
+  return parts[0].slice(0, 1) + '.' + parts[1].slice(0, 1);
+}
 
 export default function ProfilePage() {
-  // Form State
-  const [profileData, setProfileData] = useState(MOCK_PROFILE_DATA);
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const { updateUser } = useAuth();
+  const fileInputRef = useRef(null);
 
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
+  const { data: profile, loading, error, refetch } = useApi(() => profileService.get(), []);
+  const { mutate: updateProfileMut, loading: savingProfile } = useMutation((data) => profileService.update(data));
+  const { mutate: changePasswordMut, loading: savingPassword } = useMutation((data) => profileService.changePassword(data));
+  const { mutate: uploadAvatarMut, loading: uploadingAvatar } = useMutation((file) => profileService.uploadAvatar(file));
+
+  const [profileData, setProfileData] = useState({ fullName: '', email: '', phone: '' });
+  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [feedback, setFeedback] = useState(null);
+
+  useEffect(() => {
+    if (profile) {
+      setProfileData({
+        fullName: profile.fullName ?? '',
+        email: profile.email ?? '',
+        phone: profile.phone ?? '',
+      });
+    }
+  }, [profile]);
+
+  const flash = (type, text) => {
+    setFeedback({ type, text });
+    setTimeout(() => setFeedback(null), 3500);
   };
 
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    // TODO: Send data to API: PUT /api/profile
-    console.log('Saving profile info...', profileData);
+    try {
+      await updateProfileMut({
+        fullName: profileData.fullName,
+        email: profileData.email,
+        phone: profileData.phone || null,
+      });
+      updateUser({
+        fullName: profileData.fullName,
+        email: profileData.email,
+        phone: profileData.phone || null,
+      });
+      flash('success', 'تم حفظ الملف الشخصي بنجاح');
+      refetch();
+    } catch (err) {
+      flash('error', err?.message || 'تعذر حفظ التغييرات');
+    }
   };
 
-  const handleSavePassword = (e) => {
+  const handleSavePassword = async (e) => {
     e.preventDefault();
-    // TODO: Send data to API: PUT /api/profile/password
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('كلمات المرور الجديدة غير متطابقة!');
+      flash('error', 'كلمتا المرور الجديدة غير متطابقتين');
       return;
     }
-    console.log('Changing password...', passwordData);
+    if (passwordData.newPassword.length < 8) {
+      flash('error', 'كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+      return;
+    }
+    try {
+      await changePasswordMut({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+        confirmPassword: passwordData.confirmPassword,
+      });
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      flash('success', 'تم تغيير كلمة المرور بنجاح');
+    } catch (err) {
+      flash('error', err?.message || 'تعذر تغيير كلمة المرور');
+    }
   };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      flash('error', 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت');
+      return;
+    }
+    try {
+      const res = await uploadAvatarMut(file);
+      updateUser({ avatar: res?.avatar });
+      flash('success', 'تم تحديث الصورة الشخصية بنجاح');
+      refetch();
+    } catch (err) {
+      flash('error', err?.message || 'تعذر رفع الصورة');
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  if (loading) return <LoadingState message="جاري تحميل الملف الشخصي..." />;
+  if (error) return <ErrorState error={error} onRetry={refetch} />;
+
+  const avatarUrl = buildAvatarUrl(profile?.avatar);
+  const roleName = profile?.role?.name || '—';
 
   return (
     <>
       <Header title="" subtitle="" variant="transparent" />
 
-      {/* Page Header Area */}
       <div className="flex flex-col mb-8 mt-[-1rem]">
         <h1 className="text-2xl font-black text-[#040814] mb-1">الملف الشخصي</h1>
         <p className="text-sm font-bold text-gray-500">إدارة معلومات حسابك الشخصي وكلمة المرور</p>
       </div>
 
+      {feedback && (
+        <div className={`mb-6 flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold border ${
+          feedback.type === 'success'
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+            : 'bg-rose-50 text-rose-700 border-rose-100'
+        }`}>
+          {feedback.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+          <span>{feedback.text}</span>
+        </div>
+      )}
+
       <div className="flex flex-col lg:flex-row gap-8 mb-12">
-        
-        {/* Left Column: Personal Info */}
         <div className="flex-1 flex flex-col gap-8">
-          
           <form onSubmit={handleSaveProfile} className="bg-white rounded-[24px] border border-gray-100 shadow-sm p-8">
             <h2 className="text-xl font-black text-[#040814] mb-8">المعلومات الشخصية</h2>
-            
-            {/* Avatar Section */}
+
             <div className="flex items-center gap-6 mb-8 border-b border-gray-50 pb-8">
               <div className="relative">
                 <div className="w-24 h-24 rounded-full bg-linear-to-tr from-[#B08B3A] to-[#F1D792] flex items-center justify-center text-[#040814] font-black text-3xl overflow-hidden shadow-sm">
-                  <span>{profileData.initials}</span>
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{getInitials(profileData.fullName)}</span>
+                  )}
                 </div>
-                <button 
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                />
+                <button
                   type="button"
-                  className="absolute bottom-0 right-0 bg-white border border-gray-200 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center shadow-sm hover:bg-gray-50 transition-colors focus:outline-none"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="absolute bottom-0 right-0 bg-white border border-gray-200 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center shadow-sm hover:bg-gray-50 transition-colors focus:outline-none disabled:opacity-50"
+                  title="تغيير الصورة"
                 >
                   <Camera size={14} strokeWidth={2.5} />
                 </button>
               </div>
               <div>
-                <h3 className="text-lg font-black text-[#040814] mb-1">{profileData.fullName}</h3>
+                <h3 className="text-lg font-black text-[#040814] mb-1">{profileData.fullName || '—'}</h3>
                 <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">
-                  {profileData.role}
+                  {roleName}
                 </span>
+                {uploadingAvatar && (
+                  <p className="text-xs text-gray-500 font-bold mt-2">جاري رفع الصورة...</p>
+                )}
               </div>
             </div>
 
-            {/* Inputs Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">الاسم الكامل</label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    name="fullName"
-                    value={profileData.fullName}
-                    onChange={handleProfileChange}
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pr-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
-                    required
-                  />
-                  <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
+              <Field label="الاسم الكامل" icon={User}>
+                <input type="text" name="fullName" value={profileData.fullName}
+                  onChange={(e) => setProfileData((p) => ({ ...p, fullName: e.target.value }))}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pr-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                  required />
+              </Field>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">اسم المستخدم</label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    name="username"
-                    value={profileData.username}
-                    onChange={handleProfileChange}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 pr-11 text-sm font-bold text-gray-500 outline-none cursor-not-allowed"
-                    disabled
-                    dir="ltr"
-                  />
-                  <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
+              <Field label="البريد الإلكتروني" icon={Mail} ltr>
+                <input type="email" name="email" value={profileData.email}
+                  onChange={(e) => setProfileData((p) => ({ ...p, email: e.target.value }))}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
+                  dir="ltr" required />
+              </Field>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">البريد الإلكتروني</label>
-                <div className="relative">
-                  <input 
-                    type="email" 
-                    name="email"
-                    value={profileData.email}
-                    onChange={handleProfileChange}
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                    dir="ltr"
-                    required
-                  />
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
+              <Field label="رقم الهاتف" icon={Phone} ltr>
+                <input type="tel" name="phone" value={profileData.phone}
+                  onChange={(e) => setProfileData((p) => ({ ...p, phone: e.target.value }))}
+                  placeholder="+201234567890"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
+                  dir="ltr" />
+              </Field>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">رقم الهاتف</label>
-                <div className="relative">
-                  <input 
-                    type="tel" 
-                    name="phone"
-                    value={profileData.phone}
-                    onChange={handleProfileChange}
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                    dir="ltr"
-                    required
-                  />
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
+              <Field label="الدور" icon={User}>
+                <input type="text" value={roleName} disabled
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 pr-11 text-sm font-bold text-gray-500 outline-none cursor-not-allowed" />
+              </Field>
             </div>
 
             <div className="flex justify-end">
-              <button 
+              <button
                 type="submit"
-                className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B08B3A] text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-sm focus:outline-none"
+                disabled={savingProfile}
+                className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B08B3A] text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-sm focus:outline-none disabled:opacity-60"
               >
                 <Save size={18} strokeWidth={2.5} />
-                حفظ التغييرات
+                {savingProfile ? 'جاري الحفظ...' : 'حفظ التغييرات'}
               </button>
             </div>
           </form>
-
         </div>
 
-        {/* Right Column: Password & Security */}
         <div className="w-full lg:w-96 shrink-0 flex flex-col gap-8">
-          
           <form onSubmit={handleSavePassword} className="bg-white rounded-[24px] border border-gray-100 shadow-sm p-8">
             <h2 className="text-xl font-black text-[#040814] mb-8">تغيير كلمة المرور</h2>
-            
+
             <div className="flex flex-col gap-5 mb-8">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">كلمة المرور الحالية</label>
-                <div className="relative">
-                  <input 
-                    type="password" 
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="••••••••"
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                    dir="ltr"
-                    required
-                  />
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">كلمة المرور الجديدة</label>
-                <div className="relative">
-                  <input 
-                    type="password" 
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="••••••••"
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                    dir="ltr"
-                    required
-                  />
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-black text-[#040814]">تأكيد كلمة المرور الجديدة</label>
-                <div className="relative">
-                  <input 
-                    type="password" 
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="••••••••"
-                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
-                    dir="ltr"
-                    required
-                  />
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                </div>
-              </div>
+              <PasswordField
+                label="كلمة المرور الحالية" name="currentPassword"
+                value={passwordData.currentPassword}
+                onChange={(e) => setPasswordData((p) => ({ ...p, currentPassword: e.target.value }))}
+              />
+              <PasswordField
+                label="كلمة المرور الجديدة" name="newPassword"
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData((p) => ({ ...p, newPassword: e.target.value }))}
+              />
+              <PasswordField
+                label="تأكيد كلمة المرور الجديدة" name="confirmPassword"
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData((p) => ({ ...p, confirmPassword: e.target.value }))}
+              />
             </div>
 
-            <button 
+            <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-[#040814] hover:bg-gray-800 text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-sm focus:outline-none"
+              disabled={savingPassword}
+              className="w-full flex items-center justify-center gap-2 bg-[#040814] hover:bg-gray-800 text-white px-8 py-3.5 rounded-xl font-bold transition-colors shadow-sm focus:outline-none disabled:opacity-60"
             >
-              تحديث كلمة المرور
+              {savingPassword ? 'جاري التحديث...' : 'تحديث كلمة المرور'}
             </button>
           </form>
-
         </div>
-
       </div>
     </>
+  );
+}
+
+function Field({ label, icon: Icon, ltr, children }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-black text-[#040814]">{label}</label>
+      <div className="relative">
+        {children}
+        {Icon && (
+          <Icon className={`absolute ${ltr ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-gray-400`} size={18} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PasswordField({ label, name, value, onChange }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-black text-[#040814]">{label}</label>
+      <div className="relative">
+        <input
+          type="password" name={name} value={value} onChange={onChange}
+          placeholder="••••••••" minLength={8} dir="ltr" required
+          className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 pl-11 text-sm font-bold text-[#040814] outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-left"
+        />
+        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+      </div>
+    </div>
   );
 }

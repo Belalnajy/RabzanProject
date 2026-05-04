@@ -10,15 +10,18 @@ import {
   LayoutGrid,
   Users,
   TrendingUp,
+  ArrowLeftRight,
   Files,
   UserCog,
   ShieldCheck,
+  Bell,
   Settings,
   LogOut,
   X,
 } from 'lucide-react';
 import Logo from '../ui/Logo';
 import { useSidebar } from './SidebarContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const navItems = [
   {
@@ -58,6 +61,18 @@ const navItems = [
     permissionKey: 'view_dashboard',
   },
   {
+    icon: ArrowLeftRight,
+    path: '/dashboard/transactions',
+    label: 'العمليات المالية',
+    permissionKey: 'view_dashboard',
+  },
+  {
+    icon: Bell,
+    path: '/dashboard/notifications',
+    label: 'الإشعارات',
+    permissionKey: 'view_dashboard',
+  },
+  {
     icon: Files,
     path: '/dashboard/reports',
     label: 'التقارير',
@@ -86,30 +101,16 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { isSidebarOpen, closeSidebar } = useSidebar();
-
-  const userPermissions = [
-    'view_dashboard',
-    'view_orders',
-    'view_products',
-    'view_categories',
-    'view_customers',
-    'view_inventory',
-    'view_analytics',
-    'view_reports',
-    'manage_users',
-    'manage_roles',
-    'manage_security',
-    'manage_settings',
-  ];
-
-  const hasPermission = (permissionKey) => {
-    if (!permissionKey) return true;
-    return userPermissions.includes(permissionKey);
-  };
+  const { hasPermission, logout } = useAuth();
 
   const authorizedNavItems = navItems.filter((item) =>
     hasPermission(item.permissionKey),
   );
+
+  const handleLogout = () => {
+    if (window.innerWidth < 768) closeSidebar();
+    logout();
+  };
 
   return (
     <>
@@ -213,10 +214,8 @@ export default function Sidebar() {
         {/* Logout */}
         <div className="mt-auto w-full pt-4 shrink-0 border-t border-white/5 px-3 md:px-0 overflow-hidden">
           <button
-            onClick={() => {
-              if (window.innerWidth < 768) closeSidebar();
-            }}
-            className="relative w-[280px] md:w-[260px] h-[54px] md:h-[60px] flex items-center text-white/50 hover:text-rose-500 transition-colors group/logout shrink-0">
+            onClick={handleLogout}
+            className="relative w-[280px] md:w-[260px] h-[54px] md:h-[60px] flex items-center text-white/50 hover:text-rose-500 transition-colors group/logout shrink-0 cursor-pointer">
             <div className="w-[100px] h-full flex items-center justify-center shrink-0">
               <LogOut size={22} strokeWidth={1.5} className="rotate-180" />
             </div>

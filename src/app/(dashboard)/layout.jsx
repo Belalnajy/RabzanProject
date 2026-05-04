@@ -6,6 +6,7 @@ import {
   SidebarProvider,
   useSidebar,
 } from '../../components/dashboard/SidebarContext';
+import RouteGuard from '../../components/auth/RouteGuard';
 
 function DashboardContent({ children }) {
   const { isSidebarOpen, closeSidebar } = useSidebar();
@@ -39,7 +40,9 @@ function DashboardContent({ children }) {
 export default function DashboardLayout({ children }) {
   return (
     <SidebarProvider>
-      <DashboardContent>{children}</DashboardContent>
+      <RouteGuard>
+        <DashboardContent>{children}</DashboardContent>
+      </RouteGuard>
     </SidebarProvider>
   );
 }

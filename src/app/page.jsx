@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +31,7 @@ import {
   Truck,
   HelpCircle,
   Target,
+  Package,
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Hero from '../components/ui/Hero';
@@ -49,16 +50,33 @@ import {
   PORTFOLIO_PROJECTS,
   COMMERCIAL_SERVICES,
   ARTICLES,
-  PRODUCTS,
   CONTACT_INFO,
   PROCESS_STEPS,
 } from '../constants/content';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
   const { scrollYProgress } = useScroll();
   const scaleProgress = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
+  // Fetch featured products from API
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  useEffect(() => {
+    fetch(`${API_URL}/products?limit=6&status=active`)
+      .then((r) => r.json())
+      .then((json) => setFeaturedProducts(json.data || []))
+      .catch(() => setFeaturedProducts([]));
+  }, []);
+
+  const formatPrice = (n) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2,
+    }).format(Number(n) || 0);
 
   const stats = [
     {
@@ -328,7 +346,7 @@ const Home = () => {
 
           <StaggerContainer staggerBy={0.1}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              {PRODUCTS.map((product) => (
+              {featuredProducts.map((product) => (
                 <StaggerItem key={product.id}>
                   <motion.div
                     whileHover={{ y: -10 }}
@@ -337,18 +355,26 @@ const Home = () => {
                     <Link
                       href={`/products/${product.id}`}
                       className="h-72 overflow-hidden relative block">
-                      <motion.img
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.8 }}
-                        src={product.image}
-                        alt={t(product.name)}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute top-6 right-6">
-                        <span className="bg-white/90 backdrop-blur-md text-primary-navy px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider shadow-sm">
-                          {t(product.category)}
-                        </span>
-                      </div>
+                      {product.image ? (
+                        <motion.img
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.8 }}
+                          src={product.image}
+                          alt={product.nameAr || product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                          <Package size={64} className="text-slate-300" />
+                        </div>
+                      )}
+                      {product.category && (
+                        <div className="absolute top-6 right-6">
+                          <span className="bg-white/90 backdrop-blur-md text-primary-navy px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider shadow-sm">
+                            {product.category.nameAr || product.category.nameEn}
+                          </span>
+                        </div>
+                      )}
                     </Link>
 
                     {/* Content */}
@@ -356,18 +382,20 @@ const Home = () => {
                       <div className="flex justify-between items-start mb-4">
                         <Link href={`/products/${product.id}`}>
                           <h3 className="text-2xl font-black text-primary-navy leading-tight hover:text-accent-gold transition-colors">
-                            {t(product.name)}
+                            {product.nameAr || product.name}
                           </h3>
                         </Link>
                       </div>
-                      <p className="text-slate-600 text-lg mb-8 line-clamp-2 font-medium">
-                        {t(product.description)}
-                      </p>
+                      {product.description && (
+                        <p className="text-slate-600 text-lg mb-8 line-clamp-2 font-medium">
+                          {product.description}
+                        </p>
+                      )}
 
                       <div className="mt-auto space-y-4">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-accent-gold font-black text-xl">
-                            {t(product.price)}
+                            {formatPrice(product.defaultPrice)}
                           </span>
                           <Link
                             href={`/products/${product.id}`}
@@ -382,7 +410,7 @@ const Home = () => {
 
                         <a
                           href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
-                            `${t('home_page.featured_products.whatsapp_msg_prefix')}: ${t(product.name)}`,
+                            `${t('home_page.featured_products.whatsapp_msg_prefix')}: ${product.nameAr || product.name}`,
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"

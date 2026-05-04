@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Header from '../../../../../components/dashboard/Header';
+import Header from '@/components/dashboard/Header';
 import {
   Percent,
   TrendingUp,

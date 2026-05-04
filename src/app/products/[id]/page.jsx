@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -13,15 +13,40 @@ import {
   Tag,
   Truck,
   Zap,
+  Loader2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../../components/layout/Navbar';
-import { PRODUCTS, CONTACT_INFO } from '../../../constants/content';
+import { CONTACT_INFO } from '../../../constants/content';
 import {
   FadeIn,
   StaggerContainer,
   StaggerItem,
 } from '../../../components/ui/Animations';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
+const SPEC_LABELS = {
+  'Material': 'المادة',
+  'Weight': 'الوزن',
+  'Width': 'العرض',
+  'Country of Origin': 'بلد المنشأ',
+  'Dimensions': 'الأبعاد',
+  'Roll Diameter': 'قطر البكرة',
+  'Product Unit': 'وحدة المنتج',
+  'MOQ': 'الحد الأدنى لكمية الطلب',
+  // Fallback specs from old seed data
+  'capacity': 'سعة التجفيف',
+  'drumVolume': 'حجم الحوض',
+  'drumSize': 'مقاس الحوض',
+  'voltage': 'الجهد (Voltage)',
+  'motor': 'قوة المحرك',
+  'fanMotor': 'قوة محرك المروحة',
+  'steam': 'استهلاك البخار',
+  'dryTime': 'وقت التجفيف',
+  'dimensions': 'الأبعاد (Dimensions)',
+  'weight': 'الوزن',
+};
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -29,66 +54,96 @@ const ProductDetails = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.dir() === 'rtl';
 
-  const product = PRODUCTS.find((p) => p.id === parseInt(id));
-  const relatedProducts = PRODUCTS.filter((p) => p.id !== parseInt(id)).slice(
-    0,
-    3,
-  );
+  const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
+
+    fetch(`${API_URL}/products/${id}`)
+      .then((r) => { if (!r.ok) throw new Error('Not found'); return r.json(); })
+      .then((data) => {
+        setProduct(data);
+        // Fetch related products from same category
+        const categoryParam = data.categoryId ? `&category=${data.categoryId}` : '';
+        return fetch(`${API_URL}/products?limit=3&status=active${categoryParam}`);
+      })
+      .then((r) => r.json())
+      .then((json) => {
+        const related = (json.data || []).filter((p) => p.id !== id);
+        setRelatedProducts(related.slice(0, 3));
+      })
+      .catch(() => setProduct(null))
+      .finally(() => setLoading(false));
   }, [id]);
 
-  if (!product) {
+  const formatPrice = (n) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(Number(n) || 0);
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="text-center">
-          <h2 className="text-2xl font-black text-slate-900 mb-4">
-            {t('products.not_found')}
-          </h2>
-          <button
-            onClick={() => router.push('/products')}
-            className="text-primary-blue underline font-bold">
-            {t('products.back_to_products')}
-          </button>
+      <div className="bg-white min-h-screen">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 size={48} className="animate-spin text-primary-blue" />
         </div>
       </div>
     );
   }
 
-  const features = product.features;
+  if (!product) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <h2 className="text-2xl font-black text-slate-900 mb-4">{t('products.not_found')}</h2>
+            <button onClick={() => router.push('/products')} className="text-primary-blue underline font-bold">
+              {t('products.back_to_products')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const productName = product.nameAr || product.name;
+  const categoryName = product.category?.nameAr || product.category?.nameEn || '';
 
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
 
       {/* Hero Section */}
-      <section
-        className={`relative pt-48 pb-20 bg-slate-950 overflow-hidden text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'}`}>
+      <section className={`relative pt-48 pb-20 bg-slate-950 overflow-hidden text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'}`}>
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-linear-to-b from-slate-950/50 via-slate-950/80 to-slate-950 z-10" />
-          <motion.img
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.5 }}
-            src={product.image}
-            alt={t(product.name)}
-            className="w-full h-full object-cover opacity-30 grayscale"
-          />
+          {product.image && (
+            <motion.img
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.5 }}
+              src={product.image}
+              alt={productName}
+              className="w-full h-full object-cover opacity-30 grayscale"
+            />
+          )}
         </div>
 
         <div className="container relative z-20">
           <FadeIn>
-            <div
-              className={`inline-flex items-center gap-2 mb-6 text-secondary-green font-bold bg-secondary-green/10 px-4 py-2 rounded-full border border-secondary-green/20 backdrop-blur-md ${isRTL ? '' : 'flex-row-reverse'}`}>
-              <Tag size={16} />
-              <span>{t(product.category)}</span>
-            </div>
+            {categoryName && (
+              <div className={`inline-flex items-center gap-2 mb-6 text-secondary-green font-bold bg-secondary-green/10 px-4 py-2 rounded-full border border-secondary-green/20 backdrop-blur-md ${isRTL ? '' : 'flex-row-reverse'}`}>
+                <Tag size={16} />
+                <span>{categoryName}</span>
+              </div>
+            )}
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-8">
-              {t(product.name)}
+              {productName}
             </h1>
-            <div
-              className={`flex flex-wrap gap-4 justify-center ${isRTL ? 'lg:justify-start' : 'lg:justify-start'}`}>
+            <div className={`flex flex-wrap gap-4 justify-center ${isRTL ? 'lg:justify-start' : 'lg:justify-start'}`}>
               <div className="flex items-center gap-2 text-slate-300 bg-white/5 px-6 py-3 rounded-2xl backdrop-blur-sm border border-white/10">
                 <ShieldCheck size={20} className="text-accent-gold" />
                 <span>{t('services.inspection.title')}</span>
@@ -106,43 +161,34 @@ const ProductDetails = () => {
       <section className="py-20">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Right Column - Images/Visuals */}
+            {/* Right Column - Images */}
             <FadeIn direction={isRTL ? 'left' : 'right'} className="lg:order-2">
               <div className="sticky top-24 space-y-8">
                 <div className="rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 group">
-                  <motion.img
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.7 }}
-                    src={product.image}
-                    alt={t(product.name)}
-                    className="w-full h-auto object-cover"
-                  />
+                  {product.image ? (
+                    <motion.img whileHover={{ scale: 1.05 }} transition={{ duration: 0.7 }}
+                      src={product.image} alt={productName} className="w-full h-auto object-cover" />
+                  ) : (
+                    <div className="w-full aspect-square bg-slate-100 flex items-center justify-center">
+                      <Package size={80} className="text-slate-300" />
+                    </div>
+                  )}
                 </div>
-                {product.gallery?.map((src, gi) => (
-                  <div
-                    key={gi}
-                    className="rounded-[2rem] overflow-hidden shadow-lg border border-slate-100">
-                    <img
-                      src={src}
-                      alt={`${t(product.name)} — ${gi + 2}`}
-                      className="w-full h-auto object-cover"
-                    />
+
+                {/* Gallery */}
+                {product.gallery?.length > 0 && product.gallery.map((src, gi) => (
+                  <div key={gi} className="rounded-[2rem] overflow-hidden shadow-lg border border-slate-100">
+                    <img src={src} alt={`${productName} — ${gi + 2}`} className="w-full h-auto object-cover" />
                   </div>
                 ))}
 
+                {/* WhatsApp CTA */}
                 <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 text-center">
-                  <h3 className="text-xl font-black text-primary-navy mb-4">
-                    {t('products.have_question')}
-                  </h3>
-                  <p className="text-slate-500 mb-6">
-                    {t('products.consultant_ready')}
-                  </p>
+                  <h3 className="text-xl font-black text-primary-navy mb-4">{t('products.have_question')}</h3>
+                  <p className="text-slate-500 mb-6">{t('products.consultant_ready')}</p>
                   <a
-                    href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(
-                      `${t('products.whatsapp_inquiry')}: ${t(product.name)}`,
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(`${t('products.whatsapp_inquiry')}: ${productName}`)}`}
+                    target="_blank" rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20">
                     <MessageCircle size={20} />
                     <span>{t('products.chat_whatsapp')}</span>
@@ -156,40 +202,17 @@ const ProductDetails = () => {
               <FadeIn direction={isRTL ? 'right' : 'left'}>
                 {/* Description */}
                 <div>
-                  <h2 className="text-3xl font-black text-primary-navy mb-6">
-                    {t('products.overview')}
-                  </h2>
-                  <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                    {t(product.longDescription || product.description)}
+                  <h2 className="text-3xl font-black text-primary-navy mb-6">{t('products.overview')}</h2>
+                  <p className="text-lg text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">
+                    {product.longDescription || product.description || ''}
                   </p>
                 </div>
 
                 {/* Price */}
-                <div className="flex items-center justify-between bg-primary-blue text-white p-8 rounded-3xl shadow-xl shadow-primary-blue/20">
+                <div className="flex items-center justify-between bg-primary-blue text-white p-8 rounded-3xl shadow-xl shadow-primary-blue/20 mt-8">
                   <div>
-                    <span className="block text-slate-300 text-sm font-bold mb-1">
-                      {t('products.estimated_price')}
-                    </span>
-                    {product.priceDetailLines?.length ? (
-                      <div className="space-y-2">
-                        {product.priceDetailLines.map((lineKey) => (
-                          <span
-                            key={lineKey}
-                            className="block text-xl sm:text-2xl font-black text-accent-gold leading-snug">
-                            {t(lineKey)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-3xl font-black text-accent-gold">
-                        {t(product.price)}
-                      </span>
-                    )}
-                    {product.priceIncludesPercent18 && (
-                      <span className="block text-slate-300 text-xs font-medium mt-2 max-w-xs">
-                        {t('products.price_includes_18')}
-                      </span>
-                    )}
+                    <span className="block text-slate-300 text-sm font-bold mb-1">{t('products.estimated_price')}</span>
+                    <span className="text-3xl font-black text-accent-gold">{formatPrice(product.defaultPrice)}</span>
                   </div>
                   <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
                     <Tag size={24} />
@@ -197,21 +220,19 @@ const ProductDetails = () => {
                 </div>
 
                 {/* Features */}
-                {features && (
+                {product.features?.length > 0 && (
                   <div className="mt-12">
                     <h3 className="text-2xl font-black text-primary-navy mb-6 flex items-center gap-3">
                       <Zap className="text-secondary-green" />
                       <span>{t('products.key_features')}</span>
                     </h3>
                     <ul className="space-y-4">
-                      {features.map((featureKey, idx) => (
+                      {product.features.map((feat, idx) => (
                         <li key={idx} className="flex items-start gap-4">
                           <div className="mt-1 w-6 h-6 rounded-full bg-secondary-green/10 flex items-center justify-center text-secondary-green shrink-0">
                             <CheckCircle2 size={14} />
                           </div>
-                          <span className="text-slate-700 font-bold">
-                            {t(featureKey)}
-                          </span>
+                          <span className="text-slate-700 font-bold">{feat}</span>
                         </li>
                       ))}
                     </ul>
@@ -219,35 +240,20 @@ const ProductDetails = () => {
                 )}
 
                 {/* Specs */}
-                {product.specs && (
+                {product.specs && Object.keys(product.specs).length > 0 && (
                   <div className="mt-12">
                     <h3 className="text-2xl font-black text-primary-navy mb-6 flex items-center gap-3">
                       <Package className="text-secondary-green" />
                       <span>{t('products.technical_specs')}</span>
                     </h3>
                     <div className="border border-slate-200 rounded-3xl overflow-hidden">
-                      {Object.entries(product.specs).map(
-                        ([key, valueKey], idx) => {
-                          return (
-                            <div
-                              key={key}
-                              className={`flex justify-between p-5 ${
-                                idx !== Object.keys(product.specs).length - 1
-                                  ? 'border-b border-slate-100'
-                                  : ''
-                              } ${idx % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
-                              <span className="font-bold text-primary-navy">
-                                {t(`products.specs_labels.${key}`)}
-                              </span>
-                              <span
-                                className="text-slate-600 font-medium text-left"
-                                dir="ltr">
-                                {t(valueKey)}
-                              </span>
-                            </div>
-                          );
-                        },
-                      )}
+                      {Object.entries(product.specs).map(([key, val], idx) => (
+                        <div key={key}
+                          className={`flex justify-between p-5 ${idx !== Object.keys(product.specs).length - 1 ? 'border-b border-slate-100' : ''} ${idx % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
+                          <span className="font-bold text-primary-navy">{SPEC_LABELS[key] || key}</span>
+                          <span className="text-slate-600 font-medium text-left" dir="ltr">{val}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -258,54 +264,54 @@ const ProductDetails = () => {
       </section>
 
       {/* Related Products */}
-      <section className="py-24 bg-slate-50 border-t border-slate-200">
-        <div className="container">
-          <h2 className="text-3xl md:text-5xl font-black text-primary-navy mb-16 text-center">
-            {t('products.related_products')}
-          </h2>
-          <StaggerContainer>
-            <div className="grid md:grid-cols-3 gap-8">
-              {relatedProducts.map((p) => (
-                <StaggerItem key={p.id}>
-                  <Link href={`/products/${p.id}`}>
-                    <motion.div
-                      whileHover={{ y: -10 }}
-                      className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer">
-                      <div className="h-48 rounded-2xl overflow-hidden mb-6 relative">
-                        <img
-                          src={p.image}
-                          alt={t(p.name)}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-black text-primary-navy">
-                          {t(p.category)}
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-black text-primary-navy mb-2 line-clamp-1">
-                        {t(p.name)}
-                      </h3>
-                      <p className="text-slate-500 text-sm line-clamp-2 mb-4">
-                        {t(p.description)}
-                      </p>
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                        <span className="text-accent-gold font-bold text-sm">
-                          {t(p.price)}
-                        </span>
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                          <ArrowLeft
-                            size={16}
-                            className={isRTL ? '' : 'rotate-180'}
-                          />
+      {relatedProducts.length > 0 && (
+        <section className="py-24 bg-slate-50 border-t border-slate-200">
+          <div className="container">
+            <h2 className="text-3xl md:text-5xl font-black text-primary-navy mb-16 text-center">
+              {t('products.related_products')}
+            </h2>
+            <StaggerContainer>
+              <div className="grid md:grid-cols-3 gap-8">
+                {relatedProducts.map((p) => (
+                  <StaggerItem key={p.id}>
+                    <Link href={`/products/${p.id}`}>
+                      <motion.div whileHover={{ y: -10 }}
+                        className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer">
+                        <div className="h-48 rounded-2xl overflow-hidden mb-6 relative">
+                          {p.image ? (
+                            <img src={p.image} alt={p.nameAr || p.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                              <Package size={48} className="text-slate-300" />
+                            </div>
+                          )}
+                          {p.category && (
+                            <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-black text-primary-navy">
+                              {p.category.nameAr || p.category.nameEn}
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    </motion.div>
-                  </Link>
-                </StaggerItem>
-              ))}
-            </div>
-          </StaggerContainer>
-        </div>
-      </section>
+                        <h3 className="text-xl font-black text-primary-navy mb-2 line-clamp-1">
+                          {p.nameAr || p.name}
+                        </h3>
+                        {p.description && (
+                          <p className="text-slate-500 text-sm line-clamp-2 mb-4">{p.description}</p>
+                        )}
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                          <span className="text-accent-gold font-bold text-sm">{formatPrice(p.defaultPrice)}</span>
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                            <ArrowLeft size={16} className={isRTL ? '' : 'rotate-180'} />
+                          </div>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  </StaggerItem>
+                ))}
+              </div>
+            </StaggerContainer>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/layout/Navbar';
 import { CONTACT_INFO } from '../../constants/content';
 import { FadeIn } from '../../components/ui/Animations';
+import { contactService } from '@/lib/services/contact.service';
 
 const Contact = () => {
   const { t, i18n } = useTranslation();
@@ -25,11 +26,35 @@ const Contact = () => {
 
   const [activeTab, setActiveTab] = useState('form');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [form, setForm] = useState({ name: '', email: '', service: '', message: '' });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 5000);
+    setSubmitError('');
+    setIsSubmitting(true);
+    try {
+      await contactService.submit({
+        name: form.name,
+        email: form.email,
+        type: activeTab === 'form' ? 'quote' : 'support',
+        service: form.service || undefined,
+        message: form.message,
+      });
+      setIsSubmitted(true);
+      setForm({ name: '', email: '', service: '', message: '' });
+      setTimeout(() => setIsSubmitted(false), 8000);
+    } catch (err) {
+      setSubmitError(err?.message || 'حدث خطأ أثناء الإرسال. حاول مرة أخرى.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -204,6 +229,11 @@ const Contact = () => {
                         exit={{ opacity: 0, x: -20 }}
                         onSubmit={handleSubmit}
                         className="space-y-8">
+                        {submitError && (
+                          <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl text-sm font-bold">
+                            {submitError}
+                          </div>
+                        )}
                         <div className="grid md:grid-cols-2 gap-8">
                           <div className="space-y-3">
                             <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">
@@ -211,6 +241,9 @@ const Contact = () => {
                             </label>
                             <input
                               type="text"
+                              name="name"
+                              value={form.name}
+                              onChange={handleChange}
                               placeholder={t(
                                 'contact_page.form.fields.name_placeholder',
                               )}
@@ -224,6 +257,9 @@ const Contact = () => {
                             </label>
                             <input
                               type="email"
+                              name="email"
+                              value={form.email}
+                              onChange={handleChange}
                               placeholder="work@company.com"
                               className="w-full px-6 py-5 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:bg-white focus:border-secondary-green transition-all"
                               required
@@ -235,17 +271,17 @@ const Contact = () => {
                           <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">
                             {t('contact_page.form.fields.service_label')}
                           </label>
-                          <select className="w-full px-6 py-5 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:bg-white focus:border-secondary-green transition-all appearance-none cursor-pointer">
-                            <option>
+                          <select name="service" value={form.service} onChange={handleChange} className="w-full px-6 py-5 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:bg-white focus:border-secondary-green transition-all appearance-none cursor-pointer">
+                            <option value="">
                               {t('contact_page.form.options.strategic')}
                             </option>
-                            <option>
+                            <option value="supply_chain">
                               {t('contact_page.form.options.supply_chain')}
                             </option>
-                            <option>
+                            <option value="inspection">
                               {t('contact_page.form.options.inspection')}
                             </option>
-                            <option>
+                            <option value="consulting">
                               {t('contact_page.form.options.consulting')}
                             </option>
                           </select>
@@ -257,6 +293,9 @@ const Contact = () => {
                           </label>
                           <textarea
                             rows="5"
+                            name="message"
+                            value={form.message}
+                            onChange={handleChange}
                             placeholder={t(
                               'contact_page.form.fields.details_placeholder',
                             )}
@@ -267,8 +306,9 @@ const Contact = () => {
 
                         <button
                           type="submit"
-                          className="w-full bg-primary-blue hover:bg-primary-blue-dark text-white p-7 rounded-2xl font-black text-xl shadow-2xl transition-all flex items-center justify-center gap-4 group">
-                          <span>{t('contact_page.form.submit_btn')}</span>
+                          disabled={isSubmitting}
+                          className="w-full bg-primary-blue hover:bg-primary-blue-dark text-white p-7 rounded-2xl font-black text-xl shadow-2xl transition-all flex items-center justify-center gap-4 group disabled:opacity-60">
+                          <span>{isSubmitting ? 'جاري الإرسال...' : t('contact_page.form.submit_btn')}</span>
                           <Send
                             size={24}
                             className={`transition-transform ${isRTL ? 'group-hover:-translate-x-2 group-hover:-translate-y-1' : 'group-hover:translate-x-2 group-hover:-translate-y-1'}`}

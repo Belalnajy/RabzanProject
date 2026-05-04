@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, ArrowLeft, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, ArrowLeft, Globe, Sparkles, LogIn, LayoutDashboard } from 'lucide-react';
 import Logo from '../ui/Logo';
 import { NAV_LINKS, CONTACT_INFO } from '../../constants/content';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeHover, setActiveHover] = useState(null);
@@ -147,6 +149,20 @@ const Navbar = () => {
               </span>
             </motion.div>
 
+            <Link href={isAuthenticated ? '/dashboard' : '/login'}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-2 text-sm font-bold cursor-pointer transition-all duration-300 px-3 py-2 rounded-lg ${
+                  isScrolled
+                    ? 'text-slate-700 hover:bg-slate-100'
+                    : 'text-white hover:bg-white/10'
+                }`}>
+                {isAuthenticated ? <LayoutDashboard size={16} /> : <LogIn size={16} />}
+                <span>{mounted ? t(isAuthenticated ? 'nav.dashboard' : 'nav.login') : ''}</span>
+              </motion.div>
+            </Link>
+
             <Link href="/contact">
               <motion.div
                 whileHover={{ scale: 1.02, y: -2 }}
@@ -253,6 +269,21 @@ const Navbar = () => {
                   </Link>
                 </motion.div>
               ))}
+
+              {/* Mobile Login / Dashboard */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="w-full">
+                <Link
+                  href={isAuthenticated ? '/dashboard' : '/login'}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-accent-gold text-white font-bold hover:bg-amber-500 transition-all w-full">
+                  {isAuthenticated ? <LayoutDashboard size={18} /> : <LogIn size={18} />}
+                  <span>{t(isAuthenticated ? 'nav.dashboard' : 'nav.login')}</span>
+                </Link>
+              </motion.div>
 
               {/* Mobile Language Toggle */}
               <motion.button

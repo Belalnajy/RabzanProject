@@ -1,422 +1,955 @@
 'use client';
 
-import React, { useState } from 'react';
-import Header from '../../../../components/dashboard/Header';
-import { 
-  Plus, History, Wallet, CreditCard, Receipt, PiggyBank, DollarSign,
-  FileText, FileImage, FileSpreadsheet, Download, Trash2, Eye,
-  CheckCircle2, AlertTriangle, Truck, Package, Box, Settings, Lock, RefreshCw, Check
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { useApi, useMutation } from '@/hooks/useApi';
+import { ordersService } from '@/lib/services/orders.service';
+import {
+  FileText,
+  Clock,
+  Download,
+  Eye,
+  Trash2,
+  Upload,
+  Plus,
+  RefreshCw,
+  CheckCircle,
+  AlertTriangle,
+  X,
+  CreditCard,
+  Percent,
+  Wallet,
+  Building,
+  Image as ImageIcon,
+  FileSpreadsheet,
+  Coins,
+  ShieldCheck,
+  Settings,
+  Truck,
+  Search,
+  Package,
+  Info,
+  ClipboardCheck,
+  ChevronDown,
+  User,
 } from 'lucide-react';
 
-import PaymentModal from '../../../../components/dashboard/modals/PaymentModal';
-import UploadModal from '../../../../components/dashboard/modals/UploadModal';
-import StageUpdateModal from '../../../../components/dashboard/modals/StageUpdateModal';
-import ConfirmDangerModal from '../../../../components/dashboard/modals/ConfirmDangerModal';
-
-// ==========================================
-// PLACEHOLDER STATE & CONSTANTS
-// TODO: Replace these with API data fetched via useEffect/React Query
-// ==========================================
-
-const ORDER_INFO = {
-  id: 'ORD-2024-1284',
-  clientName: 'شركة النخبة',
-  productName: 'إلكترونيات',
-};
-
-const FINANCIALS = {
-  totalOrderValue: 150000,
-  amountPaid: 80000,
-  amountRemaining: 70000,
-  totalCommission: 12500,
-  commissionReceived: 8000,
-  currency: 'EGP'
-};
-
-const PAYMENTS_HISTORY = [
-  { id: 1, status: 'مكتمل', date: '10 ديسمبر 2024', amount: 25000, type: 'من الطلب الرئيسي', ref: '#TRX-2024-001 - تحويل بنكي', user: 'سارة أحمد' },
-  { id: 2, status: 'مكتمل', date: '15 ديسمبر 2024', amount: 30000, type: 'من العمولة', ref: '#TRX-2024-002 - تحويل بنكي', user: 'سارة أحمد' },
-  { id: 3, status: 'مكتمل', date: '16 ديسمبر 2024', amount: 25000, type: 'من الطلب الرئيسي', ref: '#TRX-2024-003 - تحويل بنكي', user: 'سارة أحمد' },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 const ORDER_STAGES = [
-  { id: 1, name: 'عرض السعر', status: 'completed', icon: FileText },
-  { id: 2, name: 'التعميد', status: 'completed', icon: CheckCircle2 },
-  { id: 3, name: 'وصول الحوالة', status: 'completed', icon: CreditCard },
-  { id: 4, name: 'التصنيع', status: 'completed', icon: Settings },
-  { id: 5, name: 'تشييك', status: 'current', icon: AlertTriangle },
-  { id: 6, name: 'شحن', status: 'pending', icon: Truck },
-  { id: 7, name: 'سابر', status: 'pending', icon: Box },
-  { id: 8, name: 'وصول الشحنة', status: 'pending', icon: Package },
-  { id: 9, name: 'استلام العمولة', status: 'pending', icon: DollarSign },
-  { id: 10, name: 'إغلاق', status: 'pending', icon: Lock },
+  { name: 'عرض السعر', icon: FileText },
+  { name: 'التعميد', icon: ShieldCheck },
+  { name: 'وصول الحوالة', icon: Wallet },
+  { name: 'التصنيع', icon: Settings },
+  { name: 'تشييك', icon: ClipboardCheck },
+  { name: 'شحن', icon: Truck },
+  { name: 'سابر', icon: Search },
+  { name: 'وصول الشحنة', icon: Package },
+  { name: 'استلام العمولة', icon: Coins },
+  { name: 'إغلاق', icon: CheckCircle },
 ];
 
-const ATTACHMENTS = [
-  { id: 1, name: 'Purchase_Order.pdf', size: '2.4 MB', timeAgo: 'منذ 3 أيام', user: 'محمد أحمد', type: 'pdf' },
-  { id: 2, name: 'Product_Specifications.jpg', size: '1.8 MB', timeAgo: 'منذ 3 أيام', user: 'محمد أحمد', type: 'image' },
-  { id: 3, name: 'Shipping_Details.xlsx', size: '856 KB', timeAgo: 'منذ 3 أيام', user: 'محمد أحمد', type: 'excel' },
-];
-
-// Helper to format currency
-const formatMoney = (amount) => amount.toLocaleString();
+/* ─── Stage requirements (shown in stage update modal) ─── */
+const STAGE_REQUIREMENTS = {
+  'التعميد': ['تم اعتماد عرض السعر', 'تم توقيع العقد'],
+  'وصول الحوالة': ['تم تأكيد التعميد', 'تم إرسال الحوالة'],
+  'التصنيع': ['تم استلام الحوالة', 'تم تأكيد المواصفات'],
+  'تشييك': ['تم الانتهاء من التصنيع', 'تم تحديد شركة الشحن', 'تم إدخال رقم التتبع'],
+  'شحن': ['تم اجتياز التشييك', 'تم تجهيز البضاعة للشحن'],
+  'سابر': ['تم شحن البضاعة', 'تم استلام بوليصة الشحن'],
+  'وصول الشحنة': ['تم اجتياز فحص سابر', 'تم التخليص الجمركي'],
+  'استلام العمولة': ['تم تسليم البضاعة للعميل', 'تم تأكيد الاستلام'],
+  'إغلاق': ['تم استلام العمولة بالكامل', 'تم إغلاق جميع المعاملات المالية'],
+};
 
 export default function OrderDetailsPage() {
-  // Local states for modals/actions
-  // TODO: Bind these to respective handlers and API POST requests
-  const [activeModal, setActiveModal] = useState(null); // 'payment', 'upload', 'stageUpdate', 'confirmDanger'
+  const { id } = useParams();
+  const orderQuery = useApi(() => ordersService.getById(id), [id]);
+
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [fileModalOpen, setFileModalOpen] = useState(false);
+  const [stageModalOpen, setStageModalOpen] = useState(false);
+  const [actionError, setActionError] = useState('');
+  const [actionSuccess, setActionSuccess] = useState('');
+
+  // Forms
+  const [paymentForm, setPaymentForm] = useState({
+    type: 'دفعة أولى',
+    amount: '',
+    currency: 'EGP',
+    date: new Date().toISOString().split('T')[0],
+    notes: '',
+  });
+
+  const [stageForm, setStageForm] = useState({
+    stage: '',
+    reason: '',
+  });
+
+  const [fileToUpload, setFileToUpload] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
+  const [paymentPage, setPaymentPage] = useState(1);
+
+  // Mutators
+  const paymentMut = useMutation((data) => ordersService.addPayment(id, data));
+  const stageMut = useMutation((data) => ordersService.updateStage(id, data));
+  const fileMut = useMutation((file) =>
+    ordersService.uploadAttachment(id, file),
+  );
+
+  useEffect(() => {
+    if (orderQuery.data?.currentStage) {
+      setStageForm((prev) => ({
+        ...prev,
+        stage: orderQuery.data.currentStage,
+      }));
+    }
+  }, [orderQuery.data]);
+
+  if (orderQuery.loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B08B3A]"></div>
+      </div>
+    );
+  }
+
+  if (orderQuery.error || !orderQuery.data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500 font-bold">
+        {orderQuery.error?.message || 'الطلب غير موجود'}
+      </div>
+    );
+  }
+
+  const order = orderQuery.data;
+  const currentStageIndex = ORDER_STAGES.findIndex(
+    (s) => s.name === order.currentStage,
+  );
+
+  // Stats
+  const commissionReceived =
+    order.transactions
+      ?.filter((t) => t.paymentType === 'commission')
+      ?.reduce((sum, t) => sum + Number(t.amount), 0) || 0;
+
+  // Handlers
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    setActionError('');
+    const typeMap = {
+      'دفعة أولى': 'first_payment',
+      'دفعة نهائية': 'final_payment',
+      'عمولة': 'commission',
+      'دفعة جزئية': 'partial_payment',
+    };
+    try {
+      // Step 1: Create payment (JSON)
+      const result = await paymentMut.mutate({
+        amount: Number(paymentForm.amount),
+        paymentType: typeMap[paymentForm.type] || 'first_payment',
+        paymentDate: paymentForm.date,
+        currency: order.currency,
+        notes: paymentForm.notes || undefined,
+      });
+
+      // Step 2: Upload proof file if attached
+      if (paymentProofFile && result?.newTransactionId) {
+        await ordersService.uploadProof(id, result.newTransactionId, paymentProofFile);
+      }
+
+      setPaymentModalOpen(false);
+      setPaymentForm({ type: 'دفعة أولى', amount: '', currency: 'EGP', date: new Date().toISOString().split('T')[0], notes: '' });
+      setPaymentProofFile(null);
+      setActionSuccess('تم إضافة الدفعة بنجاح');
+      setTimeout(() => setActionSuccess(''), 4000);
+      orderQuery.refetch();
+    } catch (err) {
+      setActionError(err?.message || 'حدث خطأ أثناء إضافة الدفعة');
+    }
+  };
+
+  const handleStageSubmit = async (e) => {
+    e.preventDefault();
+    setActionError('');
+    try {
+      await stageMut.mutate({
+        newStage: stageForm.stage,
+        reason: stageForm.reason,
+      });
+      setStageModalOpen(false);
+      setActionSuccess('تم تحديث المرحلة بنجاح');
+      setTimeout(() => setActionSuccess(''), 4000);
+      orderQuery.refetch();
+    } catch (err) {
+      setActionError(err?.response?.data?.message || err?.message || 'حدث خطأ أثناء تحديث المرحلة');
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+    if (!fileToUpload) return;
+    setActionError('');
+    try {
+      await fileMut.mutate(fileToUpload);
+      setFileModalOpen(false);
+      setFileToUpload(null);
+      setFileName('');
+      setActionSuccess('تم رفع الملف بنجاح');
+      setTimeout(() => setActionSuccess(''), 4000);
+      orderQuery.refetch();
+    } catch (err) {
+      setActionError(err?.response?.data?.message || err?.message || 'حدث خطأ أثناء رفع الملف');
+    }
+  };
 
   return (
-    <>
-      {/* Top Header Card */}
-      <Header title={`طلب #${ORDER_INFO.id}`} subtitle="" variant="card" />
+    <div className="min-h-screen bg-[#f8f9fa] pb-10" dir="rtl">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-black text-gray-900 mb-2">
+              طلب #{order.displayId}
+            </h1>
+            <p className="text-sm text-gray-500 font-medium">
+              {order.customer?.name || '—'}
+              {order.product && ` - ${order.product.nameAr || order.product.name}`}
+            </p>
+          </div>
+          <Link
+            href={`/orders/${id}/edit`}
+            className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-[12px] font-bold text-sm hover:bg-gray-50 transition-colors shadow-sm">
+            <Settings size={16} />
+            تعديل الطلب
+          </Link>
+        </div>
 
-      {/* Page Identifiers */}
-      <div className="mb-10">
-        <h2 className="text-[32px] font-black text-[#040814] mb-2">طلب #{ORDER_INFO.id}</h2>
-        <p className="text-gray-400 font-bold text-lg">{ORDER_INFO.clientName} - {ORDER_INFO.productName}</p>
-      </div>
+        {/* Success / Error Banners */}
+        {actionSuccess && (
+          <div className="mb-6 flex items-center gap-3 bg-emerald-50 text-emerald-700 px-6 py-4 rounded-[16px] border border-emerald-100">
+            <CheckCircle size={18} />
+            <span className="font-bold text-sm">{actionSuccess}</span>
+          </div>
+        )}
+        {actionError && (
+          <div className="mb-6 flex items-center gap-3 bg-red-50 text-red-700 px-6 py-4 rounded-[16px] border border-red-100">
+            <AlertTriangle size={18} />
+            <span className="font-bold text-sm">{actionError}</span>
+            <button onClick={() => setActionError('')} className="mr-auto text-red-400 hover:text-red-600"><X size={16} /></button>
+          </div>
+        )}
 
-      <div className="space-y-12">
-        
-        {/* ================= SECTION 1: FINANCIAL OVERVIEW ================= */}
-        <section>
-          <div className="flex flex-wrap items-end justify-between mb-6 gap-4">
+        {/* Financial Overview */}
+        <div className="mb-8 relative">
+          <div className="flex justify-between items-center mb-4">
             <div>
-              <h3 className="text-2xl font-black text-[#040814] mb-1">نظرة مالية شاملة</h3>
-              <p className="text-gray-500 font-medium text-sm">ملخص تفصيلي للمعاملات المالية للطلب</p>
+              <h2 className="text-xl font-black text-gray-900 mb-1">
+                نظرة مالية شاملة
+              </h2>
+              <p className="text-xs text-gray-500">
+                ملخص تفصيلي للمعاملات المالية للطلب
+              </p>
             </div>
-            <button 
-              onClick={() => setActiveModal('payment')}
-              className="flex items-center gap-2 bg-[#B08B3A] hover:bg-[#906c27] text-white px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm"
-            >
-              <Plus size={18} strokeWidth={2.5} />
+            <button
+              onClick={() => setPaymentModalOpen(true)}
+              className="flex items-center gap-2 bg-[#B08B3A] text-white px-5 py-2.5 rounded-[12px] font-bold text-sm hover:bg-[#9a7933] transition-colors shadow-sm">
+              <Plus size={16} />
               إضافة دفعة جديدة
             </button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {/* 1. Total Order */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-200 text-center shadow-sm">
-              <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-orange-100 text-orange-500">
-                <Wallet size={20} />
-              </div>
-              <p className="font-bold text-sm text-[#040814] mb-1">إجمالي قيمة الطلب</p>
-              <p className="font-black text-xl text-orange-500">
-                {formatMoney(FINANCIALS.totalOrderValue)} <span className="text-xs text-gray-400">{FINANCIALS.currency}</span>
-              </p>
-            </div>
-            
-            {/* 2. Paid */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-200 text-center shadow-sm relative overflow-hidden">
-              <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-emerald-100 text-emerald-500 relative z-10">
-                <CheckCircle2 size={20} />
-              </div>
-              <p className="font-bold text-sm text-[#040814] mb-1 relative z-10">المبلغ المدفوع</p>
-              <p className="font-black text-xl text-emerald-500 relative z-10">
-                {formatMoney(FINANCIALS.amountPaid)} <span className="text-xs text-gray-400">{FINANCIALS.currency}</span>
-              </p>
-              {/* Decorative accent */}
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-emerald-50 rounded-full border border-emerald-100/50 z-0 pointer-events-none"></div>
-            </div>
-
-            {/* 3. Remaining */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-200 text-center shadow-sm">
-              <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-rose-100 text-rose-500">
-                <AlertTriangle size={20} />
-              </div>
-              <p className="font-bold text-sm text-[#040814] mb-1">المبلغ المتبقي</p>
-              <p className="font-black text-xl text-rose-500">
-                {formatMoney(FINANCIALS.amountRemaining)} <span className="text-xs text-gray-400">{FINANCIALS.currency}</span>
-              </p>
-            </div>
-
-            {/* 4. Total Comm */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-200 text-center shadow-sm">
-              <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-amber-100 text-amber-500">
-                <DollarSign size={20} />
-              </div>
-              <p className="font-bold text-sm text-[#040814] mb-1">إجمالي العمولة</p>
-              <p className="font-black text-xl text-amber-500">
-                {formatMoney(FINANCIALS.totalCommission)} <span className="text-xs text-gray-400">{FINANCIALS.currency}</span>
-              </p>
-            </div>
-
-            {/* 5. Received Comm */}
-            <div className="bg-white rounded-2xl p-5 border border-gray-200 text-center shadow-sm">
-              <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-purple-100 text-purple-600">
-                <PiggyBank size={20} />
-              </div>
-              <p className="font-bold text-sm text-[#040814] mb-1">العمولة المستلمة</p>
-              <p className="font-black text-xl text-purple-600">
-                {formatMoney(FINANCIALS.commissionReceived)} <span className="text-xs text-gray-400">{FINANCIALS.currency}</span>
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <StatCard
+              icon={<Wallet className="text-amber-500" size={24} />}
+              title="إجمالي قيمة الطلب"
+              value={Number(order.totalPrice).toLocaleString()}
+              currency={order.currency}
+              iconBg="bg-amber-50"
+            />
+            <StatCard
+              icon={<CheckCircle className="text-green-500" size={24} />}
+              title="المبلغ المدفوع"
+              value={Number(order.totalPaid).toLocaleString()}
+              currency={order.currency}
+              iconBg="bg-green-50"
+              valueColor="text-green-600"
+            />
+            <StatCard
+              icon={<AlertTriangle className="text-red-500" size={24} />}
+              title="المبلغ المتبقي"
+              value={Number(order.remainingBalance).toLocaleString()}
+              currency={order.currency}
+              iconBg="bg-red-50"
+              valueColor="text-red-600"
+            />
+            <StatCard
+              icon={<Percent className="text-amber-500" size={24} />}
+              title="إجمالي العمولة"
+              value={Number(order.commissionAmount).toLocaleString()}
+              currency={order.currency}
+              iconBg="bg-amber-50"
+              valueColor="text-amber-600"
+            />
+            <StatCard
+              icon={<Coins className="text-purple-500" size={24} />}
+              title="العمولة المستلمة"
+              value={commissionReceived.toLocaleString()}
+              currency={order.currency}
+              iconBg="bg-purple-50"
+              valueColor="text-purple-600"
+            />
           </div>
-        </section>
+        </div>
 
-        {/* ================= SECTION 2: PAYMENT HISTORY ================= */}
-        <section className="bg-white rounded-[32px] p-6 md:p-8 border border-gray-200 shadow-sm">
-          <div className="flex items-center gap-3 mb-8">
-            <History className="text-[#B08B3A]" size={24} />
-            <h3 className="text-2xl font-black text-[#040814]">سجل الدفعات</h3>
+        {/* Payments Record */}
+        <div className="mb-8 bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100 flex items-center gap-3">
+            <Clock className="text-[#B08B3A]" size={20} />
+            <h2 className="text-lg font-black text-gray-900">سجل الدفعات</h2>
           </div>
-
-          <div className="flex gap-6 overflow-x-auto pb-4 custom-scrollbar">
-            {PAYMENTS_HISTORY.map((payment) => (
-              <div key={payment.id} className="min-w-[320px] bg-white border border-gray-200 rounded-3xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-full">
-                    {payment.status}
-                  </span>
-                  <span className="text-gray-400 text-xs font-bold">{payment.date}</span>
+          <div className="p-6">
+            {order.transactions?.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {order.transactions
+                    .slice((paymentPage - 1) * 3, paymentPage * 3)
+                    .map((tx) => (
+                      <PaymentCard key={tx.id} tx={tx} currency={order.currency} />
+                    ))}
                 </div>
-
-                {/* Amount & Doc Icon */}
-                <div className="flex justify-between items-center mb-8">
-                  <div>
-                    <h4 className="text-2xl font-black text-emerald-500 mb-1 leading-none">{formatMoney(payment.amount)} EGP</h4>
-                    <p className="text-xs font-bold text-gray-400 border border-gray-200 rounded-full inline-block px-3 py-1 bg-gray-50">
-                      {payment.type}
-                    </p>
+                {order.transactions.length > 3 && (
+                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span className="text-xs font-bold text-gray-500">
+                      عرض {(paymentPage - 1) * 3 + 1}-{Math.min(paymentPage * 3, order.transactions.length)} من {order.transactions.length} دفعة
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPaymentPage(p => Math.max(1, p - 1))}
+                        disabled={paymentPage === 1}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        &lt;
+                      </button>
+                      <span className="text-xs font-bold text-gray-700 min-w-[60px] text-center">
+                        {paymentPage} / {Math.ceil(order.transactions.length / 3)}
+                      </span>
+                      <button
+                        onClick={() => setPaymentPage(p => Math.min(Math.ceil(order.transactions.length / 3), p + 1))}
+                        disabled={paymentPage >= Math.ceil(order.transactions.length / 3)}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        &gt;
+                      </button>
+                    </div>
                   </div>
-                  <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-amber-500/30 transform group-hover:scale-105 transition-transform">
-                    <FileText size={28} />
-                  </div>
-                </div>
-
-                {/* Meta details */}
-                <div className="flex justify-between items-center border-t border-gray-100 pt-4 mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center"><UserIcon /></div>
-                    <span className="text-[11px] font-bold text-gray-500">{payment.user}</span>
-                  </div>
-                  <span className="text-[10px] text-gray-400 block max-w-[130px] truncate" title={payment.ref}>{payment.ref}</span>
-                </div>
-
-                {/* Actions */}
-                <div className="flex justify-between gap-3">
-                  <button className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-3 rounded-xl transition-colors text-center shadow-sm">
-                    عرض الإيصال
-                  </button>
-                  <button className="flex-1 bg-white border border-amber-500 text-amber-500 hover:bg-amber-50 font-bold text-xs py-3 rounded-xl transition-colors text-center">
-                    تحميل PDF
-                  </button>
-                </div>
-
+                )}
+              </>
+            ) : (
+              <div className="text-sm text-gray-400 font-bold py-4">
+                لا توجد دفعات مسجلة حتى الآن
               </div>
-            ))}
+            )}
           </div>
+        </div>
 
-          <div className="flex items-center justify-between mt-6 text-sm font-bold border-t border-gray-100 pt-6">
-            <span className="text-[#040814]">Showing 1-3 of 20 payments</span>
-            <div className="flex items-center gap-4 bg-gray-50 rounded-full px-2 py-1 border border-gray-200">
-              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm transition-all text-gray-400">
-                <ChevronRightIcon />
-              </button>
-              <span className="text-gray-800">Page 1/6</span>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm transition-all text-[#040814]">
-                <ChevronLeftIcon />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* ================= SECTION 3: ORDER STAGES ================= */}
-        <section className="bg-white rounded-[32px] p-6 md:p-8 border border-gray-200 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between mb-12 gap-4 border-b border-gray-100 pb-6">
+        {/* Order Stages */}
+        <div className="mb-8 bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100 flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="text-[#B08B3A]" size={24} />
-              <h3 className="text-2xl font-black text-[#040814]">مراحل تنفيذ الطلب</h3>
+              <RefreshCw className="text-[#B08B3A]" size={20} />
+              <h2 className="text-lg font-black text-gray-900">
+                مراحل تنفيذ الطلب
+              </h2>
             </div>
-            
-            {/* TODO: Add logic to update the current stage */}
-            <button 
-              onClick={() => setActiveModal('stageUpdate')}
-              className="flex items-center gap-2 bg-[#B08B3A] hover:bg-[#906c27] text-white px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm"
-            >
-              <RefreshCw size={18} strokeWidth={2.5} />
+            <button
+              onClick={() => setStageModalOpen(true)}
+              className="flex items-center gap-2 bg-[#B08B3A] text-white px-4 py-2 rounded-[10px] font-bold text-xs hover:bg-[#9a7933] transition-colors shadow-sm">
+              <RefreshCw size={14} />
               تحديث المرحلة
             </button>
           </div>
-
-          {/* Stepper Container */}
-          <div className="relative flex justify-between items-start w-full px-4 overflow-x-auto pb-6 custom-scrollbar">
-            {/* Background connecting line */}
-            <div className="absolute top-7 left-10 right-10 h-1 bg-gray-100 z-0"></div>
-
-            {ORDER_STAGES.map((stage, idx) => {
-              const SystemIcon = stage.icon;
-              const isCompleted = stage.status === 'completed';
-              const isCurrent = stage.status === 'current';
-              const isPending = stage.status === 'pending';
-
-              let circleClasses = "w-14 h-14 rounded-full flex items-center justify-center z-10 transition-all border-[3px] border-white shadow-sm ring-2 ";
-              let activeLine = null;
-
-              if (isCompleted) {
-                circleClasses += "bg-emerald-500 text-white ring-emerald-100";
-              } else if (isCurrent) {
-                circleClasses += "bg-amber-500 text-white ring-amber-100 scale-110 shadow-md";
-              } else {
-                circleClasses += "bg-gray-400 text-white ring-transparent shadow-none";
-              }
-
-              // Draw active line connecting up to the current stage
-              if (idx < ORDER_STAGES.length - 1 && (isCompleted || isCurrent)) {
-                 activeLine = <div className={`absolute top-7 h-1 z-0 ${isCompleted ? 'bg-emerald-500' : 'bg-gray-100'}`} style={{ width: '100%', right: '50%' }}></div>;
-              }
-
-              return (
-                <div key={stage.id} className="relative flex flex-col items-center flex-1 min-w-[90px]">
-                  {activeLine}
-                  <div className={circleClasses}>
-                    <SystemIcon size={22} />
+          <div className="p-10 overflow-x-auto">
+            <div className="flex items-center justify-between min-w-[800px] relative">
+              <div className="absolute top-6 left-10 right-10 h-[2px] bg-gray-100 -z-10" />
+              {ORDER_STAGES.map((stageObj, idx) => {
+                const isPassed = idx < currentStageIndex;
+                const isCurrent = idx === currentStageIndex;
+                const StageIcon = stageObj.icon;
+                return (
+                  <div
+                    key={stageObj.name}
+                    className="flex flex-col items-center gap-3 relative bg-white px-2">
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-sm
+                        ${
+                          isPassed
+                            ? 'bg-green-500'
+                            : isCurrent
+                              ? 'bg-[#B08B3A]'
+                              : 'bg-gray-200 text-gray-400'
+                        }
+                      `}>
+                      <StageIcon size={20} />
+                    </div>
+                    <span
+                      className={`text-xs font-bold ${
+                        isPassed
+                          ? 'text-green-600'
+                          : isCurrent
+                            ? 'text-[#B08B3A]'
+                            : 'text-gray-400'
+                      }`}>
+                      {stageObj.name}
+                    </span>
                   </div>
-                  <p className={`mt-4 text-xs font-bold text-center ${isCompleted ? 'text-emerald-600' : isCurrent ? 'text-amber-600' : 'text-gray-500'}`}>
-                    {stage.name}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ================= SECTION 4: ATTACHMENTS ================= */}
-        <section className="bg-white rounded-[32px] p-6 md:p-8 border border-gray-200 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between mb-8 gap-4 border-b border-gray-100 pb-6">
-            <div className="flex items-center gap-3">
-              <div className="text-[#B08B3A] rotate-45"><Check size={24} /></div> {/* Used as paperclip substitute for UI context */}
-              <h3 className="text-2xl font-black text-[#040814]">المرفقات</h3>
+                );
+              })}
             </div>
-            
-            {/* TODO: Connect to file upload handler */}
-            <button 
-              onClick={() => setActiveModal('upload')}
-              className="flex items-center gap-2 bg-[#B08B3A] hover:bg-[#906c27] text-white px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm"
-            >
-              <Download size={18} className="rotate-180" strokeWidth={2.5} />
+          </div>
+        </div>
+
+        {/* Attachments */}
+        <div className="mb-8 bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <FileText className="text-[#B08B3A]" size={20} />
+              <h2 className="text-lg font-black text-gray-900">المرفقات</h2>
+            </div>
+            <button
+              onClick={() => setFileModalOpen(true)}
+              className="flex items-center gap-2 bg-[#B08B3A] text-white px-4 py-2 rounded-[10px] font-bold text-xs hover:bg-[#9a7933] transition-colors shadow-sm">
+              <Upload size={14} />
               رفع ملف جديد
             </button>
           </div>
-
-          <div className="flex flex-col gap-4">
-            {ATTACHMENTS.map((file) => {
-              // Map types to icons & colors
-              let FileIcon = FileText;
-              let iconBg = 'bg-amber-100';
-              let iconColor = 'text-amber-500';
-
-              if (file.type === 'pdf') {
-                FileIcon = FileText;
-                iconBg = 'bg-orange-500';
-                iconColor = 'text-white';
-              } else if (file.type === 'image') {
-                FileIcon = FileImage;
-                iconBg = 'bg-amber-400';
-                iconColor = 'text-white';
-              } else if (file.type === 'excel') {
-                FileIcon = FileSpreadsheet;
-                iconBg = 'bg-amber-500';
-                iconColor = 'text-white';
-              }
-
-              return (
-                <div key={file.id} className="flex justify-between items-center border border-gray-200 rounded-2xl p-4 md:p-6 hover:shadow-md transition-shadow bg-white group">
-                  
-                  {/* File Info (Right Side) */}
-                  <div className="flex items-center gap-5">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 ${iconBg} ${iconColor}`}>
-                      <FileIcon size={28} />
+          <div className="p-6 space-y-4">
+            {order.attachments?.length > 0 ? (
+              order.attachments.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between p-4 border border-gray-100 rounded-[16px] hover:border-[#B08B3A] transition-colors group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-[12px] bg-amber-50 flex items-center justify-center text-amber-500">
+                      {file.fileName.endsWith('.pdf') ? (
+                        <FileText size={24} />
+                      ) : file.fileName.match(/\.(jpeg|jpg|png)$/) ? (
+                        <ImageIcon size={24} />
+                      ) : (
+                        <FileSpreadsheet size={24} />
+                      )}
                     </div>
                     <div>
-                      <h4 className="text-[#040814] font-black text-[15px] mb-2">{file.name}</h4>
-                      <div className="flex items-center gap-4 text-xs font-bold text-gray-500">
-                        <span className="flex items-center gap-1"><UserIcon size={14} className="text-gray-400"/> {file.user}</span>
-                        <span className="flex items-center gap-1"><History size={14} className="text-gray-400"/> {file.timeAgo}</span>
-                        <span className="bg-gray-100 px-2 py-0.5 rounded border border-gray-200">{file.size}</span>
+                      <p className="text-sm font-bold text-gray-900 mb-1">
+                        {file.originalName || file.fileName}
+                      </p>
+                      <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
+                        <span>
+                          {(file.fileSize / 1024 / 1024).toFixed(1)} MB
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-gray-300" />
+                        <span>
+                          منذ{' '}
+                          {((new Date() - new Date(file.createdAt)) /
+                            86400000) |
+                            0}{' '}
+                          أيام
+                        </span>
                       </div>
                     </div>
                   </div>
-
-                  {/* Actions (Left Side) */}
-                  <div className="flex items-center gap-3">
-                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#040814] hover:text-white transition-colors">
-                      <Eye size={18} />
-                    </button>
-                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#B08B3A] hover:text-white transition-colors">
-                      <Download size={18} />
-                    </button>
-                    {/* TODO: Connect delete handler */}
-                    <button onClick={() => setActiveModal('confirmDanger')} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-rose-500 hover:text-white transition-colors">
-                      <Trash2 size={18} />
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a
+                      href={`${API_URL.replace('/api', '')}/uploads/attachments/${file.fileName}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100">
+                      <Eye size={16} />
+                    </a>
+                    <a
+                      href={`${API_URL.replace('/api', '')}/uploads/attachments/${file.fileName}`}
+                      download={file.originalName || file.fileName}
+                      className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100">
+                      <Download size={16} />
+                    </a>
+                    <button className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500 hover:text-white hover:bg-red-500">
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <div className="text-center py-8 text-sm text-gray-400 font-bold">
+                لا توجد مرفقات
+              </div>
+            )}
           </div>
-        </section>
-
+        </div>
       </div>
 
-      {/* ================= MODALS ================= */}
-      
-      <PaymentModal 
-        isOpen={activeModal === 'payment'} 
-        onClose={() => setActiveModal(null)}
-        onSubmit={() => {
-          console.log("Payment Confirmed");
-          setActiveModal(null);
-        }}
-      />
+      {/* MODALS */}
 
-      <UploadModal 
-        isOpen={activeModal === 'upload'} 
-        onClose={() => setActiveModal(null)}
-        onSubmit={() => {
-          console.log("File Uploaded");
-          setActiveModal(null);
-        }}
-      />
+      {/* Payment Modal */}
+      {paymentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[24px] shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-lg font-black text-gray-900">
+                إضافة دفعة مالية جديدة
+              </h3>
+              <button
+                onClick={() => setPaymentModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600">
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handlePaymentSubmit} className="p-6 space-y-5">
+              <p className="text-xs text-gray-500 mb-2">
+                أدخل تفاصيل الدفعة لتسجيلها في النظام
+              </p>
 
-      <StageUpdateModal 
-        isOpen={activeModal === 'stageUpdate'} 
-        onClose={() => setActiveModal(null)}
-        onSubmit={() => {
-          console.log("Stage Updated");
-          setActiveModal(null);
-        }}
-      />
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">
+                  اختر الطلب
+                </label>
+                <div className="field-input text-gray-500 bg-gray-50 cursor-not-allowed select-none">
+                  طلب #{order.displayId}
+                </div>
+              </div>
 
-      <ConfirmDangerModal 
-        isOpen={activeModal === 'confirmDanger'} 
-        onClose={() => setActiveModal(null)}
-        onConfirm={() => {
-          console.log("Action Confirmed");
-          setActiveModal(null);
-        }}
-        title="أنت على وشك نقل الطلب من مرحلة الي اخري"
-        subtitle="قد يؤثر هذا التغيير على سير تنفيذ الطلب."
-      />
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">
+                  نوع الدفعة
+                </label>
+                <div className="flex items-center gap-6">
+                  {['دفعة أولى', 'دفعة نهائية', 'عمولة', 'دفعة جزئية'].map(
+                    (type) => (
+                      <label
+                        key={type}
+                        className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="paymentType"
+                          value={type}
+                          checked={paymentForm.type === type}
+                          onChange={(e) =>
+                            setPaymentForm({
+                              ...paymentForm,
+                              type: e.target.value,
+                            })
+                          }
+                          className="text-[#B08B3A] focus:ring-[#B08B3A]"
+                        />
+                        <span className="text-xs font-bold text-gray-600">
+                          {type}
+                        </span>
+                      </label>
+                    ),
+                  )}
+                </div>
+              </div>
 
-    </>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">
+                  المبلغ
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-1 top-1 bottom-1 flex items-center bg-gray-50 border-r border-gray-200 px-3 rounded-l-[11px]">
+                    <span className="text-xs font-bold text-gray-600">
+                      {order.currency}
+                    </span>
+                  </div>
+                  <input
+                    type="number"
+                    value={paymentForm.amount}
+                    onChange={(e) =>
+                      setPaymentForm({ ...paymentForm, amount: e.target.value })
+                    }
+                    className="field-input !pl-16"
+                    placeholder="0.00"
+                    dir="ltr"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">
+                  تاريخ الدفع
+                </label>
+                <input
+                  type="date"
+                  value={paymentForm.date}
+                  onChange={(e) =>
+                    setPaymentForm({ ...paymentForm, date: e.target.value })
+                  }
+                  className="field-input"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">
+                  رفع إثبات الدفع (صورة حوالة/إيصال)
+                </label>
+                <div className="border-2 border-dashed border-[#B08B3A]/30 rounded-[16px] p-6 flex flex-col items-center justify-center bg-[#B08B3A]/5 cursor-pointer hover:bg-[#B08B3A]/10 transition-colors">
+                  <label className="cursor-pointer flex flex-col items-center w-full">
+                    <Upload className="text-[#B08B3A] mb-3" size={28} />
+                    {paymentProofFile ? (
+                      <span className="text-sm font-bold text-green-600 mb-1">
+                        {paymentProofFile.name}
+                      </span>
+                    ) : (
+                      <span className="text-sm font-bold text-[#B08B3A] mb-1">
+                        اسحب وأفلت الملفات هنا أو انقر للاختيار
+                      </span>
+                    )}
+                    <span className="text-xs text-gray-500 font-medium">
+                      (PDF, JPG, PNG حتى 10MB)
+                    </span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={(e) => setPaymentProofFile(e.target.files?.[0] || null)}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">
+                  ملاحظات / رقم المرجع
+                </label>
+                <input
+                  type="text"
+                  value={paymentForm.notes}
+                  onChange={(e) =>
+                    setPaymentForm({ ...paymentForm, notes: e.target.value })
+                  }
+                  className="field-input"
+                  placeholder="اكتب تفاصيل إضافية أو رقم الحوالة..."
+                />
+              </div>
+
+              <div className="bg-green-50 rounded-[12px] p-4 text-xs font-bold text-gray-800 space-y-2">
+                <div className="flex justify-between">
+                  <span>المبلغ المضاف:</span>
+                  <span>
+                    {Number(paymentForm.amount || 0).toLocaleString()}{' '}
+                    {order.currency}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>المدفوع الجديد:</span>
+                  <span>
+                    {(
+                      Number(order.totalPaid) + Number(paymentForm.amount || 0)
+                    ).toLocaleString()}{' '}
+                    {order.currency}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>المتبقي بعد الدفع:</span>
+                  <span>
+                    {Math.max(
+                      0,
+                      Number(order.remainingBalance) -
+                        Number(paymentForm.amount || 0),
+                    ).toLocaleString()}{' '}
+                    {order.currency}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 pt-4">
+                <button
+                  type="submit"
+                  disabled={paymentMut.loading}
+                  className="flex-1 bg-[#B08B3A] text-white py-3 rounded-[12px] font-bold text-sm hover:bg-[#9a7933] transition-colors disabled:opacity-50">
+                  {paymentMut.loading ? 'جاري الحفظ...' : 'تأكيد الدفع'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentModalOpen(false)}
+                  className="flex-1 bg-white border border-[#B08B3A] text-[#B08B3A] py-3 rounded-[12px] font-bold text-sm hover:bg-amber-50 transition-colors">
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Stage Modal */}
+      {stageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-lg font-black text-gray-900">
+                تحديث مرحلة الطلب
+              </h3>
+              <button
+                onClick={() => setStageModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600">
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleStageSubmit} className="p-6 space-y-5">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">المرحلة الحالية</label>
+                <div className="flex justify-end">
+                  <span className="px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                    {order.currentStage}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">اختيار المرحلة الجديدة</label>
+                <div className="relative">
+                  <select
+                    value={stageForm.stage}
+                    onChange={(e) => setStageForm({ ...stageForm, stage: e.target.value })}
+                    className="field-input appearance-none cursor-pointer"
+                    required>
+                    <option value="" disabled>اختر المرحلة</option>
+                    {ORDER_STAGES
+                      .filter((s) => {
+                        const sIdx = ORDER_STAGES.findIndex(st => st.name === s.name);
+                        return sIdx > currentStageIndex;
+                      })
+                      .map((s) => (
+                        <option key={s.name} value={s.name}>{s.name}</option>
+                      ))}
+                  </select>
+                  <ChevronDown className="absolute left-4 top-3.5 text-gray-400 pointer-events-none" size={16} />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">سبب تغيير المرحلة</label>
+                <textarea
+                  value={stageForm.reason}
+                  onChange={(e) => setStageForm({ ...stageForm, reason: e.target.value })}
+                  className="field-input min-h-[100px] resize-none"
+                  placeholder="اكتب سبب نقل الطلب إلى هذه المرحلة..."
+                  required
+                />
+              </div>
+
+              {/* Stage Requirements Checklist */}
+              {stageForm.stage && STAGE_REQUIREMENTS[stageForm.stage] && (
+                <div>
+                  <label className="block text-sm font-bold text-gray-900 mb-3">متطلبات المرحلة</label>
+                  <div className="space-y-2.5">
+                    {STAGE_REQUIREMENTS[stageForm.stage].map((req, i) => (
+                      <div key={i} className="flex items-center gap-2.5 justify-end">
+                        <span className="text-sm font-bold text-gray-700">{req}</span>
+                        <CheckCircle size={18} className="text-emerald-500 flex-shrink-0" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3 pt-4">
+                <button
+                  type="submit"
+                  disabled={stageMut.loading}
+                  className="flex-1 bg-[#B08B3A] text-white py-3 rounded-[12px] font-bold text-sm hover:bg-[#9a7933] transition-colors disabled:opacity-50">
+                  {stageMut.loading ? 'جاري التحديث...' : 'تأكيد التحديث'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStageModalOpen(false)}
+                  className="flex-1 bg-white border border-[#B08B3A] text-[#B08B3A] py-3 rounded-[12px] font-bold text-sm hover:bg-amber-50 transition-colors">
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* File Modal */}
+      {fileModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-lg font-black text-gray-900">رفع ملف جديد</h3>
+              <button
+                onClick={() => setFileModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600">
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleFileUpload} className="p-6 space-y-5">
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">اسم الملف</label>
+                <input
+                  type="text"
+                  value={fileName || (fileToUpload?.name || '')}
+                  onChange={(e) => setFileName(e.target.value)}
+                  className="field-input"
+                  placeholder="Product_Specifications.jpg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2">المرفقات</label>
+                <label className="border-2 border-dashed border-[#B08B3A]/30 rounded-[16px] p-8 flex flex-col items-center justify-center bg-[#B08B3A]/5 cursor-pointer hover:bg-[#B08B3A]/10 transition-colors">
+                  <Upload className="text-[#B08B3A] mb-4" size={32} />
+                  <span className="text-sm font-bold text-[#B08B3A] mb-1">
+                    اسحب الملفات هنا أو اضغط للاختيار
+                  </span>
+                  <span className="text-xs text-gray-500 font-medium">
+                    (PDF, DOC, DOCX, XLS, XLSX, JPG, PNG حتى 10MB)
+                  </span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files[0];
+                      setFileToUpload(f);
+                      if (f && !fileName) setFileName(f.name);
+                    }}
+                  />
+                </label>
+                {fileToUpload && (
+                  <div className="mt-3 text-sm font-bold text-gray-700 bg-gray-50 p-3 rounded-[8px] flex justify-between">
+                    <span>{fileToUpload.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => { setFileToUpload(null); setFileName(''); }}
+                      className="text-red-500 hover:text-red-700">
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3 pt-4">
+                <button
+                  type="submit"
+                  disabled={fileMut.loading || !fileToUpload}
+                  className="flex-1 bg-[#B08B3A] text-white py-3 rounded-[12px] font-bold text-sm hover:bg-[#9a7933] transition-colors disabled:opacity-50">
+                  {fileMut.loading ? 'جاري الرفع...' : 'إضافة الملف'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFileModalOpen(false)}
+                  className="flex-1 bg-white border border-[#B08B3A] text-[#B08B3A] py-3 rounded-[12px] font-bold text-sm hover:bg-amber-50 transition-colors">
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
-// Inline helper Icons
-function UserIcon(props) {
+function StatCard({
+  icon,
+  title,
+  value,
+  currency,
+  iconBg,
+  valueColor = 'text-gray-900',
+}) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 10} height={props.size || 10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <div className="bg-white p-5 rounded-[20px] border border-gray-100 shadow-sm flex flex-col justify-center items-center text-center">
+      <div
+        className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${iconBg}`}>
+        {icon}
+      </div>
+      <h3 className="text-xs font-bold text-gray-500 mb-1">{title}</h3>
+      <div className={`text-xl font-black ${valueColor}`} dir="ltr">
+        {value}{' '}
+        <span className="text-xs font-bold text-gray-400 ml-1">{currency}</span>
+      </div>
+    </div>
   );
 }
 
-function ChevronRightIcon(props) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m9 18 6-6-6-6"/></svg>
-}
+function PaymentCard({ tx, currency }) {
+  return (
+    <div className="min-w-[320px] bg-white border border-gray-100 rounded-[20px] p-5 shadow-sm flex flex-col justify-between">
+      {/* Top Row: Status and Date */}
+      <div className="flex justify-between items-center mb-4">
+        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+          tx.status === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-green-50 text-green-600'
+        }`}>
+          {tx.status === 'pending' ? 'قيد الانتظار' : 'مكتمل'}
+        </span>
+        <span className="text-xs font-bold text-gray-400">
+          {new Date(tx.createdAt).toLocaleDateString('ar-EG', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </span>
+      </div>
 
-function ChevronLeftIcon(props) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m15 18-6-6 6-6"/></svg>
+      {/* Middle Row: Amount, Type, and PDF Icon */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <div className="text-2xl font-black text-green-500 mb-2" dir="ltr">
+            {Number(tx.amount).toLocaleString()} {currency}
+          </div>
+          <span className="inline-block px-3 py-1 bg-gray-50 text-gray-500 rounded-full text-[10px] font-bold border border-gray-100">
+            {tx.paymentType === 'commission' ? 'من العمولة' : 'من الطلب الرئيسي'}
+          </span>
+        </div>
+        <div className="w-14 h-14 bg-amber-500 rounded-[14px] flex flex-col items-center justify-center text-white shadow-sm">
+          <FileText size={24} className="mb-0.5" />
+          <span className="text-[10px] font-black">PDF</span>
+        </div>
+      </div>
+
+      {/* Bottom Row: User and TRX */}
+      <div className="flex justify-between items-center text-xs font-bold text-gray-400 mb-5">
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
+            <User size={12} className="text-gray-400" />
+          </span>
+          {tx.addedBy?.fullName || tx.addedBy?.name || '—'}
+        </div>
+        <div className="font-mono text-[10px]">
+          {tx.displayId || tx.referenceNumber || `TRX-${tx.id.slice(0, 8)}`} - تحويل بنكي
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div className="flex gap-2">
+        {tx.proofFile ? (
+          <>
+            <a
+              href={`${API_URL.replace('/api', '')}/uploads/proofs/${tx.proofFile}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-[#B08B3A] text-white py-2.5 rounded-[12px] text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#9a7933] transition-colors">
+              عرض الإيصال
+            </a>
+            <a
+              href={`${API_URL.replace('/api', '')}/uploads/proofs/${tx.proofFile}`}
+              download
+              className="flex-1 border border-[#B08B3A] text-[#B08B3A] py-2.5 rounded-[12px] text-xs font-bold hover:bg-amber-50 transition-colors flex items-center justify-center">
+              تحميل PDF
+            </a>
+          </>
+        ) : (
+          <>
+            <button disabled className="flex-1 bg-gray-200 text-gray-400 py-2.5 rounded-[12px] text-xs font-bold cursor-not-allowed">
+              لا يوجد إيصال
+            </button>
+            <button disabled className="flex-1 border border-gray-200 text-gray-400 py-2.5 rounded-[12px] text-xs font-bold cursor-not-allowed">
+              تحميل PDF
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
